@@ -1,11 +1,11 @@
-Denny-47 Data Science Blog
-##########################
+Welcome to the Blog!
+####################
 
-:date: 20181216 08:30
+:date: 20190926 10:30
 :tags: welcome, hello world, python, data science
 :category: Intro
 :slug: welcome
 :author: Dennis Nguyen-Do
-:summary: This is my first post.
+:summary: Hi and welcome to my first post of the blog!
 
-Is this thing still updating?
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
