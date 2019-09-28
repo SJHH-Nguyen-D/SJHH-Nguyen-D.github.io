@@ -22,8 +22,7 @@ AUTHOR_FEED_RSS = None
 # Blogroll
 LINKS = (('Pelican', 'http://getpelican.com/'),
          ('Python.org', 'http://python.org/'),
-         ('Jinja2', 'http://jinja.pocoo.org/'),
-         ('You can modify those links in your config file', '#'),)
+         ('Jinja2', 'http://jinja.pocoo.org/'),)
 
 # Social widget
 SOCIAL = (('Twitter (#Dennis00481552)', 'https://twitter.com/Dennis00481552'),
@@ -37,8 +36,10 @@ PAGINATION_PATTERNS = (
     (2, '{base_name}/page/{number}/', '{base_name}/page/{number}/index.html'),
 )
 
+HEADER_COVER = '/home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/SJHH-Nguyen-D.github.io/content/assets/img/34875474670_a97e36c750_z.jpg' # japanese temple replica
+
 # Pelican Themes
 THEME = "/home/dennis/Desktop/Link to datascience_job_portfolio/pelican-themes/attila/"
 
 # Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
+# RELATIVE_URLS = True

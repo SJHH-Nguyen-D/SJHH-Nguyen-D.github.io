@@ -8,4 +8,3 @@ Welcome to the Blog!
 :author: Dennis Nguyen-Do
 :summary: Hi and welcome to my first post of the blog!
 
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

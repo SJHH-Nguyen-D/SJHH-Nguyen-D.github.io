@@ -1,0 +1,10 @@
+numpy
+pandas
+regex
+scikit-learn
+tpot
+matplotlib
+seaborn
+mlxtend
+flask
+sqlalchemy
