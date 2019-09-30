@@ -6,11 +6,18 @@ AUTHOR = 'Dennis Nguyen-Do'
 SITENAME = 'Denny-4/7 Data Science Blog'
 SITEURL = ''
 
-PATH = 'content'
+HEADER_COVER = "/home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/SJHH-Nguyen-D.github.io/content/assets/img/35222820026_46cc483a34_z.jpg"
 
-TIMEZONE = 'UTC'
+PATH = 'content'
+PAGE_PATHS = ['pages']
+ARTICLE_PATHS = ['articles']
+
+TIMEZONE = 'EST'
 
 DEFAULT_LANG = 'en'
+
+# If content doesn't reload upon update, set this option to False
+LOAD_CONTENT_CACHE = False
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
@@ -36,10 +43,12 @@ PAGINATION_PATTERNS = (
     (2, '{base_name}/page/{number}/', '{base_name}/page/{number}/index.html'),
 )
 
-HEADER_COVER = '/home/dennis/Documents/datascience_adventures/pythonscripts/datascience_job_portfolio/SJHH-Nguyen-D.github.io/content/assets/img/34875474670_a97e36c750_z.jpg' # japanese temple replica
+SUMMARY_MAX_LENGTH = None
+
+# HEADER_COVER = 'content/assets/img/34875474670_a97e36c750_z.jpg' # japanese temple replica
 
 # Pelican Themes
-THEME = "/home/dennis/Desktop/Link to datascience_job_portfolio/pelican-themes/attila/"
+THEME = "attila" # installed with pelican-themes --install /path/to/attila/theme/from/githubrepo
 
 # Uncomment following line if you want document-relative URLs when developing
 # RELATIVE_URLS = True

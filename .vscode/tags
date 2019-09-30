@@ -1,0 +1,48 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AUTHOR	../pelicanconf.py	/^AUTHOR = 'Dennis Nguyen-Do'$/;"	kind:variable	line:5
+AUTHOR_FEED_ATOM	../pelicanconf.py	/^AUTHOR_FEED_ATOM = None$/;"	kind:variable	line:21
+AUTHOR_FEED_RSS	../pelicanconf.py	/^AUTHOR_FEED_RSS = None$/;"	kind:variable	line:22
+AddressReuseTCPServer	../tasks.py	/^    class AddressReuseTCPServer(RootedHTTPServer):$/;"	kind:class	line:57
+CATEGORY_FEED_ATOM	../pelicanconf.py	/^CATEGORY_FEED_ATOM = None$/;"	kind:variable	line:19
+CATEGORY_FEED_ATOM	../publishconf.py	/^CATEGORY_FEED_ATOM = 'feeds\/{slug}.atom.xml'$/;"	kind:variable	line:18
+CONFIG	../tasks.py	/^CONFIG = {$/;"	kind:variable	line:19
+DEFAULT_LANG	../pelicanconf.py	/^DEFAULT_LANG = 'en'$/;"	kind:variable	line:13
+DEFAULT_PAGINATION	../pelicanconf.py	/^DEFAULT_PAGINATION = 5$/;"	kind:variable	line:34
+DELETE_OUTPUT_DIRECTORY	../publishconf.py	/^DELETE_OUTPUT_DIRECTORY = True$/;"	kind:variable	line:20
+FEED_ALL_ATOM	../pelicanconf.py	/^FEED_ALL_ATOM = None$/;"	kind:variable	line:18
+FEED_ALL_ATOM	../publishconf.py	/^FEED_ALL_ATOM = 'feeds\/all.atom.xml'$/;"	kind:variable	line:17
+HEADER_COVER	../pelicanconf.py	/^HEADER_COVER = '\/home\/dennis\/Documents\/datascience_adventures\/pythonscripts\/datascience_job_portfolio\/SJHH-Nguyen-D.github.io\/content\/assets\/img\/34875474670_a97e36c750_z.jpg' # japanese temple replica$/;"	kind:variable	line:41
+LINKS	../pelicanconf.py	/^LINKS = (('Pelican', 'http:\/\/getpelican.com\/'),$/;"	kind:variable	line:25
+LOAD_CONTENT_CACHE	../pelicanconf.py	/^LOAD_CONTENT_CACHE = False$/;"	kind:variable	line:15
+LOCAL_SETTINGS	../tasks.py	/^LOCAL_SETTINGS = get_settings_from_file(SETTINGS_FILE_BASE)$/;"	kind:variable	line:16
+PAGINATION_PATTERNS	../pelicanconf.py	/^PAGINATION_PATTERNS = ($/;"	kind:variable	line:36
+PATH	../pelicanconf.py	/^PATH = 'content'$/;"	kind:variable	line:9
+RELATIVE_URLS	../publishconf.py	/^RELATIVE_URLS = False$/;"	kind:variable	line:15
+SETTINGS	../tasks.py	/^SETTINGS = {}$/;"	kind:variable	line:14
+SETTINGS_FILE_BASE	../tasks.py	/^SETTINGS_FILE_BASE = 'pelicanconf.py'$/;"	kind:variable	line:13
+SITENAME	../pelicanconf.py	/^SITENAME = 'Denny-4\/7 Data Science Blog'$/;"	kind:variable	line:6
+SITEURL	../pelicanconf.py	/^SITEURL = ''$/;"	kind:variable	line:7
+SITEURL	../publishconf.py	/^SITEURL = 'n'$/;"	kind:variable	line:14
+SOCIAL	../pelicanconf.py	/^SOCIAL = (('Twitter (#Dennis00481552)', 'https:\/\/twitter.com\/Dennis00481552'),$/;"	kind:variable	line:30
+THEME	../pelicanconf.py	/^THEME = "\/home\/dennis\/Desktop\/Link to datascience_job_portfolio\/pelican-themes\/attila\/"$/;"	kind:variable	line:44
+TIMEZONE	../pelicanconf.py	/^TIMEZONE = 'UTC'$/;"	kind:variable	line:11
+TRANSLATION_FEED_ATOM	../pelicanconf.py	/^TRANSLATION_FEED_ATOM = None$/;"	kind:variable	line:20
+allow_reuse_address	../tasks.py	/^        allow_reuse_address = True$/;"	kind:variable	line:58
+build	../tasks.py	/^def build(c):$/;"	kind:function	line:39
+clean	../tasks.py	/^def clean(c):$/;"	kind:function	line:32
+gh_pages	../tasks.py	/^def gh_pages(c):$/;"	kind:function	line:114
+livereload	../tasks.py	/^def livereload(c):$/;"	kind:function	line:80
+pelicanconf.py	../pelicanconf.py	1;"	kind:file	line:1
+preview	../tasks.py	/^def preview(c):$/;"	kind:function	line:75
+publish	../tasks.py	/^def publish(c):$/;"	kind:function	line:104
+publishconf.py	../publishconf.py	1;"	kind:file	line:1
+rebuild	../tasks.py	/^def rebuild(c):$/;"	kind:function	line:44
+regenerate	../tasks.py	/^def regenerate(c):$/;"	kind:function	line:49
+reserve	../tasks.py	/^def reserve(c):$/;"	kind:function	line:69
+serve	../tasks.py	/^def serve(c):$/;"	kind:function	line:54
+tasks.py	../tasks.py	1;"	kind:file	line:1
