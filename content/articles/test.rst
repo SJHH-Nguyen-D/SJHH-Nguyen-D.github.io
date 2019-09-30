@@ -8,17 +8,24 @@ Testing Testing 1, 2, 3
 :author: Dennis Nguyen-Do
 :summary: Does this even work
 
+TODO:
+  1. Navigation
+  2. Social Media Links
+  3. Image Formatting in-line
+  4. Output Plots for EDA
+  5. Finish Entry Blog post
+  6. Get cover banner to properly read
+
 This is about post about testing testing whether this thing even works
 
-https://www.flickr.com/photos/dvpho_tos/35222820026/
-https://live.staticflickr.com/4271/35222820026_46cc483a34_c_d.jpg
-
-.. image:: https://live.staticflickr.com/4278/34875474670_a97e36c750_c_d.jpg
+.. image:: https://live.staticflickr.com/4364/35630875744_5cff0b53b6_c_d.jpg
     :height: 427px
     :width: 640px
-    :alt: old lanterns
+    :alt: moss on a log
     :align: center
     :name: my picture
+
+*Moss on a Log* by `dvpho_tos <https://www.flickr.com/photos/dvpho_tos/35630875744/>`_
 
 `` for i in range(0, 4): print('Hello World!)``
 
@@ -48,7 +55,7 @@ what
   paragraphs or body elements, indented relative to the term.
   Blank lines are not allowed between term and definition.
 
-Python Visualization Code::
+.. code-block:: python
 
   import numpy as np
   import scipy.stats as stats
@@ -79,13 +86,20 @@ floating-point numbers (without exponents).
   :language: python
 
 
-`
-import matplotlib.pyplot as plt 
-import seaborn as sns 
-import pandas as pd 
-from sklearn.datasets import *
+  import matplotlib.pyplot as plt 
+  import seaborn as sns 
+  import pandas as pd 
+  from sklearn.datasets import *
 
-iris = load_iris()
-df = pd.DataFrame(iris.data, columns=iris.feature_names)
-df.target = iris.target
-`
+  iris = load_iris()
+  df = pd.DataFrame(iris.data, columns=iris.feature_names)
+  df.target = iris.target
+
+How to publish a User Page with GitHub Pages::
+
+.. code-block:: python
+
+    pelican content -o output -s pelicanconf.py
+    ghp-import output
+    git push git@github.com:SJHH-Nguyen-D/SJHH-Nguyen-D.github.io.git gh-pages:master
+
