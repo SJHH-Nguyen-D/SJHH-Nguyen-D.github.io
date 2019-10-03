@@ -5,7 +5,7 @@ Ever wondered what your employee performance score would be? Part-1
 :tags: sharpestminds-project, data science, projects, employee performance
 :category: projects
 :slug: sharpestminds-project-part-1
-:author: Dennis Nguyen-Do
+:authors: Nguyen-Do, Dennis 
 :summary: My first project with my SharpestMinds mentorship program does just this in my first multi-step blog series. Curious? Well, come on in!
 
 *****************************
@@ -45,7 +45,7 @@ The Data        Background, Loading, EDA
 The Data        Some more EDA
 Preprocessing   Dropping
 Preprocessing   Encoding, Labeling
-Preprocessing   Missing values, imputation
+Preprocessing   Missing values, Imputation
 Selection       Feature Selection
 Modeling        Training, Testing, Validation
 Deployment      Web Application Endpoint

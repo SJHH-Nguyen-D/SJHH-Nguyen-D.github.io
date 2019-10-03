@@ -7,30 +7,24 @@ SITENAME = 'Denny-4/7 Data Science Blog'
 SITEURL = ''
 SITE_DESCRIPTION = u'My name is Dennis Nguyen-Do. This is my personal blog.'
 
-# LANDING_PAGE_ABOUT = {'details': """<div><p>My name is Dennis.
-# I’ve dabbled with web development, desktop scripting, pygame developement and reinforcement learning.
-# I’m currently a Master’s graduate in eHealth/Health Informatics.
-
-# <img src="" alt="It's a picture of me!" width="" height="">
-
-# As an avid independent learner and lover of analytics, I dove into the world of data science some 4 odd years ago,
-# having first exposure through my undergraduate and graduate statistics courses. My internship for my master's program provided me an opportunity to work on Through a combination of database
-# management, data mining, machine learning and programming MOOCs/class courses, and the amazing power of the internet, I
-# have been able to get to where I am today in my career.
-
-# With this personal blog, I intend to share my projects I’m currently working on or have worked on in the past,
-# partly also as a way of establishing an archive. If you find anything interesting, feel absolutely.</p></div>"""}
-
 PATH = 'content'
+
 # Post and Pages path
 ARTICLE_URL = '{date:%Y}/{date:%m}/{slug}.html'
 ARTICLE_SAVE_AS = '{date:%Y}/{date:%m}/{slug}.html'
 PAGE_URL = 'pages/{slug}/'
-PAGE_SAVE_AS = 'pages/{slug}/index.html'
+PAGE_SAVE_AS = 'pages/{slug}.html'
 YEAR_ARCHIVE_SAVE_AS = '{date:%Y}/index.html'
 MONTH_ARCHIVE_SAVE_AS = '{date:%Y}/{date:%m}/index.html'
 # PAGE_PATHS = ['pages']
 # ARTICLE_PATHS = ['blog']
+
+# STATIC PATHS needs to be set to allow us to reference our photos with: /assets/image.png
+# This folder is also just a basename, and is relative to the PATH specified so: content/assets
+# static paths will be copied without parsing their contents
+# remember, don't be using slashes in the string for the assets folder...things do not load this way
+# however, when you make reference to them in the reference line, you can add the slash, but you don't put the path into quotations
+STATIC_PATHS = ['assets']
 
 # Tags and Category path
 CATEGORY_URL = 'category/{slug}'
@@ -44,7 +38,6 @@ TAGS_SAVE_AS = 'tags.html'
 AUTHOR_URL = 'author/{slug}'
 AUTHOR_SAVE_AS = 'author/{slug}/index.html'
 AUTHORS_SAVE_AS = 'authors.html'
-
 
 TIMEZONE = 'EST'
 
@@ -72,6 +65,8 @@ SOCIAL = (('twitter', 'https://twitter.com/Dennis00481552'),
           ('github', 'https://github.com/SJHH-Nguyen-D/'),)
 
 DEFAULT_PAGINATION = 5
+DEFAULT_ORPHANS = 1
+PAGINATED_TEMPLATES = {'index': None, 'tag': None, 'category': None, 'author': None}
 
 PAGINATION_PATTERNS = (
     (1, '{base_name}/', '{base_name}/index.html'),
@@ -80,7 +75,13 @@ PAGINATION_PATTERNS = (
 
 SUMMARY_MAX_LENGTH = None
 
-HEADER_COVER = 'https://live.staticflickr.com/4271/35222820026_0cf1cf8183_k_d.jpg'
+HEADER_COVER = "/assets/head_cover_general.jpg"
+
+HEADER_COVERS_BY_TAG = {
+  'articles_cover': 'assets/head_cover_articles.jpg', 
+  'pages_cover': '/assets/head_cover_pages.jpg',
+  'general_cover': '/assets/head_cover_general.jpg',
+}
 
 # Pelican Themes
 THEME = "attila" # installed with pelican-themes --install /path/to/attila/theme/from/githubrepo
@@ -101,8 +102,24 @@ AUTHORS_BIO = {
   }
 }
 
+
+# If you want to disable creation of html files that use tags, uncomment the two lines below
+# TAGS_SAVE_AS = ''
+# TAG_SAVE_AS = ''
+
+# if you only want to build out a select few pages at a time instead of creating everything from scratch, put them in this list
+# If you want to build up everything from scratch because you're not sure which files you made changes in already, you can uncomment the line below
+# WRITE_SELECTED = ['/2019/10/sharpestminds-project-part-2.html', '/2018/09/test.html']
+
+# ************ TEMPLATES **********************
+# If you want to generate custom pages besides your blog entries, 
+# you can point any Jinja2 template file with a path pointing to
+# the file and the destination path for the generated file.
+# TEMPLATE_PAGES = {'templates/books.html': 'output/pages/books.html',
+#                   'templates/resume.html': 'output/pages/resume.html',
+#                   'templates/contact.html': 'output/pages/contact.html'}
+
+
 DIRECT_TEMPLATES = ['index', 'categories', 'authors', 'archives']
 
-THEM_TEMPLATES = ['/theme/templates/']
-
-PAGINATED_DIRECT_TEMPLATES = ['index']
+THEME_TEMPLATES = ['/theme/templates/']

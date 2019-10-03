@@ -3,21 +3,17 @@ Testing Testing 1, 2, 3
 
 :date: 20180928 10:30
 :tags: tutorial
-:category: testing
-:slug: testing
-:author: Dennis Nguyen-Do
+:category: test
+:slug: test
+:author: Nguyen-Do, Dennis
 :summary: Does this even work
 
 .. todo:
   0. Get the content and writing skeleton down first
-  05. Get the images that you need in the right directory
-  1. Navigation
   2. Social Media Links
-  3. Image Formatting in-line
   4. Output Plots for EDA
-  5. Finish Entry Blog post
-  6. Get cover banner to properly read
   7. Deploy it to github pages
+  8. get user input from html forms and calculate a job performance score....Do i really need to use flask for this?
 
 This is about post about testing testing whether this thing even works
 
@@ -100,11 +96,9 @@ floating-point numbers (without exponents).
 
 How to publish a User Page with GitHub Pages::
 
-.. code-block:: python
-
-    pelican content -o output -s pelicanconf.py
-    ghp-import output
-    git push git@github.com:SJHH-Nguyen-D/SJHH-Nguyen-D.github.io.git gh-pages:master
+$ pelican content -o output -s pelicanconf.py
+$ ghp-import output
+$ git push git@github.com:SJHH-Nguyen-D/SJHH-Nguyen-D.github.io.git gh-pages:master
 
 .. image:: https://live.staticflickr.com/4345/36465727015_3a918829bc_k_d.jpg
     :height: 427px
@@ -113,3 +107,20 @@ How to publish a User Page with GitHub Pages::
     :align: center
     :name: log
 
+Using the container directive:
+
+.. container:: custom
+
+   This paragraph might be rendered in a custom way. In a container.
+
+
+Using the csv-table directive which can be done inline or with an external file. This can introduce security holes potentially:
+
+.. csv-table:: Frozen Delights!
+   :header: "Treat", "Quantity", "Description"
+   :widths: 15, 10, 30
+
+   "Albatross", 2.99, "On a stick!"
+   "Crunchy Frog", 1.49, "If we took the bones out, it wouldn't be
+   crunchy, now would it?"
+   "Gannet Ripple", 1.99, "On a stick!"

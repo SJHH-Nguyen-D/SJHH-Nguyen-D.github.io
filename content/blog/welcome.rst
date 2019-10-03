@@ -5,7 +5,7 @@ Welcome to the Blog!
 :tags: welcome, hello world, python, data science
 :category: intro
 :slug: welcome
-:author: Dennis Nguyen-Do
+:author: Nguyen-Do, Dennis
 :summary: Hi and welcome to my first post of the blog!
 
 ``print(Hello World!)``

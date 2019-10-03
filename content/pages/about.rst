@@ -4,7 +4,7 @@ About Me
 :tags: about, author
 :category: about
 :slug: about
-:author: Dennis Nguyen-Do
+:author: Nguyen-Do, Dennis
 :summary: A foreword about the author.
 
 My name is Dennis Nguyen-Do. 
@@ -35,5 +35,11 @@ Outside of data science, I am a big into both educational and comedy podcasts. I
 
 With this personal blog, I intend to share my projects I’m currently working on or have worked on in the past,
 partly also as a way of establishing an archive. If you find anything interesting, feel absolutely 
-free to get in touch with me through email or my social media.
+free to get in touch with me through email or my social media:
 
+* Twitter: `@Dennis00481552 <https://twitter.com/Dennis00481552>`_
+* Github: `SJHH-Nguyen-D <https://github.com/SJHH-Nguyen-D/'>`_
+* LinkedIn: `@dennisnguyendo <https://www.linkedin.com/in/dennisnguyendo/>`_
+
+.. todo:
+    Connect About page to index page and other navigation pages
