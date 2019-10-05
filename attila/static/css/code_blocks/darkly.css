@@ -23,16 +23,16 @@ pre {
 .go { color: #2c3032; background-color: #2c3032; }
 .kt { color: #e3e7df; }
 .ni { color: #888a85; }
-.c,.cm,.c1,.cs { color: #8D9684; }
+.c,.cm,.c1,.cs { color: #8D9684; font-size: 0.80em}
 .err,.g,.l,.n,.x,.p,.ge,
 .gp,.gs,.gt,.ld,.s,.nc,.nd,
 .ne,.nl,.nn,.nx,.py,.ow,.w,.sb,
 .sc,.sd,.s2,.se,.sh,.si,.sx,.sr,
-.s1,.ss,.bp { color: #C1C2C3; font-size: 0.75em;}
+.s1,.ss,.bp { color: #C1C2C3; font-size: 0.80em;}
 .k,.kc,.kd,.kn,.kp,.kr,
-.nt { color: #729fcf; font-size: 0.75em;}
-.cp,.gh,.gu,.na,.nf { color: #E9A94B ; }
+.nt { color: #729fcf; font-size: 0.80em;}
+.cp,.gh,.gu,.na,.nf { color: #E9A94B ; font-size: 0.80em}
 .m,.nb,.no,.mf,.mh,.mi,.mo,
 .il { color: #8ae234; }
-.o { color: #989DAA; }
+.o { color: #989DAA; font-size: 0.80em}
 .nv,.vc,.vg,.vi { color: #fff; }

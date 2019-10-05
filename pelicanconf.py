@@ -109,7 +109,7 @@ AUTHORS_BIO = {
 
 # if you only want to build out a select few pages at a time instead of creating everything from scratch, put them in this list
 # If you want to build up everything from scratch because you're not sure which files you made changes in already, you can uncomment the line below
-WRITE_SELECTED = ['/2019/10/sharpestminds-project-part-2.html', '/2018/09/test.html']
+# WRITE_SELECTED = ['/2019/10/sharpestminds-project-part-2.html', '/2018/09/test.html']
 
 # ************ TEMPLATES **********************
 # If you want to generate custom pages besides your blog entries, 

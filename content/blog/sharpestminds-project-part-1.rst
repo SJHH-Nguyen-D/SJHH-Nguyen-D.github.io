@@ -5,7 +5,7 @@ Ever wondered what your employee performance score would be? Part-1
 :tags: sharpestminds-project, data science, projects, employee performance
 :category: projects
 :slug: sharpestminds-project-part-1
-:authors: Nguyen-Do, Dennis 
+:authors: Nguyen-Do, Dennis;
 :summary: My first project with my SharpestMinds mentorship program does just this in my first multi-step blog series. Curious? Well, come on in!
 
 *****************************
@@ -16,7 +16,7 @@ SharpestMinds Project Series
 Background
 ==========
 
-As part of the `SharpestMinds mentorship program <https://www.sharpestminds.com/>`_, each mentee is assigned a mentor based on interests and compatibility. Our mentorship spanned 4 months, for which we select a topic of our project, and along side the mentor, devote the majority of the time building an end-to-end data science project. 
+As part of the `SharpestMinds mentorship program <https://www.sharpestminds.com/>`_, each mentee is assigned a mentor based on interests and compatibility. Our mentorship spanned 4 months, for which we select a topic of our data science project, and along side the mentor, devote the majority of the time building an end-to-end data science project. The language chosen for this project was chosen to be Python 3.6 and up, using many of the popular modules and libraries commonly used for data science problems (i.e., Pandas, Matplotlib, Seaborn, Numpy, Scikit-Learn, etc...)
 
 I had been fortunate enough to be provided the opportunity to work along side `mentor Charlie Liu <https://www.sharpestminds.com/>`_. We'd had some time to to discuss each others interests and what projects might be suitable for the program and ultimately decided the project for which this series of blog post seeks to showcase and document.
 
@@ -37,12 +37,12 @@ After several iterations of ideas for a project, including several based on agri
 
 The blog will sequentially follow the table below and for each step of the project, a blog post will detail my methods and serve to archive my progress through my project.
 
-=============  ==============================
+=============  ===========================================================================
   Step               Process
-=============  ==============================
-Introduction    Rationale
-The Data        Background, Loading, EDA
-The Data        Some more EDA
+=============  ===========================================================================
+Introduction    `Rationale <{filename}./sharpestminds-project-part-1.rst>`_
+The Data        `Background, Loading, EDA <{filename}./sharpestminds-project-part-2.rst>`_
+The Data        `Some more EDA <{filename}./sharpestminds-project-part-3.rst>`_
 Preprocessing   Dropping
 Preprocessing   Encoding, Labeling
 Preprocessing   Missing values, Imputation
@@ -50,7 +50,7 @@ Selection       Feature Selection
 Modeling        Training, Testing, Validation
 Deployment      Web Application Endpoint
 Write-Up        Blog about it
-=============  ==============================
+=============  ===========================================================================
 
 A link to the complete code for the project can be found `here <https://github.com/SJHH-Nguyen-D/sharpestminds_project/>`_ for you to follow along.
 
