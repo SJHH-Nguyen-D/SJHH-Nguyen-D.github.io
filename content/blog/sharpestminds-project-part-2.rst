@@ -169,6 +169,116 @@ The 380 variables in the data set consists of questionnaire questions collected 
       
 It is apparent by some of the variable names, that there are several overlapping encodings for the same variable such as "isco1c" and "isco2c" which ultimately provide the same information. This introduces issues of multicollinearity and correlation among the variables, which gives redundant information. This is something we will have to quantify and address during the preprocessing step to ensure we limit as much of this redundancy before we can build our predictive model.
 
+We can look at the numeric frequency counts for unique value for each feature with the following lines of code:
+
+.. code-block:: python3
+
+    for column in df.columns:
+        print("#### {} ###".format(column))
+        print(df[column].value_counts().sort_values(ascending=False))
+        print("\n")
+
+
+.. code-block:: python3
+
+    #### cntryid ###
+    United States         4061
+    Germany               2061
+    Japan                 1711
+    Canada                1274
+    Russian Federation    1210
+    United Kingdom        1169
+    Korea                 1169
+    France                1130
+    Spain                  891
+    Italy                  806
+    Poland                 768
+    Turkey                 537
+    Netherlands            411
+    Czech Republic         389
+    Chile                  344
+    Greece                 208
+    Finland                207
+    Austria                186
+    Slovak Republic        184
+    Israel                 178
+    Singapore              156
+    Sweden                 148
+    New Zealand            144
+    Belgium                143
+    Denmark                134
+    Ireland                112
+    Norway                  89
+    Lithuania               70
+    Slovenia                67
+    Estonia                 43
+    Name: cntryid, dtype: int64
+
+
+    #### gender_r ###
+    Male      12495
+    Female     7505
+    Name: gender_r, dtype: int64
+
+
+    #### computerexperience ###
+    Yes    19789
+    No       196
+    Name: computerexperience, dtype: int64
+
+
+    #### nativespeaker ###
+    Yes    18203
+    No      1596
+    Name: nativespeaker, dtype: int64
+
+
+    #### edlevel3 ###
+    High      11894
+    Medium     6951
+    Low         969
+    Name: edlevel3, dtype: int64
+
+
+    #### yearlyincpr ###
+    50 to less than 75    4221
+    75 to less than 90    3967
+    90 or more            3903
+    25 to less than 50    2747
+    10 to less than 25    1111
+    Less than 10           812
+    Name: yearlyincpr, dtype: int64
+
+
+    #### birthrgn ###
+    North America and Western Europe                5439
+    Central and Eastern Europe                      3324
+    East Asia and the Pacific (richer countries)    3072
+    Latin America and the Caribbean                  409
+    East Asia and the Pacific (poorer countries)      85
+    Arab States                                       60
+    South and West Asia                               59
+    Sub-Saharan Africa                                53
+    Central Asia                                      16
+    Name: birthrgn, dtype: int64
+
+
+    #### nativelang ###
+    Test language same as native language        17384
+    Test language not same as native language     1386
+    Name: nativelang, dtype: int64
+
+
+    #### ctryrgn ###
+    North America and Western Europe                13208
+    Central and Eastern Europe                       3268
+    East Asia and the Pacific (richer countries)     3036
+    Latin America and the Caribbean                   344
+    Name: ctryrgn, dtype: int64
+
+
+We can see that the majority of respondents were able to answer the test in their native langage; they are predominantly from North America and Western Europe, with high to medium levels of education, and males with experience working with computers. 
+
 Let's take a look at the top 10 features with the most missing values, to get an idea of the completeness of our dataset, at a high level.
 
 .. code-block:: python3
