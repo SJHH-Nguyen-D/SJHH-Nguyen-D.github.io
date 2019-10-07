@@ -10,7 +10,7 @@
       {% if DISPLAY_PAGES_ON_MENU %}
           {% for p in pages %}
           <ul>
-              <li{% if p == page %} class="nav-{{p.slug}} active"{% endif %} role="presentation"><a href="{{ SITEURL }}/{{ p.url }}">{{ p.slug.capitalize() }}</a></li>
+              <li{% if p == page %} class="nav-{{p.slug}} active"{% endif %} role="presentation"><a href="{{ SITEURL }}/{{ p.url }}>{{ p.slug.capitalize() }}</a></li>
           {% endfor %}
               <li class="nav-archives active" role="presentation"><a href="{{ SITEURL }}/archives.html">Archives</a></li>
           </ul>
