@@ -49,7 +49,7 @@ Preprocessing   Missing values, Imputation
 Selection       Feature Selection
 Modeling        Training, Testing, Validation
 Deployment      Web Application Endpoint
-Write-Up        Blog about it
+Write-Up        Blog about it - which is what this is all about!
 =============  ===========================================================================
 
 A link to the complete code for the project can be found `here <https://github.com/SJHH-Nguyen-D/sharpestminds_project/>`_ for you to follow along.

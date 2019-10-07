@@ -9,3 +9,5 @@ mlxtend
 flask
 sqlalchemy
 flask-wtf
+dash
+dash-table-experiments

@@ -14,6 +14,7 @@ Testing Testing 1, 2, 3
   4. Output Plots for EDA
   7. Deploy it to github pages
   8. get user input from html forms and calculate a job performance score....Do i really need to use flask for this?
+  9. after you spin up all the html files with pelican. stop using pelican and serve with flask and dash
 
 This is about post about testing testing whether this thing even works
 
