@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+
+  <title>Ever wondered what your employee performance score would be? Part-2</title>
+
+  <meta name="description" content="My name is Dennis Nguyen-Do. This is my personal blog." />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="origin" />
+  <meta name="generator" content="Pelican" />
+  <link href="https://sjhh-nguyen-d.github.io" rel="canonical" />
+
+  <!-- Feed -->
+
+  <link href="https://sjhh-nguyen-d.github.io/theme/css/style.css" type="text/css" rel="stylesheet" />
+
+  <!-- Code highlight color scheme -->
+      <link href="https://sjhh-nguyen-d.github.io/theme/css/code_blocks/github.css" rel="stylesheet">
+
+
+  <!-- Custom fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Montserrat:400,300' rel='stylesheet' type='text/css' />
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css" />
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+    <link href="https://sjhh-nguyen-d.github.io/2019/10/sharpestminds-project-part-2.html" rel="canonical" />
+
+        <meta name="description" content="The first part of diving into my SharpestMinds data science project. In this part, we get some more background informatoin on the...">
+
+        <meta name="author" content="Nguyen-Do, Dennis">
+
+        <meta name="tags" content="sharpestminds-project">
+        <meta name="tags" content="data science">
+        <meta name="tags" content="projects">
+        <meta name="tags" content="employee performance">
+        <meta name="tags" content="EDA">
+        <meta name="tags" content="exploratory-data-analysis">
+        <meta name="tags" content="loading">
+        <meta name="tags" content="descriptive-statistics">
+
+        <meta property="og:locale" content="" />
+    <meta property="og:site_name" content="Denny-4/7 Data Science Blog" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Denny-4/7 Data Science Blog" />
+    <meta property="og:description" content="View the blog." />
+    <meta property="og:url" content="https://sjhh-nguyen-d.github.io" />
+      <meta property="og:image" content="https://sjhh-nguyen-d.github.io//assets/head_cover_general.jpg" />
+
+  <meta property="og:type" content="article">
+            <meta property="article:author" content="https://sjhh-nguyen-d.github.io/author/nguyen-do-dennis">
+  <meta property="og:url" content="https://sjhh-nguyen-d.github.io/2019/10/sharpestminds-project-part-2.html">
+  <meta property="og:title" content="Ever wondered what your employee performance score would be? Part-2">
+  <meta property="article:published_time" content="2019-10-01 19:00:00-05:00">
+            <meta property="og:description" content="The first part of diving into my SharpestMinds data science project. In this part, we get some more background informatoin on the...">
+
+            <meta property="og:image" content="https://sjhh-nguyen-d.github.io//assets/head_cover_general.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@Dennis00481552">
+        <meta name="twitter:title" content="Ever wondered what your employee performance score would be? Part-2">
+        <meta name="twitter:url" content="https://sjhh-nguyen-d.github.io/2019/10/sharpestminds-project-part-2.html">
+
+            <meta name="twitter:image:src" content="https://sjhh-nguyen-d.github.io//assets/head_cover_general.jpg">
+
+            <meta name="twitter:description" content="The first part of diving into my SharpestMinds data science project. In this part, we get some more background informatoin on the...">
+</head>
+<!-- TODO : Body class -->
+<body class="home-template">
+
+<nav id="menu">
+  <a class="close-button">Close</a>
+  <div class="nav-wrapper">
+    <p class="nav-label">Menu</p>
+    <ul>
+
+          <ul>
+              <li role="presentation"><a href="https://sjhh-nguyen-d.github.io/pages/about/">About</a></li>
+          <ul>
+              <li role="presentation"><a href="https://sjhh-nguyen-d.github.io/pages/contact/">Contact</a></li>
+              <li class="nav-archives active" role="presentation"><a href="https://sjhh-nguyen-d.github.io/archives.html">Archives</a></li>
+          </ul>
+
+    </ul>
+  </div>
+</nav>
+    <!-- Progressbar -->
+    <div class="progress-container">
+        <span class="progress-bar"></span>
+    </div>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header id="post-header" class="has-cover">
+      <div class="inner">
+        <nav id="navigation">
+            <span id="home-button" class="nav-button">
+                <!-- <a class="home-button" href="https://sjhh-nguyen-d.github.io" title="Home"><i class="ic ic-arrow-left"></i> Home</a> -->
+                <a class="home-button" href="https://sjhh-nguyen-d.github.io/index.html" title="Home"><i class="ic ic-arrow-left"></i> Home</a>
+            </span>
+          <span id="menu-button" class="nav-button">
+            <a class="menu-button"><i class="ic ic-menu"></i> Menu</a>
+          </span>
+        </nav>
+        <h1 class="post-title">Ever wondered what your employee performance score would be? Part-2</h1>
+        <!-- TODO : Proper class for headline -->
+        <span class="post-meta">
+                <a href="https://sjhh-nguyen-d.github.io/author/nguyen-do-dennis">Nguyen-do, dennis</a>
+            | <time datetime="Tue 01 October 2019">Tue 01 October 2019</time>
+        </span>
+        <!-- TODO : Modified check -->
+        
+            <div class="post-cover cover" style="background-image: url('https://sjhh-nguyen-d.github.io/assets/head_cover_articles.jpg')">            
+        
+      </div>    
+    </header>    
+
+  <section id="wrapper">
+    <a class="hidden-close"></a>
+
+    <!-- Post content -->
+    <main class="content" role="main">
+        <article class="post">
+        <div class="inner">
+            <section class="post-content">
+                <div class="section" id="sharpestminds-project-series-part-2">
+<h2>SharpestMinds Project Series Part-2</h2>
+<p>If you are new to this post and would like some context, I'd highly suggest you read through parts 1 this project blogging series, as this is the second post of the series. If you want to hop to the next post on further exploratory data analysis, the link to it will be listed here as well. Again, if you want to download the entire repo for the project and follow along yourself with the code, you can do so by cloning this <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds_project">repo</a>.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://sjhh-nguyen-d.github.io/2019/09/sharpestminds-project-part-1.html">Part 1 - Introduction</a></li>
+<li><a class="reference external" href="https://sjhh-nguyen-d.github.io/2019/10/sharpestminds-project-part-3.html">Part 3 - More Exploratory Data Analysis</a></li>
+</ul>
+<div class="section" id="the-dataset">
+<h3>The Dataset</h3>
+<p>Welcome to technically the first step of our project in which we will get to know the dataset a little bit and step through the some code to load, explore and visualize the data, and with each step, give our insight on what can be gleened.</p>
+<p>If this all seems new to you, you can have a skim through the summary of the <a class="reference external" href="https://sjhh-nguyen-d.github.io/2019/09/sharpestminds-project-part-1.html">introduction post</a> of this series for some background information on the premise of this project and the dataset. Unfortunately I can't actually disclose the dataset for reasons, but I can still discuss my processes, through documenting and journalling of this project.</p>
+<img alt="mossy japanese sculpture" class="align-center" src="https://live.staticflickr.com/4258/35262249515_dc9c6165de_c_d.jpg" style="width: 800px; height: 640px;" />
+<p><em>Mossy Japanese sculpture</em> by <a class="reference external" href="https://www.flickr.com/photos/dvpho_tos/35262249515">David Vuong</a></p>
+</div>
+<div class="section" id="loading-the-dataset">
+<h3>Loading the dataset</h3>
+<p>Our entire tabular dataset, which is relatively small dataset by big data standards, is about 400Mbs of flat, tabular, comma-separated-values data.</p>
+<p>First we load the data in with a function:</p>
+<div class="highlight"><pre><span></span><span class="c1"># import dependencies</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+  <span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+      <span class="k">try</span><span class="p">:</span>
+          <span class="n">preprocessing_dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;infer&#39;</span><span class="p">)</span>
+      <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The .csv file could not be read in as a dataframe&quot;</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">preprocessing_dataset</span>
+
+
+  <span class="n">df</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;/path/to/data.csv&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s2">&quot;infer&quot;</span><span class="p">)</span>
+</pre></div>
+<p><strong>SIDE-NOTE:</strong> If the code block isn't showing up for you with proper syntax highlighting with the <tt class="docutils literal">.. <span class="pre">code-block</span></tt> directive, simply install Sphinx. According to Sphinx's documentation on its <a class="reference external" href="https://www.sphinx-doc.org/en/master/">website</a> :</p>
+<blockquote>
+<p>&quot;Sphinx is a tool that makes it easy to create intelligent and beautiful documentation, written by Georg Brandl and licensed under the BSD license.
+It was originally created for the Python documentation, and it has excellent facilities for the documentation of software projects in a range of languages. Of course, this site is also created from reStructuredText sources using Sphinx! .... Code handling: automatic highlighting using the Pygments highlighter&quot;</p>
+<p class="attribution">&mdash;Sphinx Documentation</p>
+</blockquote>
+<p>You can install it through the terminal with this line of code if you are on Mac or Linux:</p>
+<pre class="literal-block">
+sudo apt-get update
+sudo apt-get install python3-sphinx
+</pre>
+</div>
+<div class="section" id="exploratory-data-analysis">
+<h3>Exploratory Data Analysis</h3>
+<p>Let's get right into it. So first off, we'd like to see the shape of the data - how many data points we have to work with, and how many variables we have in the dataset.</p>
+<div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+<p><tt class="docutils literal">(20000, 380)</tt></p>
+<p>We have a total of 380 variables, including the 'job performance' target variable and a total of 20,000 data points.</p>
+<div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">memory_usage</span><span class="o">=</span><span class="s1">&#39;deep))</span>
+</pre></div>
+<pre class="literal-block">
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 20000 entries, 0 to 19999
+Columns: 380 entries, cntryid to uni
+dtypes: float64(80), int64(5), object(295)
+memory usage: 357.9 MB
+</pre>
+<p>From this we can see that the filesize is approximately 360MBs. We see that we only have a handful of numerical variables to work with, while the large majority of the dataset include values that have string values - indicated by the object-datatype.</p>
+<p>The 380 variables in the data set consists of questionnaire questions collected on demographic characteristics of the respondents. The questions probe participants on socioeconomic factors, skills, literacy, language and several numeric indices of competency.</p>
+<div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="n">Index</span><span class="p">([</span><span class="s1">&#39;cntryid&#39;</span><span class="p">,</span> <span class="s1">&#39;cntryid_e&#39;</span><span class="p">,</span> <span class="s1">&#39;age_r&#39;</span><span class="p">,</span> <span class="s1">&#39;gender_r&#39;</span><span class="p">,</span> <span class="s1">&#39;computerexperience&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;nativespeaker&#39;</span><span class="p">,</span> <span class="s1">&#39;edlevel3&#39;</span><span class="p">,</span> <span class="s1">&#39;monthlyincpr&#39;</span><span class="p">,</span> <span class="s1">&#39;yearlyincpr&#39;</span><span class="p">,</span> <span class="s1">&#39;lng_home&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;cnt_h&#39;</span><span class="p">,</span> <span class="s1">&#39;cnt_brth&#39;</span><span class="p">,</span> <span class="s1">&#39;reg_tl2&#39;</span><span class="p">,</span> <span class="s1">&#39;lng_bq&#39;</span><span class="p">,</span> <span class="s1">&#39;lng_ci&#39;</span><span class="p">,</span> <span class="s1">&#39;yrsqual&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;yrsqual_t&#39;</span><span class="p">,</span> <span class="s1">&#39;yrsget&#39;</span><span class="p">,</span> <span class="s1">&#39;vet&#39;</span><span class="p">,</span> <span class="s1">&#39;ctryqual&#39;</span><span class="p">,</span> <span class="s1">&#39;birthrgn&#39;</span><span class="p">,</span> <span class="s1">&#39;nativelang&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;ctryrgn&#39;</span><span class="p">,</span> <span class="s1">&#39;imyrs&#39;</span><span class="p">,</span> <span class="s1">&#39;imyrs_c&#39;</span><span class="p">,</span> <span class="s1">&#39;imyrcat&#39;</span><span class="p">,</span> <span class="s1">&#39;ageg5lfs&#39;</span><span class="p">,</span> <span class="s1">&#39;ageg10lfs&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;ageg10lfs_t&#39;</span><span class="p">,</span> <span class="s1">&#39;edcat8&#39;</span><span class="p">,</span> <span class="s1">&#39;edcat7&#39;</span><span class="p">,</span> <span class="s1">&#39;edcat6&#39;</span><span class="p">,</span> <span class="s1">&#39;leaver1624&#39;</span><span class="p">,</span> <span class="s1">&#39;leavedu&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;fe12&#39;</span><span class="p">,</span> <span class="s1">&#39;aetpop&#39;</span><span class="p">,</span> <span class="s1">&#39;faet12&#39;</span><span class="p">,</span> <span class="s1">&#39;faet12jr&#39;</span><span class="p">,</span> <span class="s1">&#39;faet12njr&#39;</span><span class="p">,</span> <span class="s1">&#39;nfe12&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;fnfaet12&#39;</span><span class="p">,</span> <span class="s1">&#39;edwork&#39;</span><span class="p">,</span> <span class="s1">&#39;neet&#39;</span><span class="p">,</span> <span class="s1">&#39;nfehrsnjr&#39;</span><span class="p">,</span> <span class="s1">&#39;nfehrsjr&#39;</span><span class="p">,</span> <span class="s1">&#39;nfehrs&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;nopaidworkever&#39;</span><span class="p">,</span> <span class="s1">&#39;paidwork12&#39;</span><span class="p">,</span> <span class="s1">&#39;iscoskil4&#39;</span><span class="p">,</span> <span class="s1">&#39;isic1l&#39;</span><span class="p">,</span> <span class="s1">&#39;isic2l&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;isic1c&#39;</span><span class="p">,</span> <span class="s1">&#39;isic2c&#39;</span><span class="p">,</span> <span class="s1">&#39;isco1c&#39;</span><span class="p">,</span> <span class="s1">&#39;isco2c&#39;</span><span class="p">,</span> <span class="s1">&#39;isco1l&#39;</span><span class="p">,</span> <span class="s1">&#39;isco2l&#39;</span><span class="p">,</span> <span class="s1">&#39;earnhr&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;earnhrppp&#39;</span><span class="p">,</span> <span class="s1">&#39;earnhrbonus&#39;</span><span class="p">,</span> <span class="s1">&#39;earnhrbonusppp&#39;</span><span class="p">,</span> <span class="s1">&#39;earnmth&#39;</span><span class="p">,</span> <span class="s1">&#39;earnmthppp&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;earnmthselfppp&#39;</span><span class="p">,</span> <span class="s1">&#39;earnmthbonus&#39;</span><span class="p">,</span> <span class="s1">&#39;earnmthall&#39;</span><span class="p">,</span> <span class="s1">&#39;earnmthallppp&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;earnmthbonusppp&#39;</span><span class="p">,</span> <span class="s1">&#39;nfe12jr&#39;</span><span class="p">,</span> <span class="s1">&#39;nfe12njr&#39;</span><span class="p">,</span> <span class="s1">&#39;fnfe12jr&#39;</span><span class="p">,</span> <span class="s1">&#39;fnfaet12jr&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;fnfaet12njr&#39;</span><span class="p">,</span> <span class="s1">&#39;paidwork5&#39;</span><span class="p">,</span> <span class="s1">&#39;earnhrdcl&#39;</span><span class="p">,</span> <span class="s1">&#39;earnhrbonusdcl&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;earnmthalldcl&#39;</span><span class="p">,</span> <span class="s1">&#39;earnflag&#39;</span><span class="p">,</span> <span class="s1">&#39;learnatwork&#39;</span><span class="p">,</span> <span class="s1">&#39;learnatwork_wle_ca&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;readytolearn&#39;</span><span class="p">,</span> <span class="s1">&#39;readytolearn_wle_ca&#39;</span><span class="p">,</span> <span class="s1">&#39;icthome&#39;</span><span class="p">,</span> <span class="s1">&#39;icthome_wle_ca&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;ictwork&#39;</span><span class="p">,</span> <span class="s1">&#39;ictwork_wle_ca&#39;</span><span class="p">,</span> <span class="s1">&#39;influence&#39;</span><span class="p">,</span> <span class="s1">&#39;influence_wle_ca&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;planning&#39;</span><span class="p">,</span> <span class="s1">&#39;planning_wle_ca&#39;</span><span class="p">,</span> <span class="s1">&#39;readhome&#39;</span><span class="p">,</span> <span class="s1">&#39;readhome_wle_ca&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;readwork&#39;</span><span class="p">,</span> <span class="s1">&#39;readwork_wle_ca&#39;</span><span class="p">,</span> <span class="s1">&#39;taskdisc&#39;</span><span class="p">,</span> <span class="s1">&#39;taskdisc_wle_ca&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;writhome&#39;</span><span class="p">,</span> <span class="s1">&#39;writhome_wle_ca&#39;</span><span class="p">,</span> <span class="s1">&#39;writwork&#39;</span><span class="p">,</span> <span class="s1">&#39;writwork_wle_ca&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;job_performance&#39;</span><span class="p">,</span> <span class="s1">&#39;v59&#39;</span><span class="p">,</span> <span class="s1">&#39;v200&#39;</span><span class="p">,</span> <span class="s1">&#39;v266&#39;</span><span class="p">,</span> <span class="s1">&#39;v83&#39;</span><span class="p">,</span> <span class="s1">&#39;v31&#39;</span><span class="p">,</span> <span class="s1">&#39;v202&#39;</span><span class="p">,</span> <span class="s1">&#39;v151&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v231&#39;</span><span class="p">,</span> <span class="s1">&#39;v272&#39;</span><span class="p">,</span> <span class="s1">&#39;v32&#39;</span><span class="p">,</span> <span class="s1">&#39;v78&#39;</span><span class="p">,</span> <span class="s1">&#39;v138&#39;</span><span class="p">,</span> <span class="s1">&#39;v90&#39;</span><span class="p">,</span> <span class="s1">&#39;v157&#39;</span><span class="p">,</span> <span class="s1">&#39;v74&#39;</span><span class="p">,</span> <span class="s1">&#39;v56&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v107&#39;</span><span class="p">,</span> <span class="s1">&#39;v245&#39;</span><span class="p">,</span> <span class="s1">&#39;v153&#39;</span><span class="p">,</span> <span class="s1">&#39;v230&#39;</span><span class="p">,</span> <span class="s1">&#39;v243&#39;</span><span class="p">,</span> <span class="s1">&#39;v196&#39;</span><span class="p">,</span> <span class="s1">&#39;v58&#39;</span><span class="p">,</span> <span class="s1">&#39;v61&#39;</span><span class="p">,</span> <span class="s1">&#39;v38&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v129&#39;</span><span class="p">,</span> <span class="s1">&#39;v117&#39;</span><span class="p">,</span> <span class="s1">&#39;v256&#39;</span><span class="p">,</span> <span class="s1">&#39;v268&#39;</span><span class="p">,</span> <span class="s1">&#39;v252&#39;</span><span class="p">,</span> <span class="s1">&#39;v290&#39;</span><span class="p">,</span> <span class="s1">&#39;v16&#39;</span><span class="p">,</span> <span class="s1">&#39;v72&#39;</span><span class="p">,</span> <span class="s1">&#39;v9&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v4&#39;</span><span class="p">,</span> <span class="s1">&#39;v126&#39;</span><span class="p">,</span> <span class="s1">&#39;v274&#39;</span><span class="p">,</span> <span class="s1">&#39;v265&#39;</span><span class="p">,</span> <span class="s1">&#39;v102&#39;</span><span class="p">,</span> <span class="s1">&#39;v101&#39;</span><span class="p">,</span> <span class="s1">&#39;v206&#39;</span><span class="p">,</span> <span class="s1">&#39;v60&#39;</span><span class="p">,</span> <span class="s1">&#39;v207&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v133&#39;</span><span class="p">,</span> <span class="s1">&#39;v285&#39;</span><span class="p">,</span> <span class="s1">&#39;v136&#39;</span><span class="p">,</span> <span class="s1">&#39;v187&#39;</span><span class="p">,</span> <span class="s1">&#39;v17&#39;</span><span class="p">,</span> <span class="s1">&#39;v194&#39;</span><span class="p">,</span> <span class="s1">&#39;v154&#39;</span><span class="p">,</span> <span class="s1">&#39;v94&#39;</span><span class="p">,</span> <span class="s1">&#39;v137&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v222&#39;</span><span class="p">,</span> <span class="s1">&#39;v234&#39;</span><span class="p">,</span> <span class="s1">&#39;v223&#39;</span><span class="p">,</span> <span class="s1">&#39;v91&#39;</span><span class="p">,</span> <span class="s1">&#39;v269&#39;</span><span class="p">,</span> <span class="s1">&#39;v236&#39;</span><span class="p">,</span> <span class="s1">&#39;v47&#39;</span><span class="p">,</span> <span class="s1">&#39;v283&#39;</span><span class="p">,</span> <span class="s1">&#39;v145&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v41&#39;</span><span class="p">,</span> <span class="s1">&#39;v291&#39;</span><span class="p">,</span> <span class="s1">&#39;v227&#39;</span><span class="p">,</span> <span class="s1">&#39;v225&#39;</span><span class="p">,</span> <span class="s1">&#39;v203&#39;</span><span class="p">,</span> <span class="s1">&#39;v201&#39;</span><span class="p">,</span> <span class="s1">&#39;v36&#39;</span><span class="p">,</span> <span class="s1">&#39;v209&#39;</span><span class="p">,</span> <span class="s1">&#39;v185&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v238&#39;</span><span class="p">,</span> <span class="s1">&#39;v159&#39;</span><span class="p">,</span> <span class="s1">&#39;v35&#39;</span><span class="p">,</span> <span class="s1">&#39;v183&#39;</span><span class="p">,</span> <span class="s1">&#39;v5&#39;</span><span class="p">,</span> <span class="s1">&#39;v273&#39;</span><span class="p">,</span> <span class="s1">&#39;v259&#39;</span><span class="p">,</span> <span class="s1">&#39;v286&#39;</span><span class="p">,</span> <span class="s1">&#39;v95&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v67&#39;</span><span class="p">,</span> <span class="s1">&#39;v217&#39;</span><span class="p">,</span> <span class="s1">&#39;v174&#39;</span><span class="p">,</span> <span class="s1">&#39;v45&#39;</span><span class="p">,</span> <span class="s1">&#39;v20&#39;</span><span class="p">,</span> <span class="s1">&#39;v98&#39;</span><span class="p">,</span> <span class="s1">&#39;v11&#39;</span><span class="p">,</span> <span class="s1">&#39;v226&#39;</span><span class="p">,</span> <span class="s1">&#39;v161&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v213&#39;</span><span class="p">,</span> <span class="s1">&#39;v125&#39;</span><span class="p">,</span> <span class="s1">&#39;v232&#39;</span><span class="p">,</span> <span class="s1">&#39;v68&#39;</span><span class="p">,</span> <span class="s1">&#39;v264&#39;</span><span class="p">,</span> <span class="s1">&#39;v79&#39;</span><span class="p">,</span> <span class="s1">&#39;v64&#39;</span><span class="p">,</span> <span class="s1">&#39;v205&#39;</span><span class="p">,</span> <span class="s1">&#39;v46&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v122&#39;</span><span class="p">,</span> <span class="s1">&#39;v92&#39;</span><span class="p">,</span> <span class="s1">&#39;v88&#39;</span><span class="p">,</span> <span class="s1">&#39;v179&#39;</span><span class="p">,</span> <span class="s1">&#39;v281&#39;</span><span class="p">,</span> <span class="s1">&#39;v110&#39;</span><span class="p">,</span> <span class="s1">&#39;v211&#39;</span><span class="p">,</span> <span class="s1">&#39;v160&#39;</span><span class="p">,</span> <span class="s1">&#39;v75&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v52&#39;</span><span class="p">,</span> <span class="s1">&#39;v97&#39;</span><span class="p">,</span> <span class="s1">&#39;v84&#39;</span><span class="p">,</span> <span class="s1">&#39;v270&#39;</span><span class="p">,</span> <span class="s1">&#39;v33&#39;</span><span class="p">,</span> <span class="s1">&#39;v242&#39;</span><span class="p">,</span> <span class="s1">&#39;v140&#39;</span><span class="p">,</span> <span class="s1">&#39;v53&#39;</span><span class="p">,</span> <span class="s1">&#39;v82&#39;</span><span class="p">,</span> <span class="s1">&#39;v70&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v184&#39;</span><span class="p">,</span> <span class="s1">&#39;v19&#39;</span><span class="p">,</span> <span class="s1">&#39;v104&#39;</span><span class="p">,</span> <span class="s1">&#39;v182&#39;</span><span class="p">,</span> <span class="s1">&#39;v22&#39;</span><span class="p">,</span> <span class="s1">&#39;v168&#39;</span><span class="p">,</span> <span class="s1">&#39;v241&#39;</span><span class="p">,</span> <span class="s1">&#39;v147&#39;</span><span class="p">,</span> <span class="s1">&#39;v48&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v8&#39;</span><span class="p">,</span> <span class="s1">&#39;v115&#39;</span><span class="p">,</span> <span class="s1">&#39;v257&#39;</span><span class="p">,</span> <span class="s1">&#39;v37&#39;</span><span class="p">,</span> <span class="s1">&#39;v55&#39;</span><span class="p">,</span> <span class="s1">&#39;v251&#39;</span><span class="p">,</span> <span class="s1">&#39;v29&#39;</span><span class="p">,</span> <span class="s1">&#39;v3&#39;</span><span class="p">,</span> <span class="s1">&#39;v135&#39;</span><span class="p">,</span> <span class="s1">&#39;v235&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="s1">&#39;v261&#39;</span><span class="p">,</span> <span class="s1">&#39;v263&#39;</span><span class="p">,</span> <span class="s1">&#39;v158&#39;</span><span class="p">,</span> <span class="s1">&#39;v244&#39;</span><span class="p">,</span> <span class="s1">&#39;v198&#39;</span><span class="p">,</span> <span class="s1">&#39;v212&#39;</span><span class="p">,</span> <span class="s1">&#39;v62&#39;</span><span class="p">,</span> <span class="s1">&#39;v221&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v214&#39;</span><span class="p">,</span> <span class="s1">&#39;v276&#39;</span><span class="p">,</span> <span class="s1">&#39;v246&#39;</span><span class="p">,</span> <span class="s1">&#39;v181&#39;</span><span class="p">,</span> <span class="s1">&#39;v96&#39;</span><span class="p">,</span> <span class="s1">&#39;v100&#39;</span><span class="p">,</span> <span class="s1">&#39;v63&#39;</span><span class="p">,</span> <span class="s1">&#39;v87&#39;</span><span class="p">,</span> <span class="s1">&#39;v262&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v12&#39;</span><span class="p">,</span> <span class="s1">&#39;v76&#39;</span><span class="p">,</span> <span class="s1">&#39;v144&#39;</span><span class="p">,</span> <span class="s1">&#39;v199&#39;</span><span class="p">,</span> <span class="s1">&#39;v44&#39;</span><span class="p">,</span> <span class="s1">&#39;v39&#39;</span><span class="p">,</span> <span class="s1">&#39;v109&#39;</span><span class="p">,</span> <span class="s1">&#39;v255&#39;</span><span class="p">,</span> <span class="s1">&#39;v210&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v6&#39;</span><span class="p">,</span> <span class="s1">&#39;v118&#39;</span><span class="p">,</span> <span class="s1">&#39;v169&#39;</span><span class="p">,</span> <span class="s1">&#39;v289&#39;</span><span class="p">,</span> <span class="s1">&#39;v150&#39;</span><span class="p">,</span> <span class="s1">&#39;v172&#39;</span><span class="p">,</span> <span class="s1">&#39;v287&#39;</span><span class="p">,</span> <span class="s1">&#39;v121&#39;</span><span class="p">,</span> <span class="s1">&#39;v30&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v113&#39;</span><span class="p">,</span> <span class="s1">&#39;v119&#39;</span><span class="p">,</span> <span class="s1">&#39;v130&#39;</span><span class="p">,</span> <span class="s1">&#39;v215&#39;</span><span class="p">,</span> <span class="s1">&#39;v254&#39;</span><span class="p">,</span> <span class="s1">&#39;v163&#39;</span><span class="p">,</span> <span class="s1">&#39;v112&#39;</span><span class="p">,</span> <span class="s1">&#39;v220&#39;</span><span class="p">,</span> <span class="s1">&#39;v10&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v93&#39;</span><span class="p">,</span> <span class="s1">&#39;v81&#39;</span><span class="p">,</span> <span class="s1">&#39;v156&#39;</span><span class="p">,</span> <span class="s1">&#39;v192&#39;</span><span class="p">,</span> <span class="s1">&#39;v77&#39;</span><span class="p">,</span> <span class="s1">&#39;v123&#39;</span><span class="p">,</span> <span class="s1">&#39;v141&#39;</span><span class="p">,</span> <span class="s1">&#39;v24&#39;</span><span class="p">,</span> <span class="s1">&#39;v193&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v275&#39;</span><span class="p">,</span> <span class="s1">&#39;v204&#39;</span><span class="p">,</span> <span class="s1">&#39;v108&#39;</span><span class="p">,</span> <span class="s1">&#39;v164&#39;</span><span class="p">,</span> <span class="s1">&#39;v166&#39;</span><span class="p">,</span> <span class="s1">&#39;v197&#39;</span><span class="p">,</span> <span class="s1">&#39;v34&#39;</span><span class="p">,</span> <span class="s1">&#39;v42&#39;</span><span class="p">,</span> <span class="s1">&#39;v292&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v131&#39;</span><span class="p">,</span> <span class="s1">&#39;v142&#39;</span><span class="p">,</span> <span class="s1">&#39;v188&#39;</span><span class="p">,</span> <span class="s1">&#39;v139&#39;</span><span class="p">,</span> <span class="s1">&#39;v247&#39;</span><span class="p">,</span> <span class="s1">&#39;v99&#39;</span><span class="p">,</span> <span class="s1">&#39;v180&#39;</span><span class="p">,</span> <span class="s1">&#39;v124&#39;</span><span class="p">,</span> <span class="s1">&#39;v51&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v190&#39;</span><span class="p">,</span> <span class="s1">&#39;v248&#39;</span><span class="p">,</span> <span class="s1">&#39;v229&#39;</span><span class="p">,</span> <span class="s1">&#39;v189&#39;</span><span class="p">,</span> <span class="s1">&#39;v165&#39;</span><span class="p">,</span> <span class="s1">&#39;v173&#39;</span><span class="p">,</span> <span class="s1">&#39;v134&#39;</span><span class="p">,</span> <span class="s1">&#39;v2&#39;</span><span class="p">,</span> <span class="s1">&#39;v25&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v18&#39;</span><span class="p">,</span> <span class="s1">&#39;v216&#39;</span><span class="p">,</span> <span class="s1">&#39;v178&#39;</span><span class="p">,</span> <span class="s1">&#39;v282&#39;</span><span class="p">,</span> <span class="s1">&#39;v13&#39;</span><span class="p">,</span> <span class="s1">&#39;v233&#39;</span><span class="p">,</span> <span class="s1">&#39;v278&#39;</span><span class="p">,</span> <span class="s1">&#39;v103&#39;</span><span class="p">,</span> <span class="s1">&#39;v155&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v152&#39;</span><span class="p">,</span> <span class="s1">&#39;v258&#39;</span><span class="p">,</span> <span class="s1">&#39;v277&#39;</span><span class="p">,</span> <span class="s1">&#39;v40&#39;</span><span class="p">,</span> <span class="s1">&#39;v146&#39;</span><span class="p">,</span> <span class="s1">&#39;v195&#39;</span><span class="p">,</span> <span class="s1">&#39;v73&#39;</span><span class="p">,</span> <span class="s1">&#39;v23&#39;</span><span class="p">,</span> <span class="s1">&#39;v106&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v271&#39;</span><span class="p">,</span> <span class="s1">&#39;v250&#39;</span><span class="p">,</span> <span class="s1">&#39;v176&#39;</span><span class="p">,</span> <span class="s1">&#39;v111&#39;</span><span class="p">,</span> <span class="s1">&#39;v218&#39;</span><span class="p">,</span> <span class="s1">&#39;v253&#39;</span><span class="p">,</span> <span class="s1">&#39;v132&#39;</span><span class="p">,</span> <span class="s1">&#39;v284&#39;</span><span class="p">,</span> <span class="s1">&#39;v267&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v260&#39;</span><span class="p">,</span> <span class="s1">&#39;v26&#39;</span><span class="p">,</span> <span class="s1">&#39;v171&#39;</span><span class="p">,</span> <span class="s1">&#39;v14&#39;</span><span class="p">,</span> <span class="s1">&#39;v7&#39;</span><span class="p">,</span> <span class="s1">&#39;v240&#39;</span><span class="p">,</span> <span class="s1">&#39;v186&#39;</span><span class="p">,</span> <span class="s1">&#39;v162&#39;</span><span class="p">,</span> <span class="s1">&#39;v149&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v228&#39;</span><span class="p">,</span> <span class="s1">&#39;v28&#39;</span><span class="p">,</span> <span class="s1">&#39;v237&#39;</span><span class="p">,</span> <span class="s1">&#39;v280&#39;</span><span class="p">,</span> <span class="s1">&#39;v175&#39;</span><span class="p">,</span> <span class="s1">&#39;v288&#39;</span><span class="p">,</span> <span class="s1">&#39;v15&#39;</span><span class="p">,</span> <span class="s1">&#39;v208&#39;</span><span class="p">,</span> <span class="s1">&#39;v43&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v27&#39;</span><span class="p">,</span> <span class="s1">&#39;v114&#39;</span><span class="p">,</span> <span class="s1">&#39;v191&#39;</span><span class="p">,</span> <span class="s1">&#39;v170&#39;</span><span class="p">,</span> <span class="s1">&#39;v65&#39;</span><span class="p">,</span> <span class="s1">&#39;v57&#39;</span><span class="p">,</span> <span class="s1">&#39;v177&#39;</span><span class="p">,</span> <span class="s1">&#39;v69&#39;</span><span class="p">,</span> <span class="s1">&#39;v85&#39;</span><span class="p">,</span>
+   <span class="s1">&#39;v50&#39;</span><span class="p">,</span> <span class="s1">&#39;v89&#39;</span><span class="p">,</span> <span class="s1">&#39;v127&#39;</span><span class="p">,</span> <span class="s1">&#39;v239&#39;</span><span class="p">,</span> <span class="s1">&#39;v224&#39;</span><span class="p">,</span> <span class="s1">&#39;v71&#39;</span><span class="p">,</span> <span class="s1">&#39;v105&#39;</span><span class="p">,</span> <span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="s1">&#39;uni&#39;</span><span class="p">],</span>
+  <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
+</pre></div>
+<p>It is apparent by some of the variable names, that there are several overlapping encodings for the same variable such as &quot;isco1c&quot; and &quot;isco2c&quot; which ultimately provide the same information. This introduces issues of multicollinearity and correlation among the variables, which gives redundant information. This is something we will have to quantify and address during the preprocessing step to ensure we limit as much of this redundancy before we can build our predictive model.</p>
+<p>We can look at the numeric frequency counts for unique value for each feature with the following lines of code:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#### </span><span class="si">{}</span><span class="s2"> ###&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">column</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1">#### cntryid ###</span>
+<span class="n">United</span> <span class="n">States</span>         <span class="mi">4061</span>
+<span class="n">Germany</span>               <span class="mi">2061</span>
+<span class="n">Japan</span>                 <span class="mi">1711</span>
+<span class="n">Canada</span>                <span class="mi">1274</span>
+<span class="n">Russian</span> <span class="n">Federation</span>    <span class="mi">1210</span>
+<span class="n">United</span> <span class="n">Kingdom</span>        <span class="mi">1169</span>
+<span class="n">Korea</span>                 <span class="mi">1169</span>
+<span class="n">France</span>                <span class="mi">1130</span>
+<span class="n">Spain</span>                  <span class="mi">891</span>
+<span class="n">Italy</span>                  <span class="mi">806</span>
+<span class="n">Poland</span>                 <span class="mi">768</span>
+<span class="n">Turkey</span>                 <span class="mi">537</span>
+<span class="n">Netherlands</span>            <span class="mi">411</span>
+<span class="n">Czech</span> <span class="n">Republic</span>         <span class="mi">389</span>
+<span class="n">Chile</span>                  <span class="mi">344</span>
+<span class="n">Greece</span>                 <span class="mi">208</span>
+<span class="n">Finland</span>                <span class="mi">207</span>
+<span class="n">Austria</span>                <span class="mi">186</span>
+<span class="n">Slovak</span> <span class="n">Republic</span>        <span class="mi">184</span>
+<span class="n">Israel</span>                 <span class="mi">178</span>
+<span class="n">Singapore</span>              <span class="mi">156</span>
+<span class="n">Sweden</span>                 <span class="mi">148</span>
+<span class="n">New</span> <span class="n">Zealand</span>            <span class="mi">144</span>
+<span class="n">Belgium</span>                <span class="mi">143</span>
+<span class="n">Denmark</span>                <span class="mi">134</span>
+<span class="n">Ireland</span>                <span class="mi">112</span>
+<span class="n">Norway</span>                  <span class="mi">89</span>
+<span class="n">Lithuania</span>               <span class="mi">70</span>
+<span class="n">Slovenia</span>                <span class="mi">67</span>
+<span class="n">Estonia</span>                 <span class="mi">43</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">cntryid</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### gender_r ###</span>
+<span class="n">Male</span>      <span class="mi">12495</span>
+<span class="n">Female</span>     <span class="mi">7505</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">gender_r</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### computerexperience ###</span>
+<span class="n">Yes</span>    <span class="mi">19789</span>
+<span class="n">No</span>       <span class="mi">196</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">computerexperience</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### nativespeaker ###</span>
+<span class="n">Yes</span>    <span class="mi">18203</span>
+<span class="n">No</span>      <span class="mi">1596</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">nativespeaker</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### edlevel3 ###</span>
+<span class="n">High</span>      <span class="mi">11894</span>
+<span class="n">Medium</span>     <span class="mi">6951</span>
+<span class="n">Low</span>         <span class="mi">969</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">edlevel3</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### yearlyincpr ###</span>
+<span class="mi">50</span> <span class="n">to</span> <span class="n">less</span> <span class="n">than</span> <span class="mi">75</span>    <span class="mi">4221</span>
+<span class="mi">75</span> <span class="n">to</span> <span class="n">less</span> <span class="n">than</span> <span class="mi">90</span>    <span class="mi">3967</span>
+<span class="mi">90</span> <span class="ow">or</span> <span class="n">more</span>            <span class="mi">3903</span>
+<span class="mi">25</span> <span class="n">to</span> <span class="n">less</span> <span class="n">than</span> <span class="mi">50</span>    <span class="mi">2747</span>
+<span class="mi">10</span> <span class="n">to</span> <span class="n">less</span> <span class="n">than</span> <span class="mi">25</span>    <span class="mi">1111</span>
+<span class="n">Less</span> <span class="n">than</span> <span class="mi">10</span>           <span class="mi">812</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">yearlyincpr</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### birthrgn ###</span>
+<span class="n">North</span> <span class="n">America</span> <span class="ow">and</span> <span class="n">Western</span> <span class="n">Europe</span>                <span class="mi">5439</span>
+<span class="n">Central</span> <span class="ow">and</span> <span class="n">Eastern</span> <span class="n">Europe</span>                      <span class="mi">3324</span>
+<span class="n">East</span> <span class="n">Asia</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Pacific</span> <span class="p">(</span><span class="n">richer</span> <span class="n">countries</span><span class="p">)</span>    <span class="mi">3072</span>
+<span class="n">Latin</span> <span class="n">America</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Caribbean</span>                  <span class="mi">409</span>
+<span class="n">East</span> <span class="n">Asia</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Pacific</span> <span class="p">(</span><span class="n">poorer</span> <span class="n">countries</span><span class="p">)</span>      <span class="mi">85</span>
+<span class="n">Arab</span> <span class="n">States</span>                                       <span class="mi">60</span>
+<span class="n">South</span> <span class="ow">and</span> <span class="n">West</span> <span class="n">Asia</span>                               <span class="mi">59</span>
+<span class="n">Sub</span><span class="o">-</span><span class="n">Saharan</span> <span class="n">Africa</span>                                <span class="mi">53</span>
+<span class="n">Central</span> <span class="n">Asia</span>                                      <span class="mi">16</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">birthrgn</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### nativelang ###</span>
+<span class="n">Test</span> <span class="n">language</span> <span class="n">same</span> <span class="k">as</span> <span class="n">native</span> <span class="n">language</span>        <span class="mi">17384</span>
+<span class="n">Test</span> <span class="n">language</span> <span class="ow">not</span> <span class="n">same</span> <span class="k">as</span> <span class="n">native</span> <span class="n">language</span>     <span class="mi">1386</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">nativelang</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### ctryrgn ###</span>
+<span class="n">North</span> <span class="n">America</span> <span class="ow">and</span> <span class="n">Western</span> <span class="n">Europe</span>                <span class="mi">13208</span>
+<span class="n">Central</span> <span class="ow">and</span> <span class="n">Eastern</span> <span class="n">Europe</span>                       <span class="mi">3268</span>
+<span class="n">East</span> <span class="n">Asia</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Pacific</span> <span class="p">(</span><span class="n">richer</span> <span class="n">countries</span><span class="p">)</span>     <span class="mi">3036</span>
+<span class="n">Latin</span> <span class="n">America</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Caribbean</span>                   <span class="mi">344</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">ctryrgn</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+</pre></div>
+<p>We can see that the majority of respondents were able to answer the test in their native langage; they are predominantly from North America and Western Europe, with high to medium levels of education, and males with experience working with computers.</p>
+<p>Let's take a look at the top 10 features with the most missing values, to get an idea of the completeness of our dataset, at a high level.</p>
+<div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))[:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+<pre class="literal-block">
+v262    20000
+v44     19997
+v76     19993
+v144    19992
+v199    19991
+v159    19985
+v10     19981
+v172    19977
+v110    19956
+v160    19955
+dtype: int64
+</pre>
+<p>Already we can see that, from a higher level, some features have virtually all their values missing and therefore a candidate to be discarded later in the preprocessing step of the pipeline. There are many other features with a large proportion of their data missing that we will have to consider whether or not we can impute for missing values or just drop the column entirely.</p>
+<p>We can examine the types of values that are recorded for each feature. The below code will print out all of the values for all feature, however, I will only include snippets within this post for brevity sake.</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;####</span><span class="si">{}</span><span class="s2">###&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;{df[feature].unique()}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of unique values: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())))</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1">####reg_tl2###</span>
+<span class="p">[</span><span class="s1">&#39;99999&#39;</span> <span class="s1">&#39;UKJ&#39;</span> <span class="s1">&#39;UKI&#39;</span> <span class="n">nan</span> <span class="s1">&#39;RU40&#39;</span> <span class="s1">&#39;SE11&#39;</span> <span class="s1">&#39;KR01&#39;</span> <span class="s1">&#39;IE02&#39;</span> <span class="s1">&#39;SG00&#39;</span> <span class="s1">&#39;PL22&#39;</span> <span class="s1">&#39;UKD&#39;</span>
+<span class="s1">&#39;RU28&#39;</span> <span class="s1">&#39;FR71&#39;</span> <span class="s1">&#39;JPH&#39;</span> <span class="s1">&#39;UKH&#39;</span> <span class="s1">&#39;NL3&#39;</span> <span class="s1">&#39;FR10&#39;</span> <span class="s1">&#39;CL09&#39;</span> <span class="s1">&#39;JPD&#39;</span> <span class="s1">&#39;KR03&#39;</span> <span class="s1">&#39;KR05&#39;</span> <span class="s1">&#39;ES12&#39;</span>
+<span class="s1">&#39;KR04&#39;</span> <span class="s1">&#39;RU74&#39;</span> <span class="s1">&#39;FR22&#39;</span> <span class="s1">&#39;KR02&#39;</span> <span class="s1">&#39;FR81&#39;</span> <span class="s1">&#39;SI01&#39;</span> <span class="s1">&#39;FR43&#39;</span> <span class="s1">&#39;DK04&#39;</span> <span class="s1">&#39;PL11&#39;</span> <span class="s1">&#39;UKG&#39;</span>
+<span class="s1">&#39;UKF&#39;</span> <span class="s1">&#39;ES13&#39;</span> <span class="s1">&#39;BE2&#39;</span> <span class="s1">&#39;RU64&#39;</span> <span class="s1">&#39;SK02&#39;</span> <span class="s1">&#39;PL12&#39;</span> <span class="s1">&#39;RU37&#39;</span> <span class="s1">&#39;IL04&#39;</span> <span class="s1">&#39;UKN&#39;</span> <span class="s1">&#39;ES22&#39;</span> <span class="s1">&#39;FR21&#39;</span>
+<span class="s1">&#39;JPG&#39;</span> <span class="s1">&#39;CZ05&#39;</span> <span class="s1">&#39;PL43&#39;</span> <span class="s1">&#39;ES30&#39;</span> <span class="s1">&#39;ES61&#39;</span> <span class="s1">&#39;RU45&#39;</span> <span class="s1">&#39;JPC&#39;</span> <span class="s1">&#39;JPF&#39;</span> <span class="s1">&#39;RU50&#39;</span> <span class="s1">&#39;CL05&#39;</span> <span class="s1">&#39;JPE&#39;</span>
+<span class="s1">&#39;UKC&#39;</span> <span class="s1">&#39;EE00&#39;</span> <span class="s1">&#39;CZ08&#39;</span> <span class="s1">&#39;GR3&#39;</span> <span class="s1">&#39;FR51&#39;</span> <span class="s1">&#39;JPJ&#39;</span> <span class="s1">&#39;FR30&#39;</span> <span class="s1">&#39;SK01&#39;</span> <span class="s1">&#39;PL32&#39;</span> <span class="s1">&#39;CL13&#39;</span> <span class="s1">&#39;SE33&#39;</span>
+<span class="s1">&#39;ES51&#39;</span> <span class="s1">&#39;FR24&#39;</span> <span class="s1">&#39;ES70&#39;</span> <span class="s1">&#39;RU01&#39;</span> <span class="s1">&#39;FR52&#39;</span> <span class="s1">&#39;RU19&#39;</span> <span class="s1">&#39;NL4&#39;</span> <span class="s1">&#39;RU27&#39;</span> <span class="s1">&#39;KR06&#39;</span> <span class="s1">&#39;JPI&#39;</span>
+<span class="s1">&#39;RU54&#39;</span> <span class="s1">&#39;PL63&#39;</span> <span class="s1">&#39;UKE&#39;</span> <span class="s1">&#39;NZ01&#39;</span> <span class="s1">&#39;PL41&#39;</span> <span class="s1">&#39;RU41&#39;</span> <span class="s1">&#39;PL21&#39;</span> <span class="s1">&#39;RU22&#39;</span> <span class="s1">&#39;DK01&#39;</span> <span class="s1">&#39;CZ01&#39;</span>
+<span class="s1">&#39;PL61&#39;</span> <span class="s1">&#39;RU39&#39;</span> <span class="s1">&#39;CZ04&#39;</span> <span class="s1">&#39;JPB&#39;</span> <span class="s1">&#39;NL2&#39;</span> <span class="s1">&#39;FR82&#39;</span> <span class="s1">&#39;PL52&#39;</span> <span class="s1">&#39;ES52&#39;</span> <span class="s1">&#39;FR23&#39;</span> <span class="s1">&#39;CZ07&#39;</span>
+<span class="s1">&#39;SE22&#39;</span> <span class="s1">&#39;ES21&#39;</span> <span class="s1">&#39;FR61&#39;</span> <span class="s1">&#39;FR62&#39;</span> <span class="s1">&#39;RU65&#39;</span> <span class="s1">&#39;PL51&#39;</span> <span class="s1">&#39;CL08&#39;</span> <span class="s1">&#39;SK03&#39;</span> <span class="s1">&#39;PL33&#39;</span> <span class="s1">&#39;RU08&#39;</span>
+<span class="s1">&#39;SE31&#39;</span> <span class="s1">&#39;IL07&#39;</span> <span class="s1">&#39;NZ02&#39;</span> <span class="s1">&#39;IL02&#39;</span> <span class="s1">&#39;PL31&#39;</span> <span class="s1">&#39;RU58&#39;</span> <span class="s1">&#39;PL42&#39;</span> <span class="s1">&#39;ES42&#39;</span> <span class="s1">&#39;GR2&#39;</span> <span class="s1">&#39;ES53&#39;</span>
+<span class="s1">&#39;SE12&#39;</span> <span class="s1">&#39;UKK&#39;</span> <span class="s1">&#39;IL05&#39;</span> <span class="s1">&#39;RU56&#39;</span> <span class="s1">&#39;CZ06&#39;</span> <span class="s1">&#39;ES23&#39;</span> <span class="s1">&#39;ES62&#39;</span> <span class="s1">&#39;ES41&#39;</span> <span class="s1">&#39;RU67&#39;</span> <span class="s1">&#39;LT08&#39;</span>
+<span class="s1">&#39;CZ03&#39;</span> <span class="s1">&#39;GR1&#39;</span> <span class="s1">&#39;ES24&#39;</span> <span class="s1">&#39;IE01&#39;</span> <span class="s1">&#39;PL34&#39;</span> <span class="s1">&#39;JPA&#39;</span> <span class="s1">&#39;LT04&#39;</span> <span class="s1">&#39;CL14&#39;</span> <span class="s1">&#39;FR42&#39;</span> <span class="s1">&#39;FR53&#39;</span>
+<span class="s1">&#39;FR41&#39;</span> <span class="s1">&#39;NL1&#39;</span> <span class="s1">&#39;SE21&#39;</span> <span class="s1">&#39;RU44&#39;</span> <span class="s1">&#39;SI02&#39;</span> <span class="s1">&#39;PL62&#39;</span> <span class="s1">&#39;LT05&#39;</span> <span class="s1">&#39;ES11&#39;</span> <span class="s1">&#39;LT09&#39;</span> <span class="s1">&#39;CZ02&#39;</span>
+<span class="s1">&#39;RU15&#39;</span> <span class="s1">&#39;FR83&#39;</span> <span class="s1">&#39;DK02&#39;</span> <span class="s1">&#39;FR25&#39;</span> <span class="s1">&#39;ES43&#39;</span> <span class="s1">&#39;CL02&#39;</span> <span class="s1">&#39;IL01&#39;</span> <span class="s1">&#39;ES63&#39;</span> <span class="s1">&#39;CL06&#39;</span> <span class="s1">&#39;IL06&#39;</span>
+<span class="s1">&#39;DK05&#39;</span> <span class="s1">&#39;RU16&#39;</span> <span class="s1">&#39;SK04&#39;</span> <span class="s1">&#39;DK03&#39;</span> <span class="s1">&#39;CL07&#39;</span> <span class="s1">&#39;LT07&#39;</span> <span class="s1">&#39;IL03&#39;</span> <span class="s1">&#39;LT02&#39;</span> <span class="s1">&#39;FR72&#39;</span> <span class="s1">&#39;LT06&#39;</span>
+<span class="s1">&#39;SE23&#39;</span> <span class="s1">&#39;CL10&#39;</span> <span class="s1">&#39;CL01&#39;</span> <span class="s1">&#39;LT03&#39;</span> <span class="s1">&#39;GR4&#39;</span> <span class="s1">&#39;LT01&#39;</span> <span class="s1">&#39;LT10&#39;</span> <span class="s1">&#39;FR26&#39;</span> <span class="s1">&#39;KR07&#39;</span> <span class="s1">&#39;FR63&#39;</span>
+<span class="s1">&#39;SE32&#39;</span><span class="p">]</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">unique</span> <span class="n">values</span><span class="p">:</span> <span class="mi">176</span>
+
+<span class="c1">####lng_bq###</span>
+<span class="p">[</span><span class="s1">&#39;eng&#39;</span> <span class="s1">&#39;rus&#39;</span> <span class="s1">&#39;tur&#39;</span> <span class="s1">&#39;swe&#39;</span> <span class="s1">&#39;deu&#39;</span> <span class="s1">&#39;kor&#39;</span> <span class="s1">&#39;ita&#39;</span> <span class="s1">&#39;pol&#39;</span> <span class="s1">&#39;fra&#39;</span> <span class="s1">&#39;jpn&#39;</span> <span class="s1">&#39;nld&#39;</span> <span class="s1">&#39;spa&#39;</span>
+<span class="s1">&#39;slv&#39;</span> <span class="s1">&#39;dan&#39;</span> <span class="s1">&#39;slk&#39;</span> <span class="s1">&#39;heb&#39;</span> <span class="s1">&#39;ces&#39;</span> <span class="s1">&#39;est&#39;</span> <span class="s1">&#39;ell&#39;</span> <span class="s1">&#39;fin&#39;</span> <span class="s1">&#39;nor&#39;</span> <span class="s1">&#39;ara&#39;</span> <span class="s1">&#39;cat&#39;</span> <span class="s1">&#39;lit&#39;</span>
+<span class="s1">&#39;999&#39;</span> <span class="s1">&#39;glg&#39;</span> <span class="s1">&#39;hun&#39;</span><span class="p">]</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">unique</span> <span class="n">values</span><span class="p">:</span> <span class="mi">27</span>
+
+<span class="c1">####lng_ci###</span>
+<span class="p">[</span><span class="s1">&#39;eng&#39;</span> <span class="s1">&#39;nor&#39;</span> <span class="s1">&#39;rus&#39;</span> <span class="s1">&#39;tur&#39;</span> <span class="s1">&#39;swe&#39;</span> <span class="s1">&#39;deu&#39;</span> <span class="s1">&#39;kor&#39;</span> <span class="s1">&#39;ita&#39;</span> <span class="s1">&#39;pol&#39;</span> <span class="s1">&#39;fra&#39;</span> <span class="s1">&#39;jpn&#39;</span> <span class="s1">&#39;nld&#39;</span>
+<span class="s1">&#39;spa&#39;</span> <span class="s1">&#39;slv&#39;</span> <span class="s1">&#39;dan&#39;</span> <span class="s1">&#39;slk&#39;</span> <span class="s1">&#39;heb&#39;</span> <span class="s1">&#39;ces&#39;</span> <span class="s1">&#39;est&#39;</span> <span class="s1">&#39;ell&#39;</span> <span class="s1">&#39;fin&#39;</span> <span class="s1">&#39;cat&#39;</span> <span class="s1">&#39;ara&#39;</span> <span class="s1">&#39;lit&#39;</span>
+<span class="s1">&#39;999&#39;</span> <span class="s1">&#39;glg&#39;</span> <span class="s1">&#39;eus&#39;</span> <span class="n">nan</span> <span class="s1">&#39;hun&#39;</span><span class="p">]</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">unique</span> <span class="n">values</span><span class="p">:</span> <span class="mi">29</span>
+
+<span class="c1">####yrsqual###</span>
+<span class="p">[</span><span class="mf">12.</span>  <span class="mf">15.</span>  <span class="mf">16.</span>  <span class="mf">18.</span>  <span class="mf">11.</span>  <span class="mf">14.</span>   <span class="n">nan</span> <span class="mf">19.</span>  <span class="mf">17.</span>  <span class="mf">22.</span>  <span class="mf">13.</span>  <span class="mf">20.</span>   <span class="mf">8.</span>   <span class="mf">9.</span>
+<span class="mf">21.</span>  <span class="mf">10.</span>   <span class="mf">6.</span>   <span class="mf">5.</span>  <span class="mf">14.5</span>  <span class="mf">7.</span>  <span class="mf">13.5</span><span class="p">]</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">unique</span> <span class="n">values</span><span class="p">:</span> <span class="mi">21</span>
+
+<span class="c1">####yrsqual_t###</span>
+<span class="p">[</span><span class="mf">12.</span>  <span class="mf">15.</span>  <span class="mf">16.</span>  <span class="mf">18.</span>  <span class="mf">11.</span>  <span class="mf">14.</span>   <span class="n">nan</span> <span class="mf">19.</span>  <span class="mf">17.</span>  <span class="mf">22.</span>  <span class="mf">13.</span>  <span class="mf">20.</span>   <span class="mf">8.</span>   <span class="mf">9.</span>
+<span class="mf">21.</span>  <span class="mf">10.</span>   <span class="mf">6.</span>   <span class="mf">5.</span>  <span class="mf">14.5</span>  <span class="mf">7.</span>  <span class="mf">13.5</span><span class="p">]</span>
+<span class="n">Number</span> <span class="n">of</span> <span class="n">unique</span> <span class="n">values</span><span class="p">:</span> <span class="mi">21</span>
+</pre></div>
+<p>Here, we see specific values used to encode missing, unavailable, or other values. The common values that are used to encode such meanings are integers/strings of 9995, 9996, 9997, 9998, and 9999. This gives us an idea of how many additional missing values there are in the data set on top of the NaN values detected by the <tt class="docutils literal">.isnull()</tt> method, and thusly, how to deal with these values as missing values. Again, we will address this later on during the preprocessing step of our pipeline.</p>
+<div class="section" id="conclusion">
+<h4>Conclusion</h4>
+<p>In summation, we were able to gleen at a higher level, some of the characteristics of our tabular dataset by loading it into a Pandas dataframe. We say that many of the feautures were predominantly object columns that contained string values, and many of our values for our data set were missing of many of those columns. We also saw the potential for multicollinearity among our 380 features, which introduces the problem of redundancy in our data. This can also be gleened visually from the naming scheme of our feature names. All of this provides us a better idea of some of the problematic issues we have with our data set and how we might address them later down the line. As with most real-world data sets, the majority of the work in a data scientists workflow comes down to preprocessing the data. In our next post, we will continue further with a more indepth exploration with our data using graphic visualizations and statistics. Until next time - <tt class="docutils literal"><span class="pre">print(&quot;Onward&quot;)</span></tt>.</p>
+</div>
+</div>
+</div>
+
+            </section>
+
+            <section class="post-info">
+                <div class="post-share">
+                    <a class="twitter" href="https://twitter.com/share?text=Ever wondered what your employee performance score would be? Part-2&amp;url=https://sjhh-nguyen-d.github.io/2019/10/sharpestminds-project-part-2.html" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="ic ic-twitter"></i><span class="hidden">Twitter</span>
+                    </a>
+                    <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://sjhh-nguyen-d.github.io/2019/10/sharpestminds-project-part-2.html" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="ic ic-facebook"></i><span class="hidden">Facebook</span>
+                    </a>
+                    <a class="googleplus" href="https://plus.google.com/share?url=https://sjhh-nguyen-d.github.io/2019/10/sharpestminds-project-part-2.html" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="ic ic-googleplus"></i><span class="hidden">Google+</span>
+                    </a>
+                    <div class="clear"></div>
+                </div>
+
+                <aside class="post-tags">
+<a href="https://sjhh-nguyen-d.github.io/tag/sharpestminds-project">sharpestminds-project</a><a href="https://sjhh-nguyen-d.github.io/tag/data-science">data science</a><a href="https://sjhh-nguyen-d.github.io/tag/projects">projects</a><a href="https://sjhh-nguyen-d.github.io/tag/employee-performance">employee performance</a><a href="https://sjhh-nguyen-d.github.io/tag/eda">EDA</a><a href="https://sjhh-nguyen-d.github.io/tag/exploratory-data-analysis">exploratory-data-analysis</a><a href="https://sjhh-nguyen-d.github.io/tag/loading">loading</a><a href="https://sjhh-nguyen-d.github.io/tag/descriptive-statistics">descriptive-statistics</a>                </aside>
+
+                <div class="clear"></div>
+
+ 
+
+                </section>
+
+
+                <aside class="post-nav">
+                    <div class="clear"></div>
+                </aside>
+
+            </div>
+        </article>
+    </main>
+      <!-- TODO : Body class -->
+    <div id="body-class" style="display: none;" class=""></div>
+  
+    <footer id="footer">
+      <div class="inner">
+        <section class="credits">
+          <span class="credits-theme">Theme <a href="https://github.com/arulrajnet/attila" rel="nofollow">Attila</a></span>
+          <span class="credits-software">Published with <a href="https://github.com/getpelican/pelican" rel="nofollow">Pelican</a></span>
+        </section>
+      </div>
+    </footer>
+  </section>
+
+  <script type="text/javascript" src="https://sjhh-nguyen-d.github.io/theme/js/script.js"></script>
+  
+</body>
+</html>
