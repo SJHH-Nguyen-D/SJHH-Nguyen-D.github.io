@@ -254,6 +254,108 @@ memory usage: 357.9 MB
   <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
 </pre></div>
 <p>It is apparent by some of the variable names, that there are several overlapping encodings for the same variable such as &quot;isco1c&quot; and &quot;isco2c&quot; which ultimately provide the same information. This introduces issues of multicollinearity and correlation among the variables, which gives redundant information. This is something we will have to quantify and address during the preprocessing step to ensure we limit as much of this redundancy before we can build our predictive model.</p>
+<p>We can look at the numeric frequency counts for unique value for each feature with the following lines of code:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#### </span><span class="si">{}</span><span class="s2"> ###&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">column</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="c1">#### cntryid ###</span>
+<span class="n">United</span> <span class="n">States</span>         <span class="mi">4061</span>
+<span class="n">Germany</span>               <span class="mi">2061</span>
+<span class="n">Japan</span>                 <span class="mi">1711</span>
+<span class="n">Canada</span>                <span class="mi">1274</span>
+<span class="n">Russian</span> <span class="n">Federation</span>    <span class="mi">1210</span>
+<span class="n">United</span> <span class="n">Kingdom</span>        <span class="mi">1169</span>
+<span class="n">Korea</span>                 <span class="mi">1169</span>
+<span class="n">France</span>                <span class="mi">1130</span>
+<span class="n">Spain</span>                  <span class="mi">891</span>
+<span class="n">Italy</span>                  <span class="mi">806</span>
+<span class="n">Poland</span>                 <span class="mi">768</span>
+<span class="n">Turkey</span>                 <span class="mi">537</span>
+<span class="n">Netherlands</span>            <span class="mi">411</span>
+<span class="n">Czech</span> <span class="n">Republic</span>         <span class="mi">389</span>
+<span class="n">Chile</span>                  <span class="mi">344</span>
+<span class="n">Greece</span>                 <span class="mi">208</span>
+<span class="n">Finland</span>                <span class="mi">207</span>
+<span class="n">Austria</span>                <span class="mi">186</span>
+<span class="n">Slovak</span> <span class="n">Republic</span>        <span class="mi">184</span>
+<span class="n">Israel</span>                 <span class="mi">178</span>
+<span class="n">Singapore</span>              <span class="mi">156</span>
+<span class="n">Sweden</span>                 <span class="mi">148</span>
+<span class="n">New</span> <span class="n">Zealand</span>            <span class="mi">144</span>
+<span class="n">Belgium</span>                <span class="mi">143</span>
+<span class="n">Denmark</span>                <span class="mi">134</span>
+<span class="n">Ireland</span>                <span class="mi">112</span>
+<span class="n">Norway</span>                  <span class="mi">89</span>
+<span class="n">Lithuania</span>               <span class="mi">70</span>
+<span class="n">Slovenia</span>                <span class="mi">67</span>
+<span class="n">Estonia</span>                 <span class="mi">43</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">cntryid</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### gender_r ###</span>
+<span class="n">Male</span>      <span class="mi">12495</span>
+<span class="n">Female</span>     <span class="mi">7505</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">gender_r</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### computerexperience ###</span>
+<span class="n">Yes</span>    <span class="mi">19789</span>
+<span class="n">No</span>       <span class="mi">196</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">computerexperience</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### nativespeaker ###</span>
+<span class="n">Yes</span>    <span class="mi">18203</span>
+<span class="n">No</span>      <span class="mi">1596</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">nativespeaker</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### edlevel3 ###</span>
+<span class="n">High</span>      <span class="mi">11894</span>
+<span class="n">Medium</span>     <span class="mi">6951</span>
+<span class="n">Low</span>         <span class="mi">969</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">edlevel3</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### yearlyincpr ###</span>
+<span class="mi">50</span> <span class="n">to</span> <span class="n">less</span> <span class="n">than</span> <span class="mi">75</span>    <span class="mi">4221</span>
+<span class="mi">75</span> <span class="n">to</span> <span class="n">less</span> <span class="n">than</span> <span class="mi">90</span>    <span class="mi">3967</span>
+<span class="mi">90</span> <span class="ow">or</span> <span class="n">more</span>            <span class="mi">3903</span>
+<span class="mi">25</span> <span class="n">to</span> <span class="n">less</span> <span class="n">than</span> <span class="mi">50</span>    <span class="mi">2747</span>
+<span class="mi">10</span> <span class="n">to</span> <span class="n">less</span> <span class="n">than</span> <span class="mi">25</span>    <span class="mi">1111</span>
+<span class="n">Less</span> <span class="n">than</span> <span class="mi">10</span>           <span class="mi">812</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">yearlyincpr</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### birthrgn ###</span>
+<span class="n">North</span> <span class="n">America</span> <span class="ow">and</span> <span class="n">Western</span> <span class="n">Europe</span>                <span class="mi">5439</span>
+<span class="n">Central</span> <span class="ow">and</span> <span class="n">Eastern</span> <span class="n">Europe</span>                      <span class="mi">3324</span>
+<span class="n">East</span> <span class="n">Asia</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Pacific</span> <span class="p">(</span><span class="n">richer</span> <span class="n">countries</span><span class="p">)</span>    <span class="mi">3072</span>
+<span class="n">Latin</span> <span class="n">America</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Caribbean</span>                  <span class="mi">409</span>
+<span class="n">East</span> <span class="n">Asia</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Pacific</span> <span class="p">(</span><span class="n">poorer</span> <span class="n">countries</span><span class="p">)</span>      <span class="mi">85</span>
+<span class="n">Arab</span> <span class="n">States</span>                                       <span class="mi">60</span>
+<span class="n">South</span> <span class="ow">and</span> <span class="n">West</span> <span class="n">Asia</span>                               <span class="mi">59</span>
+<span class="n">Sub</span><span class="o">-</span><span class="n">Saharan</span> <span class="n">Africa</span>                                <span class="mi">53</span>
+<span class="n">Central</span> <span class="n">Asia</span>                                      <span class="mi">16</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">birthrgn</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### nativelang ###</span>
+<span class="n">Test</span> <span class="n">language</span> <span class="n">same</span> <span class="k">as</span> <span class="n">native</span> <span class="n">language</span>        <span class="mi">17384</span>
+<span class="n">Test</span> <span class="n">language</span> <span class="ow">not</span> <span class="n">same</span> <span class="k">as</span> <span class="n">native</span> <span class="n">language</span>     <span class="mi">1386</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">nativelang</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+
+
+<span class="c1">#### ctryrgn ###</span>
+<span class="n">North</span> <span class="n">America</span> <span class="ow">and</span> <span class="n">Western</span> <span class="n">Europe</span>                <span class="mi">13208</span>
+<span class="n">Central</span> <span class="ow">and</span> <span class="n">Eastern</span> <span class="n">Europe</span>                       <span class="mi">3268</span>
+<span class="n">East</span> <span class="n">Asia</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Pacific</span> <span class="p">(</span><span class="n">richer</span> <span class="n">countries</span><span class="p">)</span>     <span class="mi">3036</span>
+<span class="n">Latin</span> <span class="n">America</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Caribbean</span>                   <span class="mi">344</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">ctryrgn</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">int64</span>
+</pre></div>
+<p>We can see that the majority of respondents were able to answer the test in their native langage; they are predominantly from North America and Western Europe, with high to medium levels of education, and males with experience working with computers.</p>
 <p>Let's take a look at the top 10 features with the most missing values, to get an idea of the completeness of our dataset, at a high level.</p>
 <div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))[:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
