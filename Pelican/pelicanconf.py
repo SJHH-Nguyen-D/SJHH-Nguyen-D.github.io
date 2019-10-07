@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Dennis Nguyen-Do'
 SITENAME = 'Denny-4/7 Data Science Blog'
-SITEURL = 'https://sjhh-nguyen-d.github.io'
+SITEURL = ''
 SITE_DESCRIPTION = u'My name is Dennis Nguyen-Do. This is my personal blog.'
 
 PATH = 'content'
