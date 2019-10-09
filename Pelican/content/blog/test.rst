@@ -101,6 +101,16 @@ $ pelican content -o output -s pelicanconf.py
 $ ghp-import output
 $ git push git@github.com:SJHH-Nguyen-D/SJHH-Nguyen-D.github.io.git master:master
 
+To build the site from root:
+
+::
+
+  cd Pelican
+  pelican content -o .. -s pelicanconf.py
+  cd ..
+  git add . && git commit -m "publish website" && git push origin master
+
+
 .. image:: https://live.staticflickr.com/4345/36465727015_3a918829bc_k_d.jpg
     :height: 427px
     :width: 640px

@@ -17,11 +17,17 @@ If you are new to this post and would like some context, I'd highly suggest you 
 * `Part 1 - Introduction <{filename}./sharpestminds-project-part-1.rst>`_
 * `Part 2 - Background, Loading, EDA <{filename}./sharpestminds-project-part-2.rst>`_
 
+In the previous post, loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the ``.info(), .isnull().sum(), .unique(), .value_counts()`` dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).
+
+In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. If you want follow along again with the complete code, you can do so `here <https://github.com/SJHH-Nguyen-D/sharpestminds_project>`_. So without further ado, let's get into it.
+
 ===================================
 More Data Exploratory Data Analysis
 ===================================
 
-One of the more interesting features available to us for exploration is the country which employees participated from - 'cntryid_e'. As a preliminary 
+Let's assume that we already have our data loaded in as a dataframe from the previous post. We have some intuition in the real world as to socioeconomic and demographic characteristic variables might a correlation to some of our target variable. Additional numeric features of interest include evaluated indices on work place competencies (i.e., usage of information technnology in line of employment, workplace influence, potential for workplace facilitated education, etc).
+
+We can plot histograms of the distribution of job performance scores by the country of the respondent:
 
 .. code-block:: python3
 
@@ -105,3 +111,74 @@ One of the more interesting features available to us for exploration is the coun
     :height: 264px
     :alt: job performance by country JAP
     :align: center
+
+I've presented only a handful of plots of job performance score distributions against countries, however, this gives us a general understanding of how these scores vary between countries. To see whether these performance scores are truly statistically different between countries, we would have perform a statistical analyses, namely, the ANOVA test.
+
+.. code-block:: python3
+
+    from scipy.stats import statistical test
+    print(test score)
+        
+The conclusion of the test is....
+
+
+If we want to roll-up and filter by an even larger geographic aggregation, we can do so by applying the same logic to the 'ctryrgn' variable:
+
+.. code-block:: python3
+
+    for region in df['ctryrgn'].unique()[pd.Series(df['ctryrgn'].unique()).isnull() == False]:
+        
+        region_grouped_df = df[df['ctryrgn'] == region]
+        
+        h = sorted(region_grouped_df['job_performance'].values)
+
+        fit = stats.norm.pdf(h, np.mean(h), np.std(h))  #this is a fitting indeed
+
+        pl.plot(h,fit,'--')
+
+        pl.hist(h,normed=True)  #use this to draw histogram of your data
+        
+        pl.title(f"Distribution of Job Performance Scores by {region}")
+                
+        pl.show()
+
+
+
+Conclusion
+----------
+
+To sum it up, ... In the next post on  `data dropping <{filename}./sharpestminds-project-part-4.rst>`_, we will begin the preprocessing step of our data science pipeline
+
+.. todo:
+    statistical tests
+    conclusory paragraph about what the next step of the project isEver wondered what your employee performance score would be? Part-3
+    Ordinal/Categorical data/discrete:
+        - Frequencies, percentages, proportions
+        - central tendency: mean, median, mode, interquartile range (which discribes variability between points)
+        - visualize: barchart, pie chart (not that in bar charts, the bars are disjoint to indicate that they are discrete quanitities of counts)
+        - the relatiionship between two categorical variables could be reduced to a single statitic such as a Phi coefficient or Cramer's V and tested for statistical significance using the chi squared test....but for the purpose of EDA, a contingency table is fine (counts or precentages). 
+    Continuous/numeric data:
+        - create an array of all the index variables; examine the missing values, impute or drop with them; correlation plots for each and job performance score. 
+        - percentiles, median, interquartile range
+        - mean, median, mode, 
+        - standard deviation, variance, range, IQR
+        - visualization: histogram, boxplot (histogram is a good way to visualize the central tendency, variablity and shape of a disiribution)
+        - skew, kurtosis
+        - note, a histogram is not good way to identify outliers...a box plot is a good way. 
+        - choose the plot that tells the best story. If you have a bimodal distribution, use a histogram (which is good for telling how many modes you have)
+        - make both plots but only choose one for your report
+    We ask our selves, how do values of one variable change as another variable changes
+    Common questions:
+        - How do you know when to use the median instead of the mean?
+        - Should I use IQR instead of standard deviation?
+        - When should I use a boxplot instead of a bar chart?
+        - the answers to these depends on what you can learn from your data using graphs
+    Outliers:
+        - values smaller than lower inner fence of a boxpot (i.e., Q1 - 1.5IQR)
+        - values larger than upper inner fence of boxplot (i.e., Q3 - 1.5IQR)
+    Extreme values:
+        - values smaller than lower outer fence, of a boxpot (i.e., Q1 - 3.0IQR) 
+        - values larger than upper outer fence of boxplot (i.e., Q3 - 3.0IQR)
+    Apply to continuous data
+        - if the values are indeed real outliers and extreme values, you can use median and IQR instead of mean and standard deviation because it is more robust to these types of values than range. 
+        - median and IQR are a more robust way to describe central tendency in the presence of outliers and extreme values. 

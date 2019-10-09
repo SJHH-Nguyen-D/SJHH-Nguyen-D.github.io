@@ -43,7 +43,7 @@ The blog will sequentially follow the table below and for each step of the proje
 Introduction    `Rationale <{filename}./sharpestminds-project-part-1.rst>`_
 The Data        `Background, Loading, EDA <{filename}./sharpestminds-project-part-2.rst>`_
 The Data        `Some more EDA <{filename}./sharpestminds-project-part-3.rst>`_
-Preprocessing   Dropping
+Preprocessing   `Dropping Insufficient Data <{filename}./sharpestminds-project-part-4.rst>`_
 Preprocessing   Encoding, Labeling
 Preprocessing   Missing values, Imputation
 Selection       Feature Selection

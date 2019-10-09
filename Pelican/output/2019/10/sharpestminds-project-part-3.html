@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+
+  <title>Ever wondered what your employee performance score would be? Part-3</title>
+
+  <meta name="description" content="My name is Dennis Nguyen-Do. This is my personal blog." />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="origin" />
+  <meta name="generator" content="Pelican" />
+  <link href="" rel="canonical" />
+
+  <!-- Feed -->
+
+  <link href="/theme/css/style.css" type="text/css" rel="stylesheet" />
+
+  <!-- Code highlight color scheme -->
+      <link href="/theme/css/code_blocks/github.css" rel="stylesheet">
+
+
+  <!-- Custom fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Montserrat:400,300' rel='stylesheet' type='text/css' />
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css" />
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+    <link href="/2019/10/sharpestminds-project-part-3.html" rel="canonical" />
+
+        <meta name="description" content="Let's dig into the data even further with some EDA in Matplotlib and seaborn for the continuation this SharpestMinds project, in the...">
+
+        <meta name="author" content="Nguyen-Do, Dennis">
+
+        <meta name="tags" content="sharpestminds-project">
+        <meta name="tags" content="data science">
+        <meta name="tags" content="projects">
+        <meta name="tags" content="employee performance">
+        <meta name="tags" content="EDA">
+        <meta name="tags" content="exploratory-data-analysis">
+
+        <meta property="og:locale" content="" />
+    <meta property="og:site_name" content="Denny-4/7 Data Science Blog" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Denny-4/7 Data Science Blog" />
+    <meta property="og:description" content="View the blog." />
+    <meta property="og:url" content="" />
+      <meta property="og:image" content="//assets/head_cover_general.jpg" />
+
+  <meta property="og:type" content="article">
+            <meta property="article:author" content="/author/nguyen-do-dennis">
+  <meta property="og:url" content="/2019/10/sharpestminds-project-part-3.html">
+  <meta property="og:title" content="Ever wondered what your employee performance score would be? Part-3">
+  <meta property="article:published_time" content="2019-10-04 23:06:00-05:00">
+            <meta property="og:description" content="Let's dig into the data even further with some EDA in Matplotlib and seaborn for the continuation this SharpestMinds project, in the...">
+
+            <meta property="og:image" content="//assets/head_cover_general.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@Dennis00481552">
+        <meta name="twitter:title" content="Ever wondered what your employee performance score would be? Part-3">
+        <meta name="twitter:url" content="/2019/10/sharpestminds-project-part-3.html">
+
+            <meta name="twitter:image:src" content="//assets/head_cover_general.jpg">
+
+            <meta name="twitter:description" content="Let's dig into the data even further with some EDA in Matplotlib and seaborn for the continuation this SharpestMinds project, in the...">
+</head>
+<!-- TODO : Body class -->
+<body class="home-template">
+
+<nav id="menu">
+  <a class="close-button">Close</a>
+  <div class="nav-wrapper">
+    <p class="nav-label">Menu</p>
+    <ul>
+
+          <ul>
+              <li role="presentation"><a href="/pages/about.html">About</a></li>
+          <ul>
+              <li role="presentation"><a href="/pages/contact.html">Contact</a></li>
+              <li class="nav-archives active" role="presentation"><a href="/archives.html">Archives</a></li>
+          </ul>
+
+    </ul>
+  </div>
+</nav>
+    <!-- Progressbar -->
+    <div class="progress-container">
+        <span class="progress-bar"></span>
+    </div>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header id="post-header" class="has-cover">
+      <div class="inner">
+        <nav id="navigation">
+            <span id="home-button" class="nav-button">
+                <!-- <a class="home-button" href="" title="Home"><i class="ic ic-arrow-left"></i> Home</a> -->
+                <a class="home-button" href="/index.html" title="Home"><i class="ic ic-arrow-left"></i> Home</a>
+            </span>
+          <span id="menu-button" class="nav-button">
+            <a class="menu-button"><i class="ic ic-menu"></i> Menu</a>
+          </span>
+        </nav>
+        <h1 class="post-title">Ever wondered what your employee performance score would be? Part-3</h1>
+        <!-- TODO : Proper class for headline -->
+        <span class="post-meta">
+                <a href="/author/nguyen-do-dennis">Nguyen-do, dennis</a>
+            | <time datetime="Fri 04 October 2019">Fri 04 October 2019</time>
+        </span>
+        <!-- TODO : Modified check -->
+        
+            <div class="post-cover cover" style="background-image: url('/assets/head_cover_articles.jpg')">            
+        
+      </div>    
+    </header>    
+
+  <section id="wrapper">
+    <a class="hidden-close"></a>
+
+    <!-- Post content -->
+    <main class="content" role="main">
+        <article class="post">
+        <div class="inner">
+            <section class="post-content">
+                <div class="section" id="sharpestminds-project-series-part-3">
+<h2>SharpestMinds Project Series Part-3</h2>
+<p>If you are new to this post and would like some context, I'd highly suggest you read through parts 1 and 2 of this project blogging series, as this is the third post of the series:</p>
+<ul class="simple">
+<li><a class="reference external" href="/2019/09/sharpestminds-project-part-1.html">Part 1 - Introduction</a></li>
+<li><a class="reference external" href="/2019/10/sharpestminds-project-part-2.html">Part 2 - Background, Loading, EDA</a></li>
+</ul>
+<p>In the previous post, loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the <tt class="docutils literal"><span class="pre">.info(),</span> <span class="pre">.isnull().sum(),</span> <span class="pre">.unique(),</span> .value_counts()</tt> dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).</p>
+<p>In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. If you want follow along again with the complete code, you can do so <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds_project">here</a>. So without further ado, let's get into it.</p>
+<div class="section" id="more-data-exploratory-data-analysis">
+<h3>More Data Exploratory Data Analysis</h3>
+<p>Let's assume that we already have our data loaded in as a dataframe from the previous post. We have some intuition in the real world as to socioeconomic and demographic characteristic variables might a correlation to some of our target variable. Additional numeric features of interest include evaluated indices on work place competencies (i.e., usage of information technnology in line of employment, workplace influence, potential for workplace facilitated education, etc).</p>
+<p>We can plot histograms of the distribution of job performance scores by the country of the respondent:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+
+<span class="k">for</span> <span class="n">country</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;cntryid_e&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;cntryid_e&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]:</span>
+
+    <span class="n">country_grouped_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;cntryid_e&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">country</span><span class="p">]</span>
+
+    <span class="n">h</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">country_grouped_df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>  <span class="c1">#this is a fitting indeed</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1">#use this to draw histogram of your data</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Distribution of Job Performance Scores by </span><span class="si">{country}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<img alt="job performance by country CAN ENG" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_CAN_ENG.png" style="width: 402px; height: 264px;" />
+<img alt="job performance by country CAN_FRA" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_CAN_FRA.png" style="width: 402px; height: 264px;" />
+<img alt="job performance by country USA" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_USA.png" style="width: 402px; height: 264px;" />
+<img alt="job performance by country NOR" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_NOR.png" style="width: 402px; height: 264px;" />
+<img alt="job performance by country KOR" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_KOR.png" style="width: 402px; height: 264px;" />
+<img alt="job performance by country GER" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_GER.png" style="width: 402px; height: 264px;" />
+<img alt="job performance by country UK" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_UK.png" style="width: 402px; height: 264px;" />
+<img alt="job performance by country SWE" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_SWE.png" style="width: 402px; height: 264px;" />
+<img alt="job performance by country SING" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_SING.png" style="width: 402px; height: 264px;" />
+<img alt="job performance by country JAP" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_JAP.png" style="width: 402px; height: 264px;" />
+<p>I've presented only a handful of plots of job performance score distributions against countries, however, this gives us a general understanding of how these scores vary between countries. To see whether these performance scores are truly statistically different between countries, we would have perform a statistical analyses, namely, the ANOVA test.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">statistical</span> <span class="n">test</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">test</span> <span class="n">score</span><span class="p">)</span>
+</pre></div>
+<p>The conclusion of the test is....</p>
+<p>If we want to roll-up and filter by an even larger geographic aggregation, we can do so by applying the same logic to the 'ctryrgn' variable:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]:</span>
+
+    <span class="n">region_grouped_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">region</span><span class="p">]</span>
+
+    <span class="n">h</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">region_grouped_df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>  <span class="c1">#this is a fitting indeed</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1">#use this to draw histogram of your data</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Distribution of Job Performance Scores by </span><span class="si">{region}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<div class="section" id="conclusion">
+<h4>Conclusion</h4>
+<p>To sum it up, ... In the next post on  <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">data dropping</a>, we will begin the preprocessing step of our data science pipeline</p>
+<!-- todo:
+statistical tests
+conclusory paragraph about what the next step of the project isEver wondered what your employee performance score would be? Part-3 -->
+</div>
+</div>
+</div>
+
+            </section>
+
+            <section class="post-info">
+                <div class="post-share">
+                    <a class="twitter" href="https://twitter.com/share?text=Ever wondered what your employee performance score would be? Part-3&amp;url=/2019/10/sharpestminds-project-part-3.html" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="ic ic-twitter"></i><span class="hidden">Twitter</span>
+                    </a>
+                    <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=/2019/10/sharpestminds-project-part-3.html" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="ic ic-facebook"></i><span class="hidden">Facebook</span>
+                    </a>
+                    <a class="googleplus" href="https://plus.google.com/share?url=/2019/10/sharpestminds-project-part-3.html" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="ic ic-googleplus"></i><span class="hidden">Google+</span>
+                    </a>
+                    <div class="clear"></div>
+                </div>
+
+                <aside class="post-tags">
+<a href="/tag/sharpestminds-project">sharpestminds-project</a><a href="/tag/data-science">data science</a><a href="/tag/projects">projects</a><a href="/tag/employee-performance">employee performance</a><a href="/tag/eda">EDA</a><a href="/tag/exploratory-data-analysis">exploratory-data-analysis</a>                </aside>
+
+                <div class="clear"></div>
+
+ 
+
+                </section>
+
+
+                <aside class="post-nav">
+                    <div class="clear"></div>
+                </aside>
+
+            </div>
+        </article>
+    </main>
+      <!-- TODO : Body class -->
+    <div id="body-class" style="display: none;" class=""></div>
+  
+    <footer id="footer">
+      <div class="inner">
+        <section class="credits">
+          <span class="credits-theme">Theme <a href="https://github.com/arulrajnet/attila" rel="nofollow">Attila</a></span>
+          <span class="credits-software">Published with <a href="https://github.com/getpelican/pelican" rel="nofollow">Pelican</a></span>
+        </section>
+      </div>
+    </footer>
+  </section>
+
+  <script type="text/javascript" src="/theme/js/script.js"></script>
+  
+</body>
+</html>
