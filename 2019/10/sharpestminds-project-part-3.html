@@ -140,9 +140,12 @@
 <li><a class="reference external" href="/2019/09/sharpestminds-project-part-1.html">Part 1 - Introduction</a></li>
 <li><a class="reference external" href="/2019/10/sharpestminds-project-part-2.html">Part 2 - Background, Loading, EDA</a></li>
 </ul>
+<p>In the previous post, loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the <tt class="docutils literal"><span class="pre">.info(),</span> <span class="pre">.isnull().sum(),</span> <span class="pre">.unique(),</span> .value_counts()</tt> dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).</p>
+<p>In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. If you want follow along again with the complete code, you can do so <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds_project">here</a>. So without further ado, let's get into it.</p>
 <div class="section" id="more-data-exploratory-data-analysis">
 <h3>More Data Exploratory Data Analysis</h3>
-<p>One of the more interesting features available to us for exploration is the country which employees participated from - 'cntryid_e'. As a preliminary</p>
+<p>Let's assume that we already have our data loaded in as a dataframe from the previous post. We have some intuition in the real world as to socioeconomic and demographic characteristic variables might a correlation to some of our target variable. Additional numeric features of interest include evaluated indices on work place competencies (i.e., usage of information technnology in line of employment, workplace influence, potential for workplace facilitated education, etc).</p>
+<p>We can plot histograms of the distribution of job performance scores by the country of the respondent:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
 <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
@@ -173,6 +176,65 @@
 <img alt="job performance by country SWE" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_SWE.png" style="width: 402px; height: 264px;" />
 <img alt="job performance by country SING" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_SING.png" style="width: 402px; height: 264px;" />
 <img alt="job performance by country JAP" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_JAP.png" style="width: 402px; height: 264px;" />
+<p>I've presented only a handful of plots of job performance score distributions against countries, however, this gives us a general understanding of how these scores vary between countries. To see whether these performance scores are truly statistically different between countries, we would have perform a statistical analyses, namely, the ANOVA test.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">statistical</span> <span class="n">test</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">test</span> <span class="n">score</span><span class="p">)</span>
+</pre></div>
+<p>The conclusion of the test is....</p>
+<p>If we want to roll-up and filter by an even larger geographic aggregation, we can do so by applying the same logic to the 'ctryrgn' variable:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]:</span>
+
+    <span class="n">region_grouped_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">region</span><span class="p">]</span>
+
+    <span class="n">h</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">region_grouped_df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>  <span class="c1">#this is a fitting indeed</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1">#use this to draw histogram of your data</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Distribution of Job Performance Scores by </span><span class="si">{region}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<div class="section" id="conclusion">
+<h4>Conclusion</h4>
+<p>To sum it up, ... In the next post on  <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">data dropping</a>, we will begin the preprocessing step of our data science pipeline</p>
+<!-- todo:
+statistical tests
+conclusory paragraph about what the next step of the project isEver wondered what your employee performance score would be? Part-3
+Ordinal/Categorical data/discrete:
+    - Frequencies, percentages, proportions
+    - central tendency: mean, median, mode, interquartile range (which discribes variability between points)
+    - visualize: barchart, pie chart (not that in bar charts, the bars are disjoint to indicate that they are discrete quanitities of counts)
+    - the relatiionship between two categorical variables could be reduced to a single statitic such as a Phi coefficient or Cramer's V and tested for statistical significance using the chi squared test....but for the purpose of EDA, a contingency table is fine (counts or precentages).
+Continuous/numeric data:
+    - create an array of all the index variables; examine the missing values, impute or drop with them; correlation plots for each and job performance score.
+    - percentiles, median, interquartile range
+    - mean, median, mode,
+    - standard deviation, variance, range, IQR
+    - visualization: histogram, boxplot (histogram is a good way to visualize the central tendency, variablity and shape of a disiribution)
+    - skew, kurtosis
+    - note, a histogram is not good way to identify outliers...a box plot is a good way.
+    - choose the plot that tells the best story. If you have a bimodal distribution, use a histogram (which is good for telling how many modes you have)
+    - make both plots but only choose one for your report
+We ask our selves, how do values of one variable change as another variable changes
+Common questions:
+    - How do you know when to use the median instead of the mean?
+    - Should I use IQR instead of standard deviation?
+    - When should I use a boxplot instead of a bar chart?
+    - the answers to these depends on what you can learn from your data using graphs
+Outliers:
+    - values smaller than lower inner fence of a boxpot (i.e., Q1 - 1.5IQR)
+    - values larger than upper inner fence of boxplot (i.e., Q3 - 1.5IQR)
+Extreme values:
+    - values smaller than lower outer fence, of a boxpot (i.e., Q1 - 3.0IQR)
+    - values larger than upper outer fence of boxplot (i.e., Q3 - 3.0IQR)
+Apply to continuous data
+    - if the values are indeed real outliers and extreme values, you can use median and IQR instead of mean and standard deviation because it is more robust to these types of values than range.
+    - median and IQR are a more robust way to describe central tendency in the presence of outliers and extreme values. -->
+</div>
 </div>
 </div>
 
