@@ -182,3 +182,4 @@ To sum it up, ... In the next post on  `data dropping <{filename}./sharpestminds
     Apply to continuous data
         - if the values are indeed real outliers and extreme values, you can use median and IQR instead of mean and standard deviation because it is more robust to these types of values than range. 
         - median and IQR are a more robust way to describe central tendency in the presence of outliers and extreme values. 
+        - you can use a scattter plot also to see outliers between two numeric variables quite easily. Bivariate outliers can have adverse impact on the Pearson correlation coefficient. If you notice a bivariate outlier, you might want to use a spearman ranked order correlation instead of a pearson correlation. 
