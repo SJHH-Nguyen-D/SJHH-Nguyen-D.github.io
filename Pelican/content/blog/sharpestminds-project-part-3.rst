@@ -143,6 +143,108 @@ If we want to roll-up and filter by an even larger geographic aggregation, we ca
         pl.show()
 
 
+The measured index scores are features which measure ones ability in the work environment and home, in a variety of domains (reading, technological competency, etc). These measures are ordinally binned into 5 buckets - each constituting 20% of the score for that measure. We have to do a little bit of preprocessing before we can start doing any vizualization, otherwise some of the methods would not work.
+
+..code-block:: python3
+    performance_index_values = ["writhome_wle_ca", "writwork_wle_ca","planning_wle_ca", "readhome_wle_ca", "readwork_wle_ca", 
+                            "readytolearn_wle_ca", "taskdisc_wle_ca", "learnatwork_wle_ca",  "icthome_wle_ca", "ictwork_wle_ca"]
+    
+    # temporarily fill the missing values for each index feature with the most frequent value
+    for col in performance_index_values:
+        index_df[col].fillna(value=index_df[col].value_counts().sort_values(ascending=False).index[0], inplace=True)
+
+    # set the ordinality of each of the values in this order
+    categories = ['All zero response', 'Lowest to 20%', 'More than 20% to 40%', 'More than 40% to 60%', 'More than 60% to 80%', 'More than 80%']
+    for i in index_df.columns[index_df.columns != 'job_performance']:
+        ordered_categorical_object = pd.Categorical(i, categories=categories, ordered=True)
+        index_df[i] = index_df[i].astype(ordered_categorical_object)
+
+    
+
+Now that we have done some preparation with the data, we can examine these ordinal features and their central tendency with some data visualization in the form of boxplots:
+
+..code-block:: python3
+
+    import seaborn as sns
+    %matplotlib inline
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots()
+    for feature in performance_index_values:
+        fig = plt.figure()
+        plt.title("Job Performance by {}".format(feature))
+        sns.boxplot(x=feature, y="job_performance", data=index_df, linewidth=2.5, order=categories)
+    
+
+.. image:: /assets/data_visualizations/boxplot_icthome.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by icthome
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_ictwork.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by ictwork
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_icthome.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by icthome
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_icthome.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by icthome
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_learnatwork.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by learnatwork
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_planning.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by planning
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_readtolearn.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by readtolearn
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_readhome.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by readhome
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_taskdisc.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by taskdisc
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_writhome.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by writhome
+    :align: center
+
+.. image:: /assets/data_visualizations/boxplot_writwork.png
+    :width: 402px
+    :height: 264px
+    :alt: box plot job performance by writwork
+    :align: center
+
+
+What we can gleen from this is ...
+
 
 Conclusion
 ----------
