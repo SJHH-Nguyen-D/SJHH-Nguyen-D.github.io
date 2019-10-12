@@ -122,9 +122,16 @@ I've presented only a handful of plots of job performance score distributions ag
 The conclusion of the test is....
 
 
-If we want to roll-up and filter by an even larger geographic aggregation, we can do so by applying the same logic to the 'ctryrgn' variable:
+If we want to roll-up and filter by an even larger geographic aggregation, we can do so by applying the same logic to the 'ctryrgn' variable, which ahs a total of 4  categories (NA and Central Europe; Central and Eastern Europe; East Asian and Pacific; and Latin America and the Carribean):
 
 .. code-block:: python3
+
+    # There are 144 nan values for the region feature...a relatively small number.
+    print(df['ctryrgn'].isnull().sum())
+
+    # impute small number of nan values with the most frequent category so that we can work with it temporarily
+    df['ctryrgn'].fillna(value=df['ctryrgn'].value_counts().sort_values(ascending=False).index[0], inplace=True)
+
 
     for region in df['ctryrgn'].unique()[pd.Series(df['ctryrgn'].unique()).isnull() == False]:
         
@@ -143,7 +150,34 @@ If we want to roll-up and filter by an even larger geographic aggregation, we ca
         pl.show()
 
 
-The measured index scores are features which measure ones ability in the work environment and home, in a variety of domains (reading, technological competency, etc). These measures are ordinally binned into 5 buckets - each constituting 20% of the score for that measure. We have to do a little bit of preprocessing before we can start doing any vizualization, otherwise some of the methods would not work.
+ .. image:: /assets/data_visualizations/hist_jps_region_NA_WE.png
+    :width: 402px
+    :height: 264px
+    :alt: histogram job performance by region North American and Western Europe
+    :align: center
+
+ .. image:: /assets/data_visualizations/hist_jps_region_CEE.png
+    :width: 402px
+    :height: 264px
+    :alt: histogram job performance by region Central and Eastern Europe
+    :align: center
+
+ .. image:: /assets/data_visualizations/hist_jps_region_EAP.png
+    :width: 402px
+    :height: 264px
+    :alt: histogram job performance by East Asia and the Pacific
+    :align: center
+
+ .. image:: /assets/data_visualizations/hist_jps_region_LAC.png
+    :width: 402px
+    :height: 264px
+    :alt: histogram job performance by Latin America and the Carribean
+    :align: center
+
+
+ Here we can see an overarching trend. That is, visually, the distribution of ....
+
+Another set of interesting features are the measured competency indices. The measured index scores are features which measure ones ability in the work environment and home, in a variety of domains (reading, technological competency, etc). These measures are ordinally binned into 5 buckets - each constituting 20% of the score for that measure. We have to do a little bit of preprocessing before we can start doing any vizualization, otherwise some of the methods would not work.
 
 .. code-block:: python3
 
@@ -187,18 +221,6 @@ Now that we have done some preparation with the data, we can examine these ordin
     :width: 402px
     :height: 264px
     :alt: box plot job performance by ictwork
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_icthome.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by icthome
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_icthome.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by icthome
     :align: center
 
 .. image:: /assets/data_visualizations/boxplot_learnatwork.png
