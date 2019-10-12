@@ -145,7 +145,8 @@ If we want to roll-up and filter by an even larger geographic aggregation, we ca
 
 The measured index scores are features which measure ones ability in the work environment and home, in a variety of domains (reading, technological competency, etc). These measures are ordinally binned into 5 buckets - each constituting 20% of the score for that measure. We have to do a little bit of preprocessing before we can start doing any vizualization, otherwise some of the methods would not work.
 
-..code-block:: python3
+.. code-block:: python3
+
     performance_index_values = ["writhome_wle_ca", "writwork_wle_ca","planning_wle_ca", "readhome_wle_ca", "readwork_wle_ca", 
                             "readytolearn_wle_ca", "taskdisc_wle_ca", "learnatwork_wle_ca",  "icthome_wle_ca", "ictwork_wle_ca"]
     
@@ -163,7 +164,7 @@ The measured index scores are features which measure ones ability in the work en
 
 Now that we have done some preparation with the data, we can examine these ordinal features and their central tendency with some data visualization in the form of boxplots:
 
-..code-block:: python3
+.. code-block:: python3
 
     import seaborn as sns
     %matplotlib inline
