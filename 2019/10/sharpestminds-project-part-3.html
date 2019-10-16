@@ -140,11 +140,69 @@
 <li><a class="reference external" href="/2019/09/sharpestminds-project-part-1.html">Part 1 - Introduction</a></li>
 <li><a class="reference external" href="/2019/10/sharpestminds-project-part-2.html">Part 2 - Background, Loading, EDA</a></li>
 </ul>
-<p>In the previous post, loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the <tt class="docutils literal"><span class="pre">.info(),</span> <span class="pre">.isnull().sum(),</span> <span class="pre">.unique(),</span> .value_counts()</tt> dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).</p>
-<p>In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. If you want follow along again with the complete code, you can do so <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds_project">here</a>. So without further ado, let's get into it.</p>
+<p>In the previous post, we loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the <tt class="docutils literal"><span class="pre">.info(),</span> <span class="pre">.isnull().sum(),</span> <span class="pre">.unique(),</span> .value_counts()</tt> dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).</p>
+<p>In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. Data visualization allows use to use space, color, direction to achieve a higher level understanding of many points of data simultaneously, allowing us to visually grok patterns among the fine details of each data point. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. This post assumes that you have loaded the dataset from the previous posts and have imported all the depenencies. If you want follow along again with the complete code, you can do so <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds_project">here</a>. So without further ado, let's get into it.</p>
 <div class="section" id="more-data-exploratory-data-analysis">
 <h3>More Data Exploratory Data Analysis</h3>
-<p>Let's assume that we already have our data loaded in as a dataframe from the previous post. We have some intuition in the real world as to socioeconomic and demographic characteristic variables might a correlation to some of our target variable. Additional numeric features of interest include evaluated indices on work place competencies (i.e., usage of information technnology in line of employment, workplace influence, potential for workplace facilitated education, etc).</p>
+<div class="section" id="high-level-profiling">
+<h4>High Level Profiling</h4>
+<p>Before we delve into specific statistical tests, one neat Pandas trick I recently learned allows one to quickly profile a dataframe without delving into it too much specifically. This method is available throught the <tt class="docutils literal">pandas_profiling</tt> library and must be pip installed. With just a few lines of code, you can quickly spin up an HTML that does high level, powerful, stylish profiling of your dataset before anything is done!</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas_profiling</span>
+
+<span class="n">pandas_profiling</span><span class="o">.</span><span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+<p>And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!</p>
+</div>
+<div class="section" id="outliers-and-extremes">
+<h4>Outliers and Extremes</h4>
+<p>Outlier and extreme cases are fringe cases with measurement values that have an effect the overall central tendency of our dataset values, and thus make it more difficult to make accurate inferences about our data. Outlier and extreme values are determined in relation to the interquartile range (IQR) of values, in that they are greater or lower than the interquartile range by 1.5x or 3.0x, respectively. We can examine which data points are outside this range using the <tt class="docutils literal">iqr</tt> method from <tt class="docutils literal">scipy.stats</tt>.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">iqr</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">percentile</span>
+
+<span class="k">def</span> <span class="nf">get_outliers_and_extremes</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">num_attribute</span><span class="p">):</span>
+
+    <span class="n">IQR</span> <span class="o">=</span> <span class="n">iqr</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">num_attribute</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;raw&#39;</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;propagate&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">percentile</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">num_attribute</span><span class="p">],</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">q3</span> <span class="o">=</span> <span class="n">percentile</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">num_attribute</span><span class="p">],</span> <span class="mf">0.75</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">outliers</span> <span class="o">=</span> <span class="n">index_df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="n">num_attribute</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">q1</span> <span class="o">-</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)))</span> <span class="o">|</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">num_attribute</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">q3</span> <span class="o">+</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)))]</span>
+    <span class="n">extremes</span> <span class="o">=</span> <span class="n">index_df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="n">num_attribute</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">q1</span> <span class="o">-</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)))</span> <span class="o">|</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">num_attribute</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">q3</span> <span class="o">+</span> <span class="p">(</span><span class="n">IQR</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">)))]</span>
+
+    <span class="k">return</span> <span class="n">outliers</span><span class="p">,</span> <span class="n">extremes</span>
+
+<span class="n">interquartile_range</span> <span class="o">=</span> <span class="n">iqr</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;raw&#39;</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;propagate&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;The interquartile range of the job performance scores is: </span><span class="si">{interquartile_range}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+<p>Output: <tt class="docutils literal">The interquartile range of the job performance scores is: 562.7908287543005</tt>.</p>
+<p>With our <tt class="docutils literal">get_outliers_and_extremes</tt> function, we can look at the data points that quantify as outliers.</p>
+<div class="highlight"><pre><span></span><span class="n">outliers</span><span class="p">,</span> <span class="n">extremes</span> <span class="o">=</span> <span class="n">get_outliers_and_extremes</span><span class="p">(</span><span class="n">index_df</span><span class="p">,</span> <span class="s1">&#39;job_performance&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{outliers.shape[0]}</span><span class="s2"> outlier values and </span><span class="si">{extremes.shape[0]}</span><span class="s2"> extreme values&quot;</span><span class="p">)</span>
+</pre></div>
+<p>Output: <tt class="docutils literal">4015 outlier values and 4015 extreme values</tt>.</p>
+<p>We examine the histograms built from the outlier values:</p>
+<div class="highlight"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">outliers</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+<span class="n">fit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Distribution of Job Performance Scores in Outlier values&quot;</span><span class="p">)</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<img alt="job performance outliers" class="align-center" src="/assets/data_visualizations/hist_dist_outliers.png" style="width: 402px; height: 264px;" />
+<p>Note that the outlier data are right skewed and not normally distributed, with a higher density towards the higher most values.</p>
+<p>Taking a look at <tt class="docutils literal">outliers.head()</tt> and <tt class="docutils literal">extremes.head()</tt> yields the same data points, meaning that, by definition, we have 4015 fringe values for the target variable 'job performance'. In some cases, we would like to further investigate this group of data points to for further insight into extreme variants in performance, but in this case, we will drop them.</p>
+<div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">outliers</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;New dataframe shape: </span><span class="si">{df.shape}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+<p>Output: <tt class="docutils literal">New dataframe shape: (15985, 11)</tt>.</p>
+</div>
+<div class="section" id="plotting">
+<h4>Plotting</h4>
+<p>Let's assume that we already have our data loaded in as a dataframe from the previous post. We have some intuition in the real world as to socioeconomic and demographic characteristic variables might correlate to some of our target variable. Additional numeric features of interest include evaluated indices on work place competencies (i.e., usage of information technnology in line of employment, workplace influence, potential for workplace facilitated education, etc).</p>
 <p>We can plot histograms of the distribution of job performance scores by the country of the respondent:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
@@ -156,11 +214,11 @@
 
     <span class="n">h</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">country_grouped_df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>  <span class="c1">#this is a fitting indeed</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
 
     <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
 
-    <span class="n">pl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1">#use this to draw histogram of your data</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Distribution of Job Performance Scores by </span><span class="si">{country}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -176,63 +234,73 @@
 <img alt="job performance by country SWE" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_SWE.png" style="width: 402px; height: 264px;" />
 <img alt="job performance by country SING" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_SING.png" style="width: 402px; height: 264px;" />
 <img alt="job performance by country JAP" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_JAP.png" style="width: 402px; height: 264px;" />
-<p>I've presented only a handful of plots of job performance score distributions against countries, however, this gives us a general understanding of how these scores vary between countries. To see whether these performance scores are truly statistically different between countries, we would have perform a statistical analyses, namely, the ANOVA test.</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">statistical</span> <span class="n">test</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">test</span> <span class="n">score</span><span class="p">)</span>
+<p>If we want to roll-up and filter by an even larger geographic aggregation, we can do so by applying the same logic to the 'ctryrgn' variable, which has a total of 4  categories (NA and Central Europe; Central and Eastern Europe; East Asian and Pacific; and Latin America and the Carribean):</p>
+<div class="highlight"><pre><span></span><span class="c1"># There are 144 nan values for the region feature...a relatively small number.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+<span class="c1"># impute small number of nan values with the most frequent category so that we can work with it temporarily</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]:</span>
+
+    <span class="n">region_grouped_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">region</span><span class="p">]</span>
+
+    <span class="n">h</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">region_grouped_df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Distribution of Job Performance Scores by </span><span class="si">{region}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<img alt="histogram job performance by region North American and Western Europe" class="align-center" src="/assets/data_visualizations/hist_jps_region_NA_WE.png" style="width: 402px; height: 264px;" />
+<img alt="histogram job performance by region Central and Eastern Europe" class="align-center" src="/assets/data_visualizations/hist_jps_region_CEE.png" style="width: 402px; height: 264px;" />
+<img alt="histogram job performance by East Asia and the Pacific" class="align-center" src="/assets/data_visualizations/hist_jps_region_EAP.png" style="width: 402px; height: 264px;" />
+<img alt="histogram job performance by Latin America and the Carribean" class="align-center" src="/assets/data_visualizations/hist_jps_region_LAC.png" style="width: 402px; height: 264px;" />
+<p>Here we can see an overarching trend. That is, visually, the distribution of the East Asia and Pacific regions typically have higher mean job performance scores. We can also see that there is more variability in the job performance scores of those in the Latin and Carribean regions, than the rest of the other regions, which approximately exemplify a normal distribution.</p>
+<p>I've presented only a handful of plots of job performance score distributions against regions, however, this gives us a general understanding of how these scores vary between regions. To see whether these performance scores are truly statistically different between regions, we would have perform a statistical analyses, eitherthe Kruskal-Wallis H-test(Non-parametric version of ANOVA), or ANOVA. The ANOVA test makes some assumptions and is sensitive to the effects of homoscedasticity (same variance among groups). Therefore, we test the assumptions first before we pick a statistical method to select.</p>
+<p>We test homoscedasticity (pip install the pingouin statistical library in python if you haven't already):</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pingouin</span> <span class="k">import</span> <span class="n">homoscedasticity</span>
+
+<span class="n">levene_test</span> <span class="o">=</span> <span class="n">homoscedasticity</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="s1">&#39;job_performance&#39;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">)</span>
+<span class="n">bartlett_test</span> <span class="o">=</span> <span class="n">homoscedasticity</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="s1">&#39;job_performance&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;bartlett&#39;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">levene_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">bartlett_test</span><span class="p">)</span>
+</pre></div>
+<pre class="literal-block">
+            W          pval  equal_var
+levene  18.237  8.274316e-12      False
+            T          pval  equal_var
+bartlett  53.207  1.656381e-11      False
+</pre>
+<p>We see that we do not meet the criteria for homoscedasticity, and therefore we must use a more robust test like the Kruskal-Wallis H-test.</p>
+<p>We can take a look at the medians visually first to have an idea of centrality of job performance scores between region groups.</p>
+<div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">job_performance</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">job_performance</span><span class="o">.</span><span class="n">median</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
+</pre></div>
+<pre class="literal-block">
+ctryrgn
+Central and Eastern Europe                      2958.906281
+East Asia and the Pacific (richer countries)    3099.385517
+Latin America and the Caribbean                 2938.909632
+North America and Western Europe                3058.351212
+Name: job_performance, dtype: float64
+</pre>
+<img alt="barplot of median job performance by region" class="align-center" src="/assets/data_visualizations/median_hist_by_region.png" style="width: 402px; height: 264px;" />
+<p>Therefore, we compute the Kruskal-Wallis H-test, which tests whether the population measurements for job performance are equal between groups of regions:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pingouin</span> <span class="k">import</span> <span class="n">kruskal</span>
+
+<span class="n">kruskal_test</span> <span class="o">=</span> <span class="n">kruskal</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="s1">&#39;job_performance&#39;</span><span class="p">,</span> <span class="n">between</span><span class="o">=</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">krusktal_test</span><span class="p">)</span>
 </pre></div>
 <p>The conclusion of the test is....</p>
-<p>If we want to roll-up and filter by an even larger geographic aggregation, we can do so by applying the same logic to the 'ctryrgn' variable, which ahs a total of 4  categories (NA and Central Europe; Central and Eastern Europe; East Asian and Pacific; and Latin America and the Carribean):</p>
-<div class="highlight"><pre><span></span>   <span class="c1"># There are 144 nan values for the region feature...a relatively small number.</span>
-   <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-
-   <span class="c1"># impute small number of nan values with the most frequent category so that we can work with it temporarily</span>
-   <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-
-   <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span><span class="p">]:</span>
-
-       <span class="n">region_grouped_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">region</span><span class="p">]</span>
-
-       <span class="n">h</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">region_grouped_df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-
-       <span class="n">fit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>  <span class="c1">#this is a fitting indeed</span>
-
-       <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">fit</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
-
-       <span class="n">pl</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">normed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1">#use this to draw histogram of your data</span>
-
-       <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Distribution of Job Performance Scores by </span><span class="si">{region}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-       <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-
-<span class="o">..</span> <span class="n">image</span><span class="p">::</span> <span class="o">/</span><span class="n">assets</span><span class="o">/</span><span class="n">data_visualizations</span><span class="o">/</span><span class="n">hist_jps_region_NA_WE</span><span class="o">.</span><span class="n">png</span>
-   <span class="p">:</span><span class="n">width</span><span class="p">:</span> <span class="mi">402</span><span class="n">px</span>
-   <span class="p">:</span><span class="n">height</span><span class="p">:</span> <span class="mi">264</span><span class="n">px</span>
-   <span class="p">:</span><span class="n">alt</span><span class="p">:</span> <span class="n">histogram</span> <span class="n">job</span> <span class="n">performance</span> <span class="n">by</span> <span class="n">region</span> <span class="n">North</span> <span class="n">American</span> <span class="ow">and</span> <span class="n">Western</span> <span class="n">Europe</span>
-   <span class="p">:</span><span class="n">align</span><span class="p">:</span> <span class="n">center</span>
-
-<span class="o">..</span> <span class="n">image</span><span class="p">::</span> <span class="o">/</span><span class="n">assets</span><span class="o">/</span><span class="n">data_visualizations</span><span class="o">/</span><span class="n">hist_jps_region_CEE</span><span class="o">.</span><span class="n">png</span>
-   <span class="p">:</span><span class="n">width</span><span class="p">:</span> <span class="mi">402</span><span class="n">px</span>
-   <span class="p">:</span><span class="n">height</span><span class="p">:</span> <span class="mi">264</span><span class="n">px</span>
-   <span class="p">:</span><span class="n">alt</span><span class="p">:</span> <span class="n">histogram</span> <span class="n">job</span> <span class="n">performance</span> <span class="n">by</span> <span class="n">region</span> <span class="n">Central</span> <span class="ow">and</span> <span class="n">Eastern</span> <span class="n">Europe</span>
-   <span class="p">:</span><span class="n">align</span><span class="p">:</span> <span class="n">center</span>
-
-<span class="o">..</span> <span class="n">image</span><span class="p">::</span> <span class="o">/</span><span class="n">assets</span><span class="o">/</span><span class="n">data_visualizations</span><span class="o">/</span><span class="n">hist_jps_region_EAP</span><span class="o">.</span><span class="n">png</span>
-   <span class="p">:</span><span class="n">width</span><span class="p">:</span> <span class="mi">402</span><span class="n">px</span>
-   <span class="p">:</span><span class="n">height</span><span class="p">:</span> <span class="mi">264</span><span class="n">px</span>
-   <span class="p">:</span><span class="n">alt</span><span class="p">:</span> <span class="n">histogram</span> <span class="n">job</span> <span class="n">performance</span> <span class="n">by</span> <span class="n">East</span> <span class="n">Asia</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Pacific</span>
-   <span class="p">:</span><span class="n">align</span><span class="p">:</span> <span class="n">center</span>
-
-<span class="o">..</span> <span class="n">image</span><span class="p">::</span> <span class="o">/</span><span class="n">assets</span><span class="o">/</span><span class="n">data_visualizations</span><span class="o">/</span><span class="n">hist_jps_region_LAC</span><span class="o">.</span><span class="n">png</span>
-   <span class="p">:</span><span class="n">width</span><span class="p">:</span> <span class="mi">402</span><span class="n">px</span>
-   <span class="p">:</span><span class="n">height</span><span class="p">:</span> <span class="mi">264</span><span class="n">px</span>
-   <span class="p">:</span><span class="n">alt</span><span class="p">:</span> <span class="n">histogram</span> <span class="n">job</span> <span class="n">performance</span> <span class="n">by</span> <span class="n">Latin</span> <span class="n">America</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">Carribean</span>
-   <span class="p">:</span><span class="n">align</span><span class="p">:</span> <span class="n">center</span>
-
-
-<span class="n">Here</span> <span class="n">we</span> <span class="n">can</span> <span class="n">see</span> <span class="n">an</span> <span class="n">overarching</span> <span class="n">trend</span><span class="o">.</span> <span class="n">That</span> <span class="ow">is</span><span class="p">,</span> <span class="n">visually</span><span class="p">,</span> <span class="n">the</span> <span class="n">distribution</span> <span class="n">of</span> <span class="o">....</span>
-</pre></div>
 <p>Another set of interesting features are the measured competency indices. The measured index scores are features which measure ones ability in the work environment and home, in a variety of domains (reading, technological competency, etc). These measures are ordinally binned into 5 buckets - each constituting 20% of the score for that measure. We have to do a little bit of preprocessing before we can start doing any vizualization, otherwise some of the methods would not work.</p>
 <div class="highlight"><pre><span></span><span class="n">performance_index_values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;writhome_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;writwork_wle_ca&quot;</span><span class="p">,</span><span class="s2">&quot;planning_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;readhome_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;readwork_wle_ca&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;readytolearn_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;taskdisc_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;learnatwork_wle_ca&quot;</span><span class="p">,</span>  <span class="s2">&quot;icthome_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;ictwork_wle_ca&quot;</span><span class="p">]</span>
@@ -268,6 +336,7 @@
 <img alt="box plot job performance by writhome" class="align-center" src="/assets/data_visualizations/boxplot_writhome.png" style="width: 402px; height: 264px;" />
 <img alt="box plot job performance by writwork" class="align-center" src="/assets/data_visualizations/boxplot_writwork.png" style="width: 402px; height: 264px;" />
 <p>What we can gleen from this is ...</p>
+</div>
 <div class="section" id="conclusion">
 <h4>Conclusion</h4>
 <p>To sum it up, ... In the next post on  <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">data dropping</a>, we will begin the preprocessing step of our data science pipeline</p>
@@ -304,7 +373,8 @@ Extreme values:
 Apply to continuous data
     - if the values are indeed real outliers and extreme values, you can use median and IQR instead of mean and standard deviation because it is more robust to these types of values than range.
     - median and IQR are a more robust way to describe central tendency in the presence of outliers and extreme values.
-    - you can use a scattter plot also to see outliers between two numeric variables quite easily. Bivariate outliers can have adverse impact on the Pearson correlation coefficient. If you notice a bivariate outlier, you might want to use a spearman ranked order correlation instead of a pearson correlation. -->
+    - you can use a scattter plot also to see outliers between two numeric variables quite easily. Bivariate outliers can have adverse impact on the Pearson correlation coefficient. If you notice a bivariate outlier, you might want to use a spearman ranked order correlation instead of a pearson correlation.
+Note that there are a small number of actual numeric features outside of the job performance metric.... you might wnat to visualize this this in terms of bar charts or a pie to indicate the proprotion of numeric data to the number of categorical discrete features...which will further infrom us what types of transformations might be necessary to analyse and work with this data. -->
 </div>
 </div>
 </div>

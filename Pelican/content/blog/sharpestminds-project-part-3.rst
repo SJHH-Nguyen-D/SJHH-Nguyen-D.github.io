@@ -17,15 +17,104 @@ If you are new to this post and would like some context, I'd highly suggest you 
 * `Part 1 - Introduction <{filename}./sharpestminds-project-part-1.rst>`_
 * `Part 2 - Background, Loading, EDA <{filename}./sharpestminds-project-part-2.rst>`_
 
-In the previous post, loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the ``.info(), .isnull().sum(), .unique(), .value_counts()`` dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).
+In the previous post, we loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the ``.info(), .isnull().sum(), .unique(), .value_counts()`` dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).
 
-In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. If you want follow along again with the complete code, you can do so `here <https://github.com/SJHH-Nguyen-D/sharpestminds_project>`_. So without further ado, let's get into it.
+In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. Data visualization allows use to use space, color, direction to achieve a higher level understanding of many points of data simultaneously, allowing us to visually grok patterns among the fine details of each data point. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. This post assumes that you have loaded the dataset from the previous posts and have imported all the depenencies. If you want follow along again with the complete code, you can do so `here <https://github.com/SJHH-Nguyen-D/sharpestminds_project>`_. So without further ado, let's get into it.
 
 ===================================
 More Data Exploratory Data Analysis
 ===================================
 
-Let's assume that we already have our data loaded in as a dataframe from the previous post. We have some intuition in the real world as to socioeconomic and demographic characteristic variables might a correlation to some of our target variable. Additional numeric features of interest include evaluated indices on work place competencies (i.e., usage of information technnology in line of employment, workplace influence, potential for workplace facilitated education, etc).
+High Level Profiling
+--------------------
+
+Before we delve into specific statistical tests, one neat Pandas trick I recently learned allows one to quickly profile a dataframe without delving into it too much specifically. This method is available throught the ``pandas_profiling`` library and must be pip installed. With just a few lines of code, you can quickly spin up an HTML that does high level, powerful, stylish profiling of your dataset before anything is done!
+
+.. code-block:: python3
+
+    import pandas_profiling
+
+    pandas_profiling.ProfileReport(df)
+
+
+And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!
+
+Outliers and Extremes
+---------------------
+
+Outlier and extreme cases are fringe cases with measurement values that have an effect the overall central tendency of our dataset values, and thus make it more difficult to make accurate inferences about our data. Outlier and extreme values are determined in relation to the interquartile range (IQR) of values, in that they are greater or lower than the interquartile range by 1.5x or 3.0x, respectively. We can examine which data points are outside this range using the ``iqr`` method from ``scipy.stats``.
+
+.. code-block:: python3
+
+    from scipy.stats import iqr
+    from numpy import percentile
+
+    def get_outliers_and_extremes(df, num_attribute):
+        
+        IQR = iqr(df[num_attribute], axis=0, rng=(25, 75), scale='raw', nan_policy='propagate', interpolation='linear', keepdims=False)
+        q1 = percentile(df[num_attribute], 0.25, axis=0, out=None, overwrite_input=False, interpolation='linear', keepdims=False)
+        q3 = percentile(df[num_attribute], 0.75, axis=0, out=None, overwrite_input=False, interpolation='linear', keepdims=False)
+        
+        outliers = index_df[(df[num_attribute] <= (q1 - (IQR * 1.5))) | (df[num_attribute] <= (q3 + (IQR * 1.5)))]
+        extremes = index_df[(df[num_attribute] <= (q1 - (IQR * 1.5))) | (df[num_attribute] <= (q3 + (IQR * 1.5)))]
+        
+        return outliers, extremes
+
+    interquartile_range = iqr(df['job_performance'], axis=0, rng=(25, 75), scale='raw', nan_policy='propagate', interpolation='linear', keepdims=False)
+    print(f"The interquartile range of the job performance scores is: {interquartile_range}")
+
+
+Output: ``The interquartile range of the job performance scores is: 562.7908287543005``. 
+
+With our ``get_outliers_and_extremes`` function, we can look at the data points that quantify as outliers.
+
+.. code-block:: python3
+
+    outliers, extremes = get_outliers_and_extremes(index_df, 'job_performance')
+    print(f"{outliers.shape[0]} outlier values and {extremes.shape[0]} extreme values")
+
+
+Output: ``4015 outlier values and 4015 extreme values``.
+
+We examine the histograms built from the outlier values:
+
+.. code-block:: python3
+
+    h = sorted(outliers['job_performance'].values)
+
+    fit = stats.norm.pdf(h, np.mean(h), np.std(h))
+
+    pl.plot(h,fit,'--')
+
+    pl.hist(h,normed=True) 
+
+    pl.title(f"Distribution of Job Performance Scores in Outlier values")
+
+    pl.show()
+
+.. image:: /assets/data_visualizations/hist_dist_outliers.png
+    :width: 402px
+    :height: 264px
+    :alt: job performance outliers
+    :align: center
+
+Note that the outlier data are right skewed and not normally distributed, with a higher density towards the higher most values.
+
+Taking a look at ``outliers.head()`` and ``extremes.head()`` yields the same data points, meaning that, by definition, we have 4015 fringe values for the target variable 'job performance'. In some cases, we would like to further investigate this group of data points to for further insight into extreme variants in performance, but in this case, we will drop them.
+
+
+.. code-block:: python3
+
+    df.drop(outliers.index, inplace=True, axis=0)
+    print(f"New dataframe shape: {df.shape}")
+
+
+Output: ``New dataframe shape: (15985, 11)``.
+
+
+Plotting
+--------
+Let's assume that we already have our data loaded in as a dataframe from the previous post. We have some intuition in the real world as to socioeconomic and demographic characteristic variables might correlate to some of our target variable. Additional numeric features of interest include evaluated indices on work place competencies (i.e., usage of information technnology in line of employment, workplace influence, potential for workplace facilitated education, etc).
 
 We can plot histograms of the distribution of job performance scores by the country of the respondent:
 
@@ -41,11 +130,11 @@ We can plot histograms of the distribution of job performance scores by the coun
         
         h = sorted(country_grouped_df['job_performance'].values)
 
-        fit = stats.norm.pdf(h, np.mean(h), np.std(h))  #this is a fitting indeed
+        fit = stats.norm.pdf(h, np.mean(h), np.std(h))
 
         pl.plot(h,fit,'--')
 
-        pl.hist(h,normed=True)  #use this to draw histogram of your data
+        pl.hist(h,normed=True)
         
         pl.title(f"Distribution of Job Performance Scores by {country}")
                 
@@ -112,17 +201,7 @@ We can plot histograms of the distribution of job performance scores by the coun
     :alt: job performance by country JAP
     :align: center
 
-I've presented only a handful of plots of job performance score distributions against countries, however, this gives us a general understanding of how these scores vary between countries. To see whether these performance scores are truly statistically different between countries, we would have perform a statistical analyses, namely, the ANOVA test.
-
-.. code-block:: python3
-
-    from scipy.stats import statistical test
-    print(test score)
-        
-The conclusion of the test is....
-
-
-If we want to roll-up and filter by an even larger geographic aggregation, we can do so by applying the same logic to the 'ctryrgn' variable, which ahs a total of 4  categories (NA and Central Europe; Central and Eastern Europe; East Asian and Pacific; and Latin America and the Carribean):
+If we want to roll-up and filter by an even larger geographic aggregation, we can do so by applying the same logic to the 'ctryrgn' variable, which has a total of 4  categories (NA and Central Europe; Central and Eastern Europe; East Asian and Pacific; and Latin America and the Carribean):
 
 .. code-block:: python3
 
@@ -139,45 +218,112 @@ If we want to roll-up and filter by an even larger geographic aggregation, we ca
         
         h = sorted(region_grouped_df['job_performance'].values)
 
-        fit = stats.norm.pdf(h, np.mean(h), np.std(h))  #this is a fitting indeed
+        fit = stats.norm.pdf(h, np.mean(h), np.std(h))
 
         pl.plot(h,fit,'--')
 
-        pl.hist(h,normed=True)  #use this to draw histogram of your data
+        pl.hist(h,normed=True)
         
         pl.title(f"Distribution of Job Performance Scores by {region}")
                 
         pl.show()
 
 
- .. image:: /assets/data_visualizations/hist_jps_region_NA_WE.png
+.. image:: /assets/data_visualizations/hist_jps_region_NA_WE.png
     :width: 402px
     :height: 264px
     :alt: histogram job performance by region North American and Western Europe
     :align: center
 
- .. image:: /assets/data_visualizations/hist_jps_region_CEE.png
+.. image:: /assets/data_visualizations/hist_jps_region_CEE.png
     :width: 402px
     :height: 264px
     :alt: histogram job performance by region Central and Eastern Europe
     :align: center
 
- .. image:: /assets/data_visualizations/hist_jps_region_EAP.png
+.. image:: /assets/data_visualizations/hist_jps_region_EAP.png
     :width: 402px
     :height: 264px
     :alt: histogram job performance by East Asia and the Pacific
     :align: center
 
- .. image:: /assets/data_visualizations/hist_jps_region_LAC.png
+.. image:: /assets/data_visualizations/hist_jps_region_LAC.png
     :width: 402px
     :height: 264px
     :alt: histogram job performance by Latin America and the Carribean
     :align: center
 
 
- Here we can see an overarching trend. That is, visually, the distribution of ....
+Here we can see an overarching trend. That is, visually, the distribution of the East Asia and Pacific regions typically have higher mean job performance scores. We can also see that there is more variability in the job performance scores of those in the Latin and Carribean regions, than the rest of the other regions, which approximately exemplify a normal distribution. 
+
+I've presented only a handful of plots of job performance score distributions against regions, however, this gives us a general understanding of how these scores vary between regions. To see whether these performance scores are truly statistically different between regions, we would have perform a statistical analyses, eitherthe Kruskal-Wallis H-test(Non-parametric version of ANOVA), or ANOVA. The ANOVA test makes some assumptions and is sensitive to the effects of homoscedasticity (same variance among groups). Therefore, we test the assumptions first before we pick a statistical method to select.
+
+We test homoscedasticity (pip install the pingouin statistical library in python if you haven't already):
+
+.. code-block:: python3
+
+    from pingouin import homoscedasticity
+
+    levene_test = homoscedasticity(data=df, dv='job_performance', group='ctryrgn')
+    bartlett_test = homoscedasticity(data=df, dv='job_performance', method='bartlett', group='ctryrgn')
+
+    print(levene_test)
+    print(bartlett_test)
+
+
+::
+
+                W          pval  equal_var
+    levene  18.237  8.274316e-12      False
+                T          pval  equal_var
+    bartlett  53.207  1.656381e-11      False
+    
+
+We see that we do not meet the criteria for homoscedasticity, and therefore we must use a more robust test like the Kruskal-Wallis H-test.
+
+We can take a look at the medians visually first to have an idea of centrality of job performance scores between region groups.
+
+
+.. code-block:: python3
+
+    df.groupby('ctryrgn').job_performance.median()
+    df.groupby('ctryrgn').job_performance.median().plot(kind='bar')
+
+
+::
+
+    ctryrgn
+    Central and Eastern Europe                      2958.906281
+    East Asia and the Pacific (richer countries)    3099.385517
+    Latin America and the Caribbean                 2938.909632
+    North America and Western Europe                3058.351212
+    Name: job_performance, dtype: float64
+
+
+.. image:: /assets/data_visualizations/median_hist_by_region.png
+    :width: 402px
+    :height: 264px
+    :alt: barplot of median job performance by region
+    :align: center
+
+
+Therefore, we compute the Kruskal-Wallis H-test, which tests whether the population measurements for job performance are equal between groups of regions:
+
+
+.. code-block:: python3
+
+    from pingouin import kruskal
+
+    kruskal_test = kruskal(data=df, dv='job_performance', between='ctryrgn')
+
+    print(krusktal_test)
+
+
+The conclusion of the test is....
+
 
 Another set of interesting features are the measured competency indices. The measured index scores are features which measure ones ability in the work environment and home, in a variety of domains (reading, technological competency, etc). These measures are ordinally binned into 5 buckets - each constituting 20% of the score for that measure. We have to do a little bit of preprocessing before we can start doing any vizualization, otherwise some of the methods would not work.
+
 
 .. code-block:: python3
 
@@ -308,3 +454,4 @@ To sum it up, ... In the next post on  `data dropping <{filename}./sharpestminds
         - if the values are indeed real outliers and extreme values, you can use median and IQR instead of mean and standard deviation because it is more robust to these types of values than range. 
         - median and IQR are a more robust way to describe central tendency in the presence of outliers and extreme values. 
         - you can use a scattter plot also to see outliers between two numeric variables quite easily. Bivariate outliers can have adverse impact on the Pearson correlation coefficient. If you notice a bivariate outlier, you might want to use a spearman ranked order correlation instead of a pearson correlation. 
+    Note that there are a small number of actual numeric features outside of the job performance metric.... you might wnat to visualize this this in terms of bar charts or a pie to indicate the proprotion of numeric data to the number of categorical discrete features...which will further infrom us what types of transformations might be necessary to analyse and work with this data.
