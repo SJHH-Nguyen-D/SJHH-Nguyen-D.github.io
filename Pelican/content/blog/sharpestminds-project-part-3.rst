@@ -19,7 +19,7 @@ If you are new to this post and would like some context, I'd highly suggest you 
 
 In the previous post, we loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the ``.info(), .isnull().sum(), .unique(), .value_counts()`` dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).
 
-In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. Data visualization allows use to use space, color, direction to achieve a higher level understanding of many points of data simultaneously, allowing us to visually grok patterns among the fine details of each data point. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. This post assumes that you have loaded the dataset from the previous posts and have imported all the depenencies. If you want follow along again with the complete code, you can do so `here <https://github.com/SJHH-Nguyen-D/sharpestminds_project>`_. So without further ado, let's get into it.
+In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. Data visualization allows use to use space, color, direction to achieve a higher level understanding of many points of data simultaneously, allowing us to visually grok patterns among the fine details of each data point. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. This post assumes that you have loaded the dataset from the previous posts and have imported all the depenencies. If you want follow along again with the complete code (preferrably run in a Jupyter IPython Notebook), you can do so `here <https://github.com/SJHH-Nguyen-D/sharpestminds_project>`_. So without further ado, let's get into it.
 
 ===================================
 More Data Exploratory Data Analysis
@@ -37,7 +37,103 @@ Before we delve into specific statistical tests, one neat Pandas trick I recentl
     pandas_profiling.ProfileReport(df)
 
 
-And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!
+The output is quite extensive, given the depth and breadth of our dataset so I will not include the details, but more information on the module is located at its `PYPI page <https://pypi.org/project/pandas-profiling/>`_. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!
+
+Quick and Dirty
+---------------
+
+When we get into some of our data, we can posit some easy to answer hypotheses based on some immediately understandable demographic characteristics. We can come right out of the gate and ask if there is a significant difference between the performance scores of male and female employees with the ``gender_r`` variable. We can do this first by visually with box plots and secondly by the student t-test of significant means.
+
+.. code-block:: python3
+
+    import seaborn as sns
+    from scipy.stats import ttest_ind
+    import matplotlib.pyplot as plt
+    %matplotlib inline
+
+    df['age_r'].fillna(df.age_r.median(), inplace=True)
+
+    sns.boxplot(x="gender_r", y="job_performance", data=df)
+    plt.show()
+
+    student_t_test = ttest_ind(df[df.gender_r=="Male"].job_performance.values, 
+        df[df.gender_r=="Female"].job_performance.values, 
+        axis=0, 
+        equal_var=True, 
+        nan_policy='propagate')
+
+    print(student_t_test)
+
+.. image:: /assets/data_visualizations/boxplot_gender_job_performance.png
+    :width: 708px
+    :height: 495px
+    :alt:  gender vs job performance boxplot
+    :align: center
+
+Output: ``Ttest_indResult(statistic=23.333439202279298, pvalue=1.922195290614619e-118)``
+
+Although there are some noteable outliers in this boxplot, we can reject the null hypothesis that there is not a significant difference in the job performance scores between the genders in this dataset, and that the mean job performance scores for males in this population have scored higher than the mean female job performance score.
+
+Another simple question we could be able to look at off the bat would be to examine if there is a difference in ages of the employees between males and females in this dataset.
+
+.. code-block:: python3
+
+    sns.boxplot(x="gender_r", y="age_r", data=df)
+    plt.show()
+
+    student_t_test = ttest_ind(df[df.gender_r=="Male"].age_r.values, 
+        df[df.gender_r=="Female"].age_r.values, 
+        axis=0, 
+        equal_var=True, 
+        nan_policy='propagate')
+
+    print(student_t_test)
+
+
+.. image:: /assets/data_visualizations/boxplot_gender_age.png
+    :width: 708px
+    :height: 495px
+    :alt:  gender vs age
+    :align: center
+
+Output: ``Ttest_indResult(statistic=23.333439202279298, pvalue=1.922195290614619e-118)``
+
+From this, we can also see that the mean ages of the participants in this dataset among the male and female groups also differ to a statistically significant extent (p-value=0.05). 
+
+We can also extend this intuitive exploration and hypothesis testing and visualization to employee education. First we will visualize the distribution of the job performance scores grouped by the three marked tiers of education (i.e., low, medium, and high), and then perform a non-parametric statistical test of significance of grouped median job performance scores:
+
+.. code-block:: python
+
+    # impute small number of missing values with the most frequent value
+    df.edlevel3.fillna(value=df.edlevel3.value_counts().nlargest(1).index[0], inplace=True)
+
+    categories = ['Low', 'Medium', 'High']
+
+    for i in df.columns[df.columns != 'job_performance']:
+        ordered_categorical_object = pd.Categorical(i, categories=categories, ordered=True) # create categorical object
+        df[i] = df[i].astype(ordered_categorical_object) # use .astype to columns to categorical feature
+
+    sns.boxplot(x="edlevel3", y="job_performance", data=df, order=["Low", "Medium", "High"])
+    plt.show()
+
+    from scipy.stats.mstats import kruskalwallis
+
+    kruskal_table = kruskalwallis(df[df.edlevel3 == "Low"].job_performance.values, 
+                                df[df.edlevel3 == "Medium"].job_performance.values, 
+                                df[df.edlevel3 == "High"].job_performance.values)
+    print(kruskal_table)
+
+.. image:: /assets/data_visualizations/boxplot_education_job_performance.png
+    :width: 708px
+    :height: 495px
+    :alt:  education level vs job performance boxplot
+    :align: center
+
+Output: ``KruskalResult(statistic=846.3836603432501, pvalue=1.6222708699914698e-184)``
+
+If the boxplot wasn't obvious enough, the Kruskal-Wallis H-test says it all with that p-value. We reject the null hypothesis and conclude that the median job performance scores between the different education levels are significantly different, and we might be able to go further than that and conclude that the higher an employee's education, the higher they scored on their job performance score evaluation.
+
+That being said, we can probably conclude that these features should be tentatively kept the dataset until the preprocessing step, where we will decide what to do with this further.
 
 Outliers and Extremes
 ---------------------
@@ -211,46 +307,26 @@ If we want to roll-up and filter by an even larger geographic aggregation, we ca
     # impute small number of nan values with the most frequent category so that we can work with it temporarily
     df['ctryrgn'].fillna(value=df['ctryrgn'].value_counts().sort_values(ascending=False).index[0], inplace=True)
 
-
     for region in df['ctryrgn'].unique()[pd.Series(df['ctryrgn'].unique()).isnull() == False]:
         
+    import numpy as np
+    import scipy.stats as stats
+    import pylab as pl
+
+    for region in df['ctryrgn'].unique()[pd.Series(df['ctryrgn'].unique()).isnull() == False]:
         region_grouped_df = df[df['ctryrgn'] == region]
-        
         h = sorted(region_grouped_df['job_performance'].values)
-
-        fit = stats.norm.pdf(h, np.mean(h), np.std(h))
-
+        fit = stats.norm.pdf(h, np.mean(h), np.std(h))  #this is a fitting indeed
         pl.plot(h,fit,'--')
-
-        pl.hist(h,normed=True)
-        
-        pl.title(f"Distribution of Job Performance Scores by {region}")
-                
+        pl.hist(h,normed=True)  #use this to draw histogram of your data
+        pl.legend(df['ctryrgn'].unique())
+        pl.title(f"Distribution of Job Performance Scores by Region")
         pl.show()
 
-
-.. image:: /assets/data_visualizations/hist_jps_region_NA_WE.png
+.. image:: /assets/data_visualizations/hist_jps_region_ALL.png
     :width: 402px
     :height: 264px
-    :alt: histogram job performance by region North American and Western Europe
-    :align: center
-
-.. image:: /assets/data_visualizations/hist_jps_region_CEE.png
-    :width: 402px
-    :height: 264px
-    :alt: histogram job performance by region Central and Eastern Europe
-    :align: center
-
-.. image:: /assets/data_visualizations/hist_jps_region_EAP.png
-    :width: 402px
-    :height: 264px
-    :alt: histogram job performance by East Asia and the Pacific
-    :align: center
-
-.. image:: /assets/data_visualizations/hist_jps_region_LAC.png
-    :width: 402px
-    :height: 264px
-    :alt: histogram job performance by Latin America and the Carribean
+    :alt: histogram job performance by all regions
     :align: center
 
 
@@ -301,26 +377,28 @@ We can take a look at the medians visually first to have an idea of centrality o
 
 
 .. image:: /assets/data_visualizations/median_hist_by_region.png
-    :width: 402px
-    :height: 264px
+    :width: 384px
+    :height: 468px
     :alt: barplot of median job performance by region
     :align: center
 
 
 Therefore, we compute the Kruskal-Wallis H-test, which tests whether the population measurements for job performance are equal between groups of regions:
 
-
 .. code-block:: python3
 
-    from pingouin import kruskal
+    kruskal_table = kruskalwallis(df[df.ctryrgn == "North America and Western Europe"].job_performance.values, 
+                                df[df.ctryrgn == "Central and Eastern Europe"].job_performance.values, 
+                                df[df.ctryrgn == "East Asia and the Pacific (richer countries)"].job_performance.values,
+                                df[df.ctryrgn == "Latin America and the Caribbean"].job_performance.values)
+    print(kruskal_table)
 
-    kruskal_test = kruskal(data=df, dv='job_performance', between='ctryrgn')
+Output: ``KruskalResult(statistic=249.06502880278276, pvalue=1.0424276756331046e-53)``
 
-    print(krusktal_test)
+Given a p-value=0.05, we can reject the null-hypothesis that there is no difference between the medians of the job performance scores between the different regions of the world, and conclude that the median job performance scores among the regions are different. This means that the 'ctryrgn' region variable groups show a difference in their median job performance scores. Best to keep this feature in the dataset for now.
 
-
-The conclusion of the test is....
-
+Correlation Matrix
+------------------
 
 Another set of interesting features are the measured competency indices. The measured index scores are features which measure ones ability in the work environment and home, in a variety of domains (reading, technological competency, etc). These measures are ordinally binned into 5 buckets - each constituting 20% of the score for that measure. We have to do a little bit of preprocessing before we can start doing any vizualization, otherwise some of the methods would not work.
 
@@ -340,9 +418,8 @@ Another set of interesting features are the measured competency indices. The mea
         ordered_categorical_object = pd.Categorical(i, categories=categories, ordered=True)
         index_df[i] = index_df[i].astype(ordered_categorical_object)
 
-    
 
-Now that we have done some preparation with the data, we can examine these ordinal features and their central tendency with some data visualization in the form of boxplots:
+The same features are also available in the data set as numeric features, with some missing values.
 
 .. code-block:: python3
 
@@ -350,65 +427,21 @@ Now that we have done some preparation with the data, we can examine these ordin
     %matplotlib inline
     import matplotlib.pyplot as plt
 
-    fig, ax = plt.subplots()
-    for feature in performance_index_values:
-        fig = plt.figure()
-        plt.title("Job Performance by {}".format(feature))
-        sns.boxplot(x=feature, y="job_performance", data=index_df, linewidth=2.5, order=categories)
+    indices_of_performance = ["readytolearn", "icthome", "ictwork", "influence", "planning", "readhome", "readwork", "taskdisc", "writhome", "writwork"]
+
+    for i in indices_of_performance:
+        df[i].fillna(df[i].median(), inplace=True)
+        
+    frame = df[indices_of_performance + ["job_performance"]]
+    corr = frame.corr()
+    sns.heatmap(corr, annot=True)
+    plt.show()
     
 
-.. image:: /assets/data_visualizations/boxplot_icthome.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by icthome
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_ictwork.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by ictwork
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_learnatwork.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by learnatwork
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_planning.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by planning
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_readtolearn.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by readtolearn
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_readhome.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by readhome
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_taskdisc.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by taskdisc
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_writhome.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by writhome
-    :align: center
-
-.. image:: /assets/data_visualizations/boxplot_writwork.png
-    :width: 402px
-    :height: 264px
-    :alt: box plot job performance by writwork
+.. image:: /assets/data_visualizations/heatmap_performance_indices.png
+    :width: 721px
+    :height: 568px
+    :alt: heatmap of of job performance vs all indices of performance
     :align: center
 
 
