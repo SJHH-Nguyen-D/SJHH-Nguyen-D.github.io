@@ -16,6 +16,7 @@ PAGE_URL = 'pages/{slug}.html'
 PAGE_SAVE_AS = 'pages/{slug}.html'
 YEAR_ARCHIVE_SAVE_AS = '{date:%Y}/index.html'
 MONTH_ARCHIVE_SAVE_AS = '{date:%Y}/{date:%m}/index.html'
+ARTICLE_EXCLUDES  = ['assets/exclude/']
 # PAGE_PATHS = ['pages']
 # ARTICLE_PATHS = ['blog']
 

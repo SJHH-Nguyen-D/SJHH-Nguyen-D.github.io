@@ -36,7 +36,7 @@ Before we delve into specific statistical tests, one neat Pandas trick I recentl
 
     pandas_profiling.ProfileReport(df)
 
-A link to the generate report can generated report can be viewed at the generated HTML document.
+A link to the generate report can generated report can be viewed at the generated HTML link.
 
 The output is quite extensive and very detailed, given the depth and breadth of our dataset so I will not include the details within the body of this post, but more information on the module is located at its `PYPI page <https://pypi.org/project/pandas-profiling/>`_. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!
 
@@ -238,10 +238,10 @@ Outlier and extreme cases are fringe cases with measurement values that have an 
         return outliers, extremes
 
     interquartile_range = iqr(df['job_performance'], axis=0, rng=(25, 75), scale='raw', nan_policy='propagate', interpolation='linear', keepdims=False)
-    print(f"The interquartile range of the job performance scores is: {interquartile_range}")
+    print(f"The IQR of the job performance scores is: {interquartile_range}")
 
 
-Output: ``The interquartile range of the job performance scores is: 562.7908287543005``. 
+Output: ``The IQR of the job performance scores is: 562.7908287543005``. 
 
 With our ``get_outliers_and_extremes`` function, we can look at the data points that quantify as outliers.
 

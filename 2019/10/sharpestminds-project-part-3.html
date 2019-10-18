@@ -151,7 +151,7 @@
 
 <span class="n">pandas_profiling</span><span class="o">.</span><span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
-<p>A link to the generate report can generated report can be viewed at the generated HTML document.</p>
+<p>A link to the generate report can generated report can be viewed at the generated HTML link.</p>
 <p>The output is quite extensive and very detailed, given the depth and breadth of our dataset so I will not include the details within the body of this post, but more information on the module is located at its <a class="reference external" href="https://pypi.org/project/pandas-profiling/">PYPI page</a>. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!</p>
 </div>
 <div class="section" id="quick-and-dirty-numeric-variables">
@@ -291,9 +291,9 @@ Medium                                                  <span class="m">130</spa
     <span class="k">return</span> <span class="n">outliers</span><span class="p">,</span> <span class="n">extremes</span>
 
 <span class="n">interquartile_range</span> <span class="o">=</span> <span class="n">iqr</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="s1">&#39;raw&#39;</span><span class="p">,</span> <span class="n">nan_policy</span><span class="o">=</span><span class="s1">&#39;propagate&#39;</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;The interquartile range of the job performance scores is: </span><span class="si">{interquartile_range}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;The IQR of the job performance scores is: </span><span class="si">{interquartile_range}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
-<p>Output: <tt class="docutils literal">The interquartile range of the job performance scores is: 562.7908287543005</tt>.</p>
+<p>Output: <tt class="docutils literal">The IQR of the job performance scores is: 562.7908287543005</tt>.</p>
 <p>With our <tt class="docutils literal">get_outliers_and_extremes</tt> function, we can look at the data points that quantify as outliers.</p>
 <div class="highlight"><pre><span></span><span class="n">outliers</span><span class="p">,</span> <span class="n">extremes</span> <span class="o">=</span> <span class="n">get_outliers_and_extremes</span><span class="p">(</span><span class="n">index_df</span><span class="p">,</span> <span class="s1">&#39;job_performance&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{outliers.shape[0]}</span><span class="s2"> outlier values and </span><span class="si">{extremes.shape[0]}</span><span class="s2"> extreme values&quot;</span><span class="p">)</span>
