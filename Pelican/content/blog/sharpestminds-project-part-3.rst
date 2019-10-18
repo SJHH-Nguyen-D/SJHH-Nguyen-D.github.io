@@ -36,7 +36,7 @@ Before we delve into specific statistical tests, one neat Pandas trick I recentl
 
     pandas_profiling.ProfileReport(df)
 
-A link to the generate report can generated report can be viewed at the generated HTML link.
+A link to the generate report can generated report can be viewed at the generated html `link <https//sjhh-nguyen-d.github.io/dataframe_profiling_report.html>`_.
 
 The output is quite extensive and very detailed, given the depth and breadth of our dataset so I will not include the details within the body of this post, but more information on the module is located at its `PYPI page <https://pypi.org/project/pandas-profiling/>`_. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!
 
