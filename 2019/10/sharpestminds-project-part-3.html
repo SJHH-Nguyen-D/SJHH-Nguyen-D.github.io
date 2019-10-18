@@ -151,13 +151,11 @@
 
 <span class="n">pandas_profiling</span><span class="o">.</span><span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
-<p>A link to the generate report can generated report can be viewed <a class="reference external" href="{filename}../dataframe_profiling_report.html">here</a>.</p>
+<p>A link to the generate report can generated report can be viewed at the generated HTML document.</p>
 <p>The output is quite extensive and very detailed, given the depth and breadth of our dataset so I will not include the details within the body of this post, but more information on the module is located at its <a class="reference external" href="https://pypi.org/project/pandas-profiling/">PYPI page</a>. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!</p>
 </div>
-<div class="section" id="quick-and-dirty">
-<h4>Quick and Dirty</h4>
-<div class="section" id="numeric-variables">
-<h5>Numeric Variables</h5>
+<div class="section" id="quick-and-dirty-numeric-variables">
+<h4>Quick and Dirty - Numeric Variables</h4>
 <p>When we get into some of our data, we can posit some easy to answer hypotheses based on some immediately understandable demographic characteristics. We can come right out of the gate and ask if there is a significant difference between the performance scores of male and female employees with the <tt class="docutils literal">gender_r</tt> variable. We can do this first by visually with box plots and secondly by the student t-test of significant means.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">ttest_ind</span>
@@ -219,8 +217,8 @@
 <p>Output: <tt class="docutils literal">KruskalResult(statistic=846.3836603432501, <span class="pre">pvalue=1.6222708699914698e-184)</span></tt></p>
 <p>If the boxplot wasn't obvious enough, the Kruskal-Wallis H-test says it all with that p-value. We reject the null hypothesis and conclude that the median job performance scores between the different education levels are significantly different, and we might be able to go further than that and conclude that the higher an employee's education, the higher they scored on their job performance score evaluation.</p>
 </div>
-<div class="section" id="categorical-variables">
-<h5>Categorical Variables</h5>
+<div class="section" id="quick-and-dirty-categorical-variables">
+<h4>Quick and Dirty - Categorical Variables</h4>
 <p>We've had a look at some relationships between numeric features through visualizations and hypothesis testing using statistical methods. We can do the same for some of our categorical features of interest, albeit with statistically appropriate tests.</p>
 <p>We can ask the question, &quot;Is there an association between education level and employment sector type?&quot;. We can first visualize the plots of these two variables and then use the chi-square test of independence to determine whether or not the association is statistically significant.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -240,8 +238,8 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Count plot of Occupational Sector&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<img alt="countplot of edlevel3 feature" class="align-center" src="/assets/data_visualizations/countplot_educationlevel.png" style="width: 405px; height: 201px;" />
-<img alt="countplot of occupational sector" class="align-center" src="/assets/data_visualizations/countplot_occupation_level.png" style="width: 561px; height: 281px;" />
+<img alt="countplot of edlevel3 feature" class="align-center" src="/assets/data_visualizations/countplot_educationlevel.png" style="width: 405px; height: 281px;" />
+<img alt="countplot of occupational sector" class="align-center" src="/assets/data_visualizations/countplot_occupation_sector.png" style="width: 561px; height: 281px;" />
 <p>Based on these two count plots, one might think it reasonable to assume that education level has some bearing on the occupational sector that an employee might work in. In the form of a statistical question, we might posit a null hypothesis stating that there is no correlation between education level and occupational sector. We can perform a chi-squared test of independence with an alpha value of 0.05 and run this code:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pingouin</span> <span class="k">import</span> <span class="n">chi2_independence</span>
 <span class="kn">import</span> <span class="nn">pprint</span>
@@ -275,7 +273,6 @@ Medium                                                  130                     
 </pre>
 <p>With an alpha of 0.05, and the plot of the</p>
 <p>That being said, we can probably conclude that these features should be tentatively kept in the dataset until the preprocessing step, where we will decide what to do with this further.</p>
-</div>
 </div>
 <div class="section" id="outliers-and-extremes">
 <h4>Outliers and Extremes</h4>
@@ -464,6 +461,8 @@ Name: job_performance, dtype: float64
 <div class="section" id="conclusion">
 <h4>Conclusion</h4>
 <p>To sum it up, we've been able to use data visualization to understand our categorical and numeric data on a higher level through visual pattern representations (histograms, bar graphs, boxplots). In addition to this, we've also been able to use hypothesis testing using data appropriate statistical tests (student t-test, ANOVA, Levene and Bartlett test, Kruskal-Wallis test) to determine whether or not that some of measurement differences we observe in our visualizations are statistically significant. Using the handy <tt class="docutils literal"><span class="pre">pandas-profiling</span></tt> module that was featured, which gave a detailed profile account of our dataset, we can further use it to help us make decisions to feature selection and preprocessing. In the next post on  <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">data dropping</a>, we will begin the preprocessing step of our data science pipeline. Until then, ciao!</p>
+<!-- todo:
+`here <{filename}../dataframe_profiling_report.html>`_ -> download pandas profiling html and link to generated html in browser -->
 </div>
 </div>
 </div>

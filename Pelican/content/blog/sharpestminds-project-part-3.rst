@@ -36,16 +36,14 @@ Before we delve into specific statistical tests, one neat Pandas trick I recentl
 
     pandas_profiling.ProfileReport(df)
 
-A link to the generate report can generated report can be viewed `here <{filename}../dataframe_profiling_report.html>`_.
+A link to the generate report can generated report can be viewed at the generated HTML document.
 
 The output is quite extensive and very detailed, given the depth and breadth of our dataset so I will not include the details within the body of this post, but more information on the module is located at its `PYPI page <https://pypi.org/project/pandas-profiling/>`_. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!
 
 
-Quick and Dirty
----------------
+Quick and Dirty - Numeric Variables
+-----------------------------------
 
-Numeric Variables
-*****************
 
 When we get into some of our data, we can posit some easy to answer hypotheses based on some immediately understandable demographic characteristics. We can come right out of the gate and ask if there is a significant difference between the performance scores of male and female employees with the ``gender_r`` variable. We can do this first by visually with box plots and secondly by the student t-test of significant means.
 
@@ -138,8 +136,8 @@ Output: ``KruskalResult(statistic=846.3836603432501, pvalue=1.6222708699914698e-
 
 If the boxplot wasn't obvious enough, the Kruskal-Wallis H-test says it all with that p-value. We reject the null hypothesis and conclude that the median job performance scores between the different education levels are significantly different, and we might be able to go further than that and conclude that the higher an employee's education, the higher they scored on their job performance score evaluation.
 
-Categorical Variables
-*********************
+Quick and Dirty - Categorical Variables
+---------------------------------------
 
 We've had a look at some relationships between numeric features through visualizations and hypothesis testing using statistical methods. We can do the same for some of our categorical features of interest, albeit with statistically appropriate tests.
 
@@ -167,11 +165,11 @@ We can ask the question, "Is there an association between education level and em
 
 .. image:: /assets/data_visualizations/countplot_educationlevel.png
     :width: 405px
-    :height: 201px
+    :height: 281px
     :alt: countplot of edlevel3 feature
     :align: center
 
-.. image:: /assets/data_visualizations/countplot_occupation_level.png
+.. image:: /assets/data_visualizations/countplot_occupation_sector.png
     :width: 561px
     :height: 281px
     :alt: countplot of occupational sector
@@ -539,3 +537,6 @@ Conclusion
 ----------
 
 To sum it up, we've been able to use data visualization to understand our categorical and numeric data on a higher level through visual pattern representations (histograms, bar graphs, boxplots). In addition to this, we've also been able to use hypothesis testing using data appropriate statistical tests (student t-test, ANOVA, Levene and Bartlett test, Kruskal-Wallis test) to determine whether or not that some of measurement differences we observe in our visualizations are statistically significant. Using the handy ``pandas-profiling`` module that was featured, which gave a detailed profile account of our dataset, we can further use it to help us make decisions to feature selection and preprocessing. In the next post on  `data dropping <{filename}./sharpestminds-project-part-4.rst>`_, we will begin the preprocessing step of our data science pipeline. Until then, ciao!
+
+.. todo: 
+    `here <{filename}../dataframe_profiling_report.html>`_ -> download pandas profiling html and link to generated html in browser
