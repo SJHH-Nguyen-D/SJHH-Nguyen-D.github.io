@@ -248,29 +248,28 @@
 <span class="n">chi2_test</span> <span class="o">=</span> <span class="n">chi2_independence</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;edlevel3&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;v140&quot;</span><span class="p">,</span> <span class="n">correction</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">chi2_test</span><span class="p">)</span>
 </pre></div>
-<pre class="literal-block">
-(   v140      A non-profit organisation (for example a charity, professional association or religious organisation)  ...  The public sector (for example the local government or a state school)
+<div class="highlight"><pre><span></span><span class="o">(</span>   v140      A non-profit organisation <span class="o">(</span><span class="k">for</span> example a charity, professional association or religious organisation<span class="o">)</span>  ...  The public sector <span class="o">(</span><span class="k">for</span> example the <span class="nb">local</span> government or a state school<span class="o">)</span>
 edlevel3                                                                                                         ...
-High                                             272.544510                                                      ...                                        1815.627401
-Low                                               13.527682                                                      ...                                          90.118236
-Medium                                           121.927807                                                      ...                                         812.254363
+High                                             <span class="m">272</span>.544510                                                      ...                                        <span class="m">1815</span>.627401
+Low                                               <span class="m">13</span>.527682                                                      ...                                          <span class="m">90</span>.118236
+Medium                                           <span class="m">121</span>.927807                                                      ...                                         <span class="m">812</span>.254363
 
-[3 rows x 3 columns],
-    v140      A non-profit organisation (for example a charity, professional association or religious organisation)  ...  The public sector (for example the local government or a state school)
+<span class="o">[</span><span class="m">3</span> rows x <span class="m">3</span> columns<span class="o">]</span>,
+    v140      A non-profit organisation <span class="o">(</span><span class="k">for</span> example a charity, professional association or religious organisation<span class="o">)</span>  ...  The public sector <span class="o">(</span><span class="k">for</span> example the <span class="nb">local</span> government or a state school<span class="o">)</span>
 edlevel3                                                                                                         ...
-High                                                    278                                                      ...                                               2166
-Low                                                       0                                                      ...                                                 33
-Medium                                                  130                                                      ...                                                519
+High                                                    <span class="m">278</span>                                                      ...                                               <span class="m">2166</span>
+Low                                                       <span class="m">0</span>                                                      ...                                                 <span class="m">33</span>
+Medium                                                  <span class="m">130</span>                                                      ...                                                <span class="m">519</span>
 
-[3 rows x 3 columns],
-                    test  lambda     chi2  dof             p    cramer  power
-0             pearson   1.000  271.473  4.0  1.535794e-57  0.092149    1.0
-1        cressie-read   0.667  280.714  4.0  1.563492e-59  0.093705    1.0
-2      log-likelihood   0.000  307.553  4.0  2.543601e-65  0.098082    1.0
-3       freeman-tukey  -0.500      NaN  4.0           NaN       NaN    NaN
-4  mod-log-likelihood  -1.000      inf  4.0  0.000000e+00       inf    1.0
-5              neyman  -2.000      NaN  4.0           NaN       NaN    NaN)
-</pre>
+<span class="o">[</span><span class="m">3</span> rows x <span class="m">3</span> columns<span class="o">]</span>,
+                    <span class="nb">test</span>  lambda     chi2  dof             p    cramer  power
+<span class="m">0</span>             pearson   <span class="m">1</span>.000  <span class="m">271</span>.473  <span class="m">4</span>.0  <span class="m">1</span>.535794e-57  <span class="m">0</span>.092149    <span class="m">1</span>.0
+<span class="m">1</span>        cressie-read   <span class="m">0</span>.667  <span class="m">280</span>.714  <span class="m">4</span>.0  <span class="m">1</span>.563492e-59  <span class="m">0</span>.093705    <span class="m">1</span>.0
+<span class="m">2</span>      log-likelihood   <span class="m">0</span>.000  <span class="m">307</span>.553  <span class="m">4</span>.0  <span class="m">2</span>.543601e-65  <span class="m">0</span>.098082    <span class="m">1</span>.0
+<span class="m">3</span>       freeman-tukey  -0.500      NaN  <span class="m">4</span>.0           NaN       NaN    NaN
+<span class="m">4</span>  mod-log-likelihood  -1.000      inf  <span class="m">4</span>.0  <span class="m">0</span>.000000e+00       inf    <span class="m">1</span>.0
+<span class="m">5</span>              neyman  -2.000      NaN  <span class="m">4</span>.0           NaN       NaN    NaN<span class="o">)</span>
+</pre></div>
 <p>With an alpha of 0.05, and the plot of the</p>
 <p>That being said, we can probably conclude that these features should be tentatively kept in the dataset until the preprocessing step, where we will decide what to do with this further.</p>
 </div>

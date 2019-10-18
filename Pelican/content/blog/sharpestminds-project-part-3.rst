@@ -186,7 +186,7 @@ Based on these two count plots, one might think it reasonable to assume that edu
     chi2_test = chi2_independence(data=df, x="edlevel3", y="v140", correction=True)
     pp.pprint(chi2_test)
 
-::
+.. code-block:: bash
 
     (   v140      A non-profit organisation (for example a charity, professional association or religious organisation)  ...  The public sector (for example the local government or a state school)
     edlevel3                                                                                                         ...                                                                        
