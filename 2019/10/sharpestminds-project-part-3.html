@@ -141,20 +141,23 @@
 <li><a class="reference external" href="/2019/10/sharpestminds-project-part-2.html">Part 2 - Background, Loading, EDA</a></li>
 </ul>
 <p>In the previous post, we loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the <tt class="docutils literal"><span class="pre">.info(),</span> <span class="pre">.isnull().sum(),</span> <span class="pre">.unique(),</span> .value_counts()</tt> dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).</p>
-<p>In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. Data visualization allows use to use space, color, direction to achieve a higher level understanding of many points of data simultaneously, allowing us to visually grok patterns among the fine details of each data point. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. This post assumes that you have loaded the dataset from the previous posts and have imported all the depenencies. If you want follow along again with the complete code (preferrably run in a Jupyter IPython Notebook), you can do so <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds_project">here</a>. So without further ado, let's get into it.</p>
+<p>In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. Data visualization allows use to use space, color, direction to achieve a higher level understanding of many points of data simultaneously, allowing us to visually grok patterns among the fine details of each data point. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. This post assumes that you have loaded the dataset from the previous posts and have imported all the dependencies. If you want follow along again with the complete code (preferrably run in a Jupyter IPython Notebook), you can do <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds_project">so</a>. So without further ado, let's get into it.</p>
 <div class="section" id="more-data-exploratory-data-analysis">
 <h3>More Data Exploratory Data Analysis</h3>
 <div class="section" id="high-level-profiling">
 <h4>High Level Profiling</h4>
-<p>Before we delve into specific statistical tests, one neat Pandas trick I recently learned allows one to quickly profile a dataframe without delving into it too much specifically. This method is available throught the <tt class="docutils literal">pandas_profiling</tt> library and must be pip installed. With just a few lines of code, you can quickly spin up an HTML that does high level, powerful, stylish profiling of your dataset before anything is done!</p>
+<p>Before we delve into specific statistical tests, one neat Pandas trick I recently learned allows one to quickly profile a dataframe without delving into it too much specifically. This method is available through the <tt class="docutils literal">pandas_profiling</tt> library and must be pip installed with <tt class="docutils literal">pip install <span class="pre">pandas-profiling</span> &amp;&amp; pip install <span class="pre">--upgrade</span> <span class="pre">pandas-profiling</span></tt>. With just a few lines of code, you can quickly spin up an HTML that does high level, powerful, stylish profiling of your dataset before anything is done!</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas_profiling</span>
 
 <span class="n">pandas_profiling</span><span class="o">.</span><span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
-<p>The output is quite extensive, given the depth and breadth of our dataset so I will not include the details, but more information on the module is located at its <a class="reference external" href="https://pypi.org/project/pandas-profiling/">PYPI page</a>. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!</p>
+<p>A link to the generate report can generated report can be viewed <a class="reference external" href="{filename}../dataframe_profiling_report.html">here</a>.</p>
+<p>The output is quite extensive and very detailed, given the depth and breadth of our dataset so I will not include the details within the body of this post, but more information on the module is located at its <a class="reference external" href="https://pypi.org/project/pandas-profiling/">PYPI page</a>. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!</p>
 </div>
 <div class="section" id="quick-and-dirty">
 <h4>Quick and Dirty</h4>
+<div class="section" id="numeric-variables">
+<h5>Numeric Variables</h5>
 <p>When we get into some of our data, we can posit some easy to answer hypotheses based on some immediately understandable demographic characteristics. We can come right out of the gate and ask if there is a significant difference between the performance scores of male and female employees with the <tt class="docutils literal">gender_r</tt> variable. We can do this first by visually with box plots and secondly by the student t-test of significant means.</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">ttest_ind</span>
@@ -189,7 +192,7 @@
 
 <span class="nb">print</span><span class="p">(</span><span class="n">student_t_test</span><span class="p">)</span>
 </pre></div>
-<img alt="gender vs age" class="align-center" src="/assets/data_visualizations/boxplot_gender_age.png" style="width: 708px; height: 495px;" />
+<img alt="gender vs age boxplot" class="align-center" src="/assets/data_visualizations/boxplot_gender_age.png" style="width: 708px; height: 495px;" />
 <p>Output: <tt class="docutils literal">Ttest_indResult(statistic=23.333439202279298, <span class="pre">pvalue=1.922195290614619e-118)</span></tt></p>
 <p>From this, we can also see that the mean ages of the participants in this dataset among the male and female groups also differ to a statistically significant extent (p-value=0.05).</p>
 <p>We can also extend this intuitive exploration and hypothesis testing and visualization to employee education. First we will visualize the distribution of the job performance scores grouped by the three marked tiers of education (i.e., low, medium, and high), and then perform a non-parametric statistical test of significance of grouped median job performance scores:</p>
@@ -215,7 +218,64 @@
 <img alt="education level vs job performance boxplot" class="align-center" src="/assets/data_visualizations/boxplot_education_job_performance.png" style="width: 708px; height: 495px;" />
 <p>Output: <tt class="docutils literal">KruskalResult(statistic=846.3836603432501, <span class="pre">pvalue=1.6222708699914698e-184)</span></tt></p>
 <p>If the boxplot wasn't obvious enough, the Kruskal-Wallis H-test says it all with that p-value. We reject the null hypothesis and conclude that the median job performance scores between the different education levels are significantly different, and we might be able to go further than that and conclude that the higher an employee's education, the higher they scored on their job performance score evaluation.</p>
-<p>That being said, we can probably conclude that these features should be tentatively kept the dataset until the preprocessing step, where we will decide what to do with this further.</p>
+</div>
+<div class="section" id="categorical-variables">
+<h5>Categorical Variables</h5>
+<p>We've had a look at some relationships between numeric features through visualizations and hypothesis testing using statistical methods. We can do the same for some of our categorical features of interest, albeit with statistically appropriate tests.</p>
+<p>We can ask the question, &quot;Is there an association between education level and employment sector type?&quot;. We can first visualize the plots of these two variables and then use the chi-square test of independence to determine whether or not the association is statistically significant.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+
+<span class="c1"># quickly impute the most frequent values for the few missing values in the occupation sector feature</span>
+<span class="n">df</span><span class="o">.</span><span class="n">edlevel3</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">edlevel3</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">v140</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">v140</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;edlevel3&#39;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="p">,</span> <span class="n">palette</span> <span class="o">=</span> <span class="s1">&#39;magma&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Low&quot;</span><span class="p">,</span> <span class="s2">&quot;Medium&quot;</span><span class="p">,</span> <span class="s2">&quot;High&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Count plot of Education Level&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;v140&#39;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="p">,</span> <span class="n">palette</span> <span class="o">=</span> <span class="s2">&quot;Blues&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Count plot of Occupational Sector&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+<img alt="countplot of edlevel3 feature" class="align-center" src="/assets/data_visualizations/countplot_educationlevel.png" style="width: 405px; height: 201px;" />
+<img alt="countplot of occupational sector" class="align-center" src="/assets/data_visualizations/countplot_occupation_level.png" style="width: 561px; height: 281px;" />
+<p>Based on these two count plots, one might think it reasonable to assume that education level has some bearing on the occupational sector that an employee might work in. In the form of a statistical question, we might posit a null hypothesis stating that there is no correlation between education level and occupational sector. We can perform a chi-squared test of independence with an alpha value of 0.05 and run this code:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pingouin</span> <span class="k">import</span> <span class="n">chi2_independence</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">chi2_test</span> <span class="o">=</span> <span class="n">chi2_independence</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;edlevel3&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;v140&quot;</span><span class="p">,</span> <span class="n">correction</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">chi2_test</span><span class="p">)</span>
+</pre></div>
+<pre class="literal-block">
+(   v140      A non-profit organisation (for example a charity, professional association or religious organisation)  ...  The public sector (for example the local government or a state school)
+edlevel3                                                                                                         ...
+High                                             272.544510                                                      ...                                        1815.627401
+Low                                               13.527682                                                      ...                                          90.118236
+Medium                                           121.927807                                                      ...                                         812.254363
+
+[3 rows x 3 columns],
+    v140      A non-profit organisation (for example a charity, professional association or religious organisation)  ...  The public sector (for example the local government or a state school)
+edlevel3                                                                                                         ...
+High                                                    278                                                      ...                                               2166
+Low                                                       0                                                      ...                                                 33
+Medium                                                  130                                                      ...                                                519
+
+[3 rows x 3 columns],
+                    test  lambda     chi2  dof             p    cramer  power
+0             pearson   1.000  271.473  4.0  1.535794e-57  0.092149    1.0
+1        cressie-read   0.667  280.714  4.0  1.563492e-59  0.093705    1.0
+2      log-likelihood   0.000  307.553  4.0  2.543601e-65  0.098082    1.0
+3       freeman-tukey  -0.500      NaN  4.0           NaN       NaN    NaN
+4  mod-log-likelihood  -1.000      inf  4.0  0.000000e+00       inf    1.0
+5              neyman  -2.000      NaN  4.0           NaN       NaN    NaN)
+</pre>
+<p>With an alpha of 0.05, and the plot of the</p>
+<p>That being said, we can probably conclude that these features should be tentatively kept in the dataset until the preprocessing step, where we will decide what to do with this further.</p>
+</div>
 </div>
 <div class="section" id="outliers-and-extremes">
 <h4>Outliers and Extremes</h4>
@@ -322,8 +382,8 @@
     <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <img alt="histogram job performance by all regions" class="align-center" src="/assets/data_visualizations/hist_jps_region_ALL.png" style="width: 402px; height: 264px;" />
-<p>Here we can see an overarching trend. That is, visually, the distribution of the East Asia and Pacific regions typically have higher mean job performance scores. We can also see that there is more variability in the job performance scores of those in the Latin and Carribean regions, than the rest of the other regions, which approximately exemplify a normal distribution.</p>
-<p>I've presented only a handful of plots of job performance score distributions against regions, however, this gives us a general understanding of how these scores vary between regions. To see whether these performance scores are truly statistically different between regions, we would have perform a statistical analyses, eitherthe Kruskal-Wallis H-test(Non-parametric version of ANOVA), or ANOVA. The ANOVA test makes some assumptions and is sensitive to the effects of homoscedasticity (same variance among groups). Therefore, we test the assumptions first before we pick a statistical method to select.</p>
+<p>Here we can see the distribution of the East Asia and Pacific regions typically have higher mean job performance scores. We can also see that there is more variability in the job performance scores of those in the Latin and Carribean region (a bimodal distribution), than the rest of the other regions, which approximately exemplify a normal distribution.</p>
+<p>I've presented only a handful of plots of job performance score distributions against regions, however, this gives us a general understanding of how these scores vary between regions. To see whether these performance scores are truly statistically different between regions, we would have perform a statistical analyses, either the Kruskal-Wallis H-test or ANOVA. The ANOVA test makes some assumptions and is sensitive to the effects of homoscedasticity (same variance among groups). Therefore, we test the assumptions first before we pick a statistical method to select.</p>
 <p>We test homoscedasticity (pip install the pingouin statistical library in python if you haven't already):</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pingouin</span> <span class="k">import</span> <span class="n">homoscedasticity</span>
 
@@ -339,7 +399,7 @@ levene  18.237  8.274316e-12      False
             T          pval  equal_var
 bartlett  53.207  1.656381e-11      False
 </pre>
-<p>We see that we do not meet the criteria for homoscedasticity, and therefore we must use a more robust test like the Kruskal-Wallis H-test.</p>
+<p>We see that we do not meet the criteria for homoscedasticity, and therefore we must default to a more robust test like the Kruskal-Wallis H-test.</p>
 <p>We can take a look at the medians visually first to have an idea of centrality of job performance scores between region groups.</p>
 <div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">job_performance</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
 <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">job_performance</span><span class="o">.</span><span class="n">median</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span>
@@ -361,7 +421,7 @@ Name: job_performance, dtype: float64
 <span class="nb">print</span><span class="p">(</span><span class="n">kruskal_table</span><span class="p">)</span>
 </pre></div>
 <p>Output: <tt class="docutils literal">KruskalResult(statistic=249.06502880278276, <span class="pre">pvalue=1.0424276756331046e-53)</span></tt></p>
-<p>Given a p-value=0.05, we can reject the null-hypothesis that there is no difference between the medians of the job performance scores between the different regions of the world, and conclude that the median job performance scores among the regions are different. This means that the 'ctryrgn' region variable groups show a difference in their median job performance scores. Best to keep this feature in the dataset for now.</p>
+<p>Given an alpha value of 0.05, we can reject the null-hypothesis that there is no difference between the medians of the job performance scores between the different regions of the world, and conclude that the median job performance scores among the regions are different. This means that the 'ctryrgn' region variable groups show a difference in their median job performance scores. Best to keep this feature in the dataset for now.</p>
 </div>
 <div class="section" id="correlation-matrix">
 <h4>Correlation Matrix</h4>
@@ -395,46 +455,15 @@ Name: job_performance, dtype: float64
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <img alt="heatmap of of job performance vs all indices of performance" class="align-center" src="/assets/data_visualizations/heatmap_performance_indices.png" style="width: 721px; height: 568px;" />
-<p>What we can gleen from this is ...</p>
+<p>What we can gleen from this heatmap of the correlation scores is that (much of it is intuitive):
+* One's index of planning and influence are highly correlated
+* Use of information, communication and technology at home is also highly correlated to one's writing and reading capabilities in a domestic setting
+* Intuitively, proficiency of use of information, communication and technology at home is also correlated and transferred to ICT use at work.
+* Literacy in reading at home is correlated to being able to write at home and at work.</p>
 </div>
 <div class="section" id="conclusion">
 <h4>Conclusion</h4>
-<p>To sum it up, ... In the next post on  <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">data dropping</a>, we will begin the preprocessing step of our data science pipeline</p>
-<!-- todo:
-statistical tests
-conclusory paragraph about what the next step of the project isEver wondered what your employee performance score would be? Part-3
-Ordinal/Categorical data/discrete:
-    - Frequencies, percentages, proportions
-    - central tendency: mean, median, mode, interquartile range (which discribes variability between points)
-    - visualize: barchart, pie chart (not that in bar charts, the bars are disjoint to indicate that they are discrete quanitities of counts)
-    - the relatiionship between two categorical variables could be reduced to a single statitic such as a Phi coefficient or Cramer's V and tested for statistical significance using the chi squared test....but for the purpose of EDA, a contingency table is fine (counts or precentages).
-Continuous/numeric data:
-    - create an array of all the index variables; examine the missing values, impute or drop with them; correlation plots for each and job performance score.
-    - percentiles, median, interquartile range
-    - mean, median, mode,
-    - standard deviation, variance, range, IQR
-    - visualization: histogram, boxplot (histogram is a good way to visualize the central tendency, variablity and shape of a disiribution)
-    - skew, kurtosis
-    - note, a histogram is not good way to identify outliers...a box plot is a good way.
-    - choose the plot that tells the best story. If you have a bimodal distribution, use a histogram (which is good for telling how many modes you have)
-    - make both plots but only choose one for your report
-We ask our selves, how do values of one variable change as another variable changes
-Common questions:
-    - How do you know when to use the median instead of the mean?
-    - Should I use IQR instead of standard deviation?
-    - When should I use a boxplot instead of a bar chart?
-    - the answers to these depends on what you can learn from your data using graphs
-Outliers:
-    - values smaller than lower inner fence of a boxpot (i.e., Q1 - 1.5IQR)
-    - values larger than upper inner fence of boxplot (i.e., Q3 - 1.5IQR)
-Extreme values:
-    - values smaller than lower outer fence, of a boxpot (i.e., Q1 - 3.0IQR)
-    - values larger than upper outer fence of boxplot (i.e., Q3 - 3.0IQR)
-Apply to continuous data
-    - if the values are indeed real outliers and extreme values, you can use median and IQR instead of mean and standard deviation because it is more robust to these types of values than range.
-    - median and IQR are a more robust way to describe central tendency in the presence of outliers and extreme values.
-    - you can use a scattter plot also to see outliers between two numeric variables quite easily. Bivariate outliers can have adverse impact on the Pearson correlation coefficient. If you notice a bivariate outlier, you might want to use a spearman ranked order correlation instead of a pearson correlation.
-Note that there are a small number of actual numeric features outside of the job performance metric.... you might wnat to visualize this this in terms of bar charts or a pie to indicate the proprotion of numeric data to the number of categorical discrete features...which will further infrom us what types of transformations might be necessary to analyse and work with this data. -->
+<p>To sum it up, we've been able to use data visualization to understand our categorical and numeric data on a higher level through visual pattern representations (histograms, bar graphs, boxplots). In addition to this, we've also been able to use hypothesis testing using data appropriate statistical tests (student t-test, ANOVA, Levene and Bartlett test, Kruskal-Wallis test) to determine whether or not that some of measurement differences we observe in our visualizations are statistically significant. Using the handy <tt class="docutils literal"><span class="pre">pandas-profiling</span></tt> module that was featured, which gave a detailed profile account of our dataset, we can further use it to help us make decisions to feature selection and preprocessing. In the next post on  <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">data dropping</a>, we will begin the preprocessing step of our data science pipeline. Until then, ciao!</p>
 </div>
 </div>
 </div>

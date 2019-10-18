@@ -141,17 +141,34 @@
 <li><a class="reference external" href="/2019/10/sharpestminds-project-part-2.html">Part 2 - Background, Loading, EDA</a></li>
 <li><a class="reference external" href="/2019/10/sharpestminds-project-part-3.html">Part 3 - More Exploratory Data Analysis</a></li>
 </ul>
-<div class="section" id="dropping-insufficient-data">
-<h3>Dropping Insufficient Data</h3>
+<div class="section" id="dropping-data">
+<h3>Dropping Data</h3>
+<div class="section" id="dropping-correlated-variables">
+<h4>Dropping Correlated Variables</h4>
 <p>One of the more interesting features available to us for exploration is the country which employees participated from - 'cntryid_e'. As a preliminary</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
-<span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas_profiling</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">profile_report</span><span class="p">()</span>
+<span class="n">rejected_variables</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_rejected_variables</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;There were {len(rejected_variables} highly correlated variables that were detected&quot;</span><span class="p">)</span>
 </pre></div>
-<img alt="job performance by country CAN ENG" class="align-center" src="/assets/data_visualizations/distribution_country_job_performance_CAN_ENG.png" style="width: 402px; height: 264px;" />
+<p>Output: <tt class="docutils literal">There were 36 highly correlated variables that were detected</tt>.</p>
+<p>As we can see, there were quite a lot of variables that were detected by the profiling engine as being very highly correlated. As part of the initial preprocessing and feature selection step, we can choose to drop these variables based on these suggestions from the engine. We will do just this:</p>
+<div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">rejected_variables</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="dropping-insufficient-data">
+<h4>Dropping Insufficient Data</h4>
+<div class="section" id="dropping-data-column-wise">
+<h5>Dropping Data Column-Wise</h5>
+</div>
+<div class="section" id="dropping-data-row-wise">
+<h5>Dropping Data Row-Wise</h5>
+</div>
+</div>
 <div class="section" id="conclusion">
 <h4>Conclusion</h4>
-<p>To sum it up, ... In the next post on  <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">data dropping</a>, we will begin the preprocessing step of our data science pipeline</p>
+<p>To sum it up, what remains of the data after the initial preprocessing step of dropping some variables for feature selection and due to insufficient data is a dataframe of shape <tt class="docutils literal">(df.shape)</tt>. ... In the next post on  <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">data dropping</a>, we will begin the next preprocessing step of our pipeline.</p>
 <!-- todo:
 things to do
 conclusory paragraph about what the next step of the project isEver wondered what your employee performance score would be? Part-3 -->
