@@ -19,7 +19,7 @@ If you are new to this post and would like some context, I'd highly suggest you 
 
 In the previous post, we loaded our CSV data set in as a Pandas dataframe object, and performed some very high level exploratory data analysis (EDA) using the ``.info(), .isnull().sum(), .unique(), .value_counts()`` dataframe and series object methods. This helped us understand the distribution of unique values, data types, and missing values across the various different features of our dataset. We were also able to see from the encoding scheme, that there was a high chance that many of the features might overlap in telling us about the same information (e.g., who different encoding schemes for occupational identification).
 
-In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. Data visualization allows use to use space, color, direction to achieve a higher level understanding of many points of data simultaneously, allowing us to visually grok patterns among the fine details of each data point. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. This post assumes that you have loaded the dataset from the previous posts and have imported all the dependencies. If you want follow along again with the complete code (preferrably run in a Jupyter IPython Notebook), you can do `so <https://github.com/SJHH-Nguyen-D/sharpestminds_project>`_. So without further ado, let's get into it.
+In this post, we go beyond this, and use data visualization techniques to look at variables of interest to further determine which features we can engineer/select/drop/encode and impute for missing values during our preprocessing step. Data visualization allows use to use space, color, direction to achieve a higher level understanding of many points of data simultaneously, allowing us to visually grok patterns among the fine details of each data point. There are a number of issues to consider when preparing and cleaning our data and this step is crucial to to this. This post assumes that you have loaded the dataset from the previous posts and have imported all the dependencies. If you want follow along again with the complete code (preferrably run in a Jupyter IPython Notebook), you can do so `here <https://github.com/SJHH-Nguyen-D/sharpestminds_project>`_. So without further ado, let's get into it.
 
 ===================================
 More Data Exploratory Data Analysis
@@ -232,8 +232,8 @@ Outlier and extreme cases are fringe cases with measurement values that have an 
         q1 = percentile(df[num_attribute], 0.25, axis=0, out=None, overwrite_input=False, interpolation='linear', keepdims=False)
         q3 = percentile(df[num_attribute], 0.75, axis=0, out=None, overwrite_input=False, interpolation='linear', keepdims=False)
         
-        outliers = index_df[(df[num_attribute] <= (q1 - (IQR * 1.5))) | (df[num_attribute] <= (q3 + (IQR * 1.5)))]
-        extremes = index_df[(df[num_attribute] <= (q1 - (IQR * 1.5))) | (df[num_attribute] <= (q3 + (IQR * 1.5)))]
+        outliers = df[(df[num_attribute] <= (q1 - (IQR * 1.5))) | (df[num_attribute] <= (q3 + (IQR * 1.5)))]
+        extremes = df[(df[num_attribute] <= (q1 - (IQR * 1.5))) | (df[num_attribute] <= (q3 + (IQR * 1.5)))]
         
         return outliers, extremes
 
@@ -277,16 +277,7 @@ We examine the histograms built from the outlier values:
 
 Note that the outlier data are right skewed and not normally distributed, with a higher density towards the higher most values.
 
-Taking a look at ``outliers.head()`` and ``extremes.head()`` yields the same data points, meaning that, by definition, we have 4015 fringe values for the target variable 'job performance'. In some cases, we would like to further investigate this group of data points to for further insight into extreme variants in performance, but in this case, we will drop them.
-
-
-.. code-block:: python3
-
-    df.drop(outliers.index, inplace=True, axis=0)
-    print(f"New dataframe shape: {df.shape}")
-
-
-Output: ``New dataframe shape: (15985, 11)``.
+Taking a look at ``outliers.head()`` and ``extremes.head()`` yields the same data points, meaning that, by definition, we have 4015 fringe values for the target variable 'job performance'. In some cases, we would like to further investigate this group of data points to for further insight into extreme variants in performance, but in this case, we will drop them during our preprocessing phase.
 
 
 Plotting
