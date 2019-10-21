@@ -1,5 +1,5 @@
-Ever wondered what your employee performance score would be? Part-4
-###################################################################
+Ever wondered what your employee performance score would be? Part 4: Preprocessing with Dropping
+################################################################################################
 
 :date: 20191007 16:27
 :tags: sharpestminds-project, data science, projects, employee performance, dropping, preprocessing
@@ -8,7 +8,7 @@ Ever wondered what your employee performance score would be? Part-4
 :summary: In the 4th post of this series, we get into the first step of preprocessing our data which includes steps like feature selection and dropping. In the wise words of legendary hip-hop artist, Snoop Dogg, "drop it like it's [very poor quality data to work with]."
 
 *****************************************************************
-SharpestMinds Project Series Part-4 - Preprocessing with Dropping
+SharpestMinds Project Series Part 4: Preprocessing with Dropping
 *****************************************************************
 
 If you are new to this post and would like some context, I'd highly suggest you read through the previous posts of this project series, as this is the fourth post of this series:
@@ -241,7 +241,7 @@ The naming convention of these variables also gives hiint as to what is encoded 
 Conclusion
 ----------
 
-In summation, what remains of the data after the initial preprocessing step of dropping some variables for due to insufficient data, redudant and highly correlated features is a dataframe of shape ``(14424, 206)``. We covered a a few methods to identify such data as well as the dropping operation for row-wise and column-wise data from the Pandas library. In the `next post <{filename}./sharpestminds-project-part-4.rst>`_, we will begin the next preprocessing step of our pipeline, in which we prepare our data for further processing of by manipulating and encoding our data so that we can perform operations on the data later down the road. Until then...ciao!
+In summation, what remains of the data after the initial preprocessing step of dropping some variables for due to insufficient data, redudant and highly correlated features is a dataframe of shape ``(14424, 206)``. We covered a a few methods to identify such data as well as the dropping operation for row-wise and column-wise data from the Pandas library. In the `next post <{filename}./sharpestminds-project-part-5.rst>`_, we will begin the next preprocessing step of our pipeline, in which we prepare our data for further processing of by manipulating and encoding our data so that we can perform operations on the data later down the road. Until then...ciao!
 
 .. todo:
     things to do

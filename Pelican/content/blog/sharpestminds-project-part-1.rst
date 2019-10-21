@@ -1,5 +1,5 @@
-Ever wondered what your employee performance score would be? Part-1
-###################################################################
+Ever wondered what your employee performance score would be? Part 1: Introduction
+#################################################################################
 
 :date: 20190927 10:35
 :tags: sharpestminds-project, data science, projects, employee performance
@@ -8,9 +8,9 @@ Ever wondered what your employee performance score would be? Part-1
 :authors: Nguyen-Do, Dennis;
 :summary: My first project with my SharpestMinds mentorship program does just this in my first multi-step blog series. Curious? Well, come on in!
 
-*****************************
-SharpestMinds Project Series
-*****************************
+*************************************************
+SharpestMinds Project Series Part 1: Introduction
+*************************************************
 
 ==========
 Background
@@ -37,20 +37,20 @@ After several iterations of ideas for a project, including several based on agri
 
 The blog will sequentially follow the table below and for each step of the project, a blog post will detail my methods and serve to archive my progress through my project.
 
-=============  ===========================================================================
+=============  ===========================================================================================
   Step               Process
-=============  ===========================================================================
+=============  ===========================================================================================
 Introduction    `Rationale <{filename}./sharpestminds-project-part-1.rst>`_
 The Data        `Background, Loading, EDA <{filename}./sharpestminds-project-part-2.rst>`_
 The Data        `Some more EDA <{filename}./sharpestminds-project-part-3.rst>`_
 Preprocessing   `Dropping Insufficient Data <{filename}./sharpestminds-project-part-4.rst>`_
-Preprocessing   Encoding, Labeling
-Preprocessing   Missing values, Imputation
+Preprocessing   `Encoding, Labeling Categorical Variables <{filename}./sharpestminds-project-part-5.rst>`_
+Preprocessing   Imputation of Missing Values
 Selection       Feature Selection
 Modeling        Training, Testing, Validation
 Deployment      Web Application Endpoint
 Write-Up        Blog about it - which is what this is all about!
-=============  ===========================================================================
+=============  ===========================================================================================
 
 A link to the complete code for the project can be found `here <https://github.com/SJHH-Nguyen-D/sharpestminds_project/>`_ for you to follow along.
 

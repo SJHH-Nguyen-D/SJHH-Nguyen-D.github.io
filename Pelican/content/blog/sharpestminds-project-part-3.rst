@@ -1,5 +1,5 @@
-Ever wondered what your employee performance score would be? Part-3
-###################################################################
+Ever wondered what your employee performance score would be? Part 3: More Exploratory Data Analysis 
+###################################################################################################
 
 :date: 20191004 23:06
 :tags: sharpestminds-project, data science, projects, employee performance, EDA, exploratory-data-analysis
@@ -8,9 +8,9 @@ Ever wondered what your employee performance score would be? Part-3
 :authors: Nguyen-Do, Dennis;
 :summary: Let's dig into the data even further with some EDA in Matplotlib and seaborn for the continuation this SharpestMinds project, in the third post of this series. Onward.
 
-***********************************
-SharpestMinds Project Series Part-3
-***********************************
+*******************************************************************
+SharpestMinds Project Series Part 3: More Exploratory Data Analysis
+*******************************************************************
 
 If you are new to this post and would like some context, I'd highly suggest you read through parts 1 and 2 of this project blogging series, as this is the third post of the series:
 

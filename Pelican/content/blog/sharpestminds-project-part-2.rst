@@ -1,16 +1,16 @@
-Ever wondered what your employee performance score would be? Part-2
-###################################################################
+Ever wondered what your employee performance score would be? Part 2: Loading and Preliminary Analysis
+#####################################################################################################
 
 :date: 20191001 19:00
 :tags: sharpestminds-project, data science, projects, employee performance, EDA, exploratory-data-analysis, loading, descriptive-statistics
 :category: projects, EDA, exploratory-data-analysis
 :slug: sharpestminds-project-part-2
 :authors: Nguyen-Do, Dennis ;
-:summary: The first part of diving into my SharpestMinds data science project. In this part, we get some more background informatoin on the dataset, load in the dataset and look at some preliminary exploratory data analysis using Pandas and Matplotlib.
+:summary: The first part of diving into my SharpestMinds data science project. In this part, we get some more background information on the dataset, load in the dataset and look at some preliminary exploratory data analysis using Pandas and Matplotlib.
 
-***********************************
-SharpestMinds Project Series Part-2
-***********************************
+*********************************************************************
+SharpestMinds Project Series Part 2: Loading and Preliminary Analysis
+*********************************************************************
 
 If you are new to this post and would like some context, I'd highly suggest you read through parts 1 this project blogging series, as this is the second post of the series. If you want to hop to the next post on further exploratory data analysis, the link to it will be listed here as well. Again, if you want to download the entire repo for the project and follow along yourself with the code, you can do so by cloning this `repo <https://github.com/SJHH-Nguyen-D/sharpestminds_project>`_.
 
