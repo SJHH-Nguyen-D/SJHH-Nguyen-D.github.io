@@ -178,7 +178,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">rejected_variables</span><span class="p">)</span>
 </pre></div>
 <p>Output:</p>
-<blockquote>
+<pre class="literal-block">
 ['earnhrbonus',
 'earnhrbonusppp',
 'earnmthall',
@@ -206,7 +206,8 @@
 'v87',
 'v97',
 'yrsqual_t']
-There were 36 highly correlated variables that were detected</blockquote>
+There were 36 highly correlated variables that were detected
+</pre>
 <p>As we can see, there were quite a lot of variables that were detected by the profiling engine as being very highly correlated. As part of the initial preprocessing and feature selection step, we can choose to drop these variables based on these suggestions from the engine or keep them for other options for preprocessing but we're just going to drop them based on the suggestions. We will do just this:</p>
 <div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">rejected_variables</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -219,7 +220,11 @@ There were 36 highly correlated variables that were detected</blockquote>
 <div class="section" id="dropping-data-column-wise">
 <h4>Dropping Data Column-Wise</h4>
 <p>One way we can approach this is to set a column-wise threshold fraction by which a column must meet in terms of completeness, in order to be considered elligible for retainment. Python uses <tt class="docutils literal">nan</tt> to indicate that a value is missing from the dataset, which is equivalent to numpy's <tt class="docutils literal">numpy.nan</tt> value. However, in the real world, sometimes the value that is used to indicate a missing value is something other than a blank space such as &quot;unavailable&quot;, &quot;NA&quot;, &quot;9999&quot;, or anything else. It is therefore important to reencode these in or dataset so that we can get a better estimate as to the true proportion of the data that is unavailable to us.</p>
-<div class="highlight"><pre><span></span><span class="n">considered_missing_values</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;999&#39;</span><span class="p">,</span> <span class="mi">9995</span><span class="p">,</span> <span class="s1">&#39;9995&#39;</span><span class="p">,</span> <span class="mi">9996</span><span class="p">,</span> <span class="s1">&#39;9996&#39;</span> <span class="p">,</span><span class="mi">9997</span><span class="p">,</span> <span class="s2">&quot;9997&quot;</span><span class="p">,</span> <span class="mi">9998</span><span class="p">,</span><span class="s1">&#39;9998&#39;</span><span class="p">,</span> <span class="mi">9999</span><span class="p">,</span> <span class="s1">&#39;9999&#39;</span><span class="p">,</span> <span class="s1">&#39;99999&#39;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><span class="n">considered_missing_values</span> <span class="o">=</span> <span class="p">[</span>
+<span class="s1">&#39;999&#39;</span><span class="p">,</span> <span class="mi">9995</span><span class="p">,</span> <span class="s1">&#39;9995&#39;</span><span class="p">,</span> <span class="mi">9996</span><span class="p">,</span>
+<span class="s1">&#39;9996&#39;</span> <span class="p">,</span><span class="mi">9997</span><span class="p">,</span> <span class="s2">&quot;9997&quot;</span><span class="p">,</span> <span class="mi">9998</span><span class="p">,</span>
+<span class="s1">&#39;9998&#39;</span><span class="p">,</span> <span class="mi">9999</span><span class="p">,</span> <span class="s1">&#39;9999&#39;</span><span class="p">,</span> <span class="s1">&#39;99999&#39;</span><span class="p">]</span>
+
 <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="n">considered_missing_values</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 </pre></div>
 <p>After the missing values have been encoded, we can use the following code to print out a series containing the features along with the proprotion of missing values, by feature:</p>
@@ -240,7 +245,6 @@ v160     99.775
 dtype: float64%
 </pre>
 <p>As we can see from just from this pandas series of sorted missing value proportions - there are quite a large number of columns with missing values. What we can do is set a threshold of 60%, and any column that meets the threshold of having greater or equal to 60% of its values missing will be added to the list of features to be dropped.</p>
-<p>[Sentence about dropping those data columns]</p>
 <p>..code-block:: python3</p>
 <blockquote>
 col_drop_threshold = 0.6
@@ -286,10 +290,25 @@ There are 114 features that have more than or equal to 60% of it's data missing.
 </div>
 <div class="section" id="dropping-redundant-information">
 <h4>Dropping Redundant Information</h4>
-<p>At this point, we've whittled down the proportion of missing values by quite a bit. Some features we can identify algorithmically, or by some criterion, as elligible for dropping. Sometimes, this cannot be done without having the coding scheme or domain knowledge of how you retrieved your data. Luckily, if you've been provided a code book or have consulted your local, registered dataset provider, you will have even further insight as to what can or cannot be dropped for redundancy. One example of such redundancy can be seen in different versions of coding for the same information (e.g., the 2007 encoding for a value vs. the 2018 encoding scheme of a value). This case, we used our domain knowledge we received from other experts in our department, and will rule out which columns can be dropped from this dataset.</p>
+<p>At this point, we've whittled down the proportion of missing values by quite a bit. Some features we can identify algorithmically, or by some criterion, as elligible for dropping. Sometimes, this cannot be done without having the coding scheme or domain knowledge of how you retrieved your data. Luckily, if you've been provided a code book or have consulted your local, registered dataset provider, you will have even further insight as to what can or cannot be dropped for redundancy. One example of such redundancy can be seen in different versions of coding for the same information (e.g., the 2007 encoding for a value vs. the 2018 encoding scheme of a value). This case, we used our domain knowledge we received from other experts in our department, and will rule out which columns can be dropped from this dataset. In a way this step is similar to the feature selection step, but we will choose to include it in this section.</p>
+<p>Our strategy then is to simply hand pick the feature sets that represent the same information, select the one that has the most complete information and discard the remaining one.</p>
+<div class="highlight"><pre><span></span><span class="n">redundant_features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;readytolearn_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;icthome_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;ictwork_wle_ca&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;influence_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;planning_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;readhome_wle_ca&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;readwork_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;taskdisc_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;writhome_wle_ca&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;writwork_wle_ca&quot;</span><span class="p">,</span> <span class="s2">&quot;ageg10lfs&quot;</span><span class="p">,</span> <span class="s2">&quot;ageg10lfs_t&quot;</span><span class="p">,</span> <span class="s2">&quot;edcat7&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;edcat8&quot;</span><span class="p">,</span> <span class="s2">&quot;isco2c&quot;</span><span class="p">,</span> <span class="s2">&quot;isic2c&quot;</span><span class="p">,</span> <span class="s2">&quot;earnflag&quot;</span><span class="p">,</span> <span class="s2">&quot;reg_tl2&quot;</span><span class="p">,</span> <span class="s2">&quot;lng_bq&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;lng_ci&quot;</span><span class="p">,</span> <span class="s2">&quot;edlevel3&quot;</span><span class="p">,</span> <span class="s2">&quot;nfehrsnjr&quot;</span><span class="p">,</span> <span class="s2">&quot;nfehrsjr&quot;</span><span class="p">,</span> <span class="s2">&quot;fnfe12jr&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;fnfaet12jr&quot;</span><span class="p">,</span> <span class="s2">&quot;faet12jr&quot;</span><span class="p">,</span> <span class="s2">&quot;faet12njr&quot;</span><span class="p">,</span> <span class="s2">&quot;fe12&quot;</span><span class="p">,</span> <span class="s2">&quot;monthlyincpr&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;earnhrdcl&quot;</span><span class="p">,</span> <span class="s2">&quot;earnhrbonusdcl&quot;</span><span class="p">,</span> <span class="s2">&quot;row&quot;</span><span class="p">,</span> <span class="s2">&quot;uni&quot;</span><span class="p">,</span> <span class="s2">&quot;cntryid_e&quot;</span>
+                 <span class="p">]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">redundant_features</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+<p>Output: <tt class="docutils literal">(14424, 206)</tt></p>
+<p>The naming convention of these variables also gives hiint as to what is encoded in the values of these variables such as different encoding schemes, a more granular measurement of information, or an ordinalized organization of a numeric variable. Each of these offer different levels of signal to our model, however, for simplicity sake, we remove the versions of the features that have the largest proportions of their data missing.</p>
 <div class="section" id="conclusion">
 <h5>Conclusion</h5>
-<p>To sum it up, what remains of the data after the initial preprocessing step of dropping some variables for feature selection and due to insufficient data is a dataframe of shape <tt class="docutils literal">(df.shape)</tt>. ... In the next post on  <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">data dropping</a>, we will begin the next preprocessing step of our pipeline.</p>
+<p>In summation, what remains of the data after the initial preprocessing step of dropping some variables for due to insufficient data, redudant and highly correlated features is a dataframe of shape <tt class="docutils literal">(14424, 206</tt>. We covered a a few methods to identify such data as well as the dropping operation for row-wise and column-wise data from the Pandas library. In the <a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">next post</a>, we will begin the next preprocessing step of our pipeline, in which we prepare our data for further processing of by manipulating and encoding our data so that we can perform operations on the data later down the road. Until then...ciao!</p>
 <!-- todo:
 things to do
 conclusory paragraph about what the next step of the project isEver wondered what your employee performance score would be? Part-3 -->

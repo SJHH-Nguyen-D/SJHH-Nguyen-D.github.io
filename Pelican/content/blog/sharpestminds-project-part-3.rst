@@ -36,7 +36,7 @@ Before we delve into specific statistical tests, one neat Pandas trick I recentl
 
     pandas_profiling.ProfileReport(df)
 
-A link to the generate report can generated report can be viewed at the generated html `link <https//sjhh-nguyen-d.github.io/dataframe_profiling_report.html>`_.
+A link to the generate report can generated report can be viewed at the generated html `link <https://sjhh-nguyen-d.github.io/dataframe_profiling_report.html>`_.
 
 The output is quite extensive and very detailed, given the depth and breadth of our dataset so I will not include the details within the body of this post, but more information on the module is located at its `PYPI page <https://pypi.org/project/pandas-profiling/>`_. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!
 
@@ -275,7 +275,7 @@ We examine the histograms built from the outlier values:
     :alt: job performance outliers
     :align: center
 
-Note that the outlier data are right skewed and not normally distributed, with a higher density towards the higher most values.
+The outlier data are left, negatively skewed in shape and not normally distributed, with a higher density towards the higher most values.
 
 Taking a look at ``outliers.head()`` and ``extremes.head()`` yields the same data points, meaning that, by definition, we have 4015 fringe values for the target variable 'job performance'. In some cases, we would like to further investigate this group of data points to for further insight into extreme variants in performance, but in this case, we will drop them during our preprocessing phase.
 

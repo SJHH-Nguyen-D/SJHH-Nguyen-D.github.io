@@ -70,6 +70,8 @@ Without having too do too much heavy lifting, we are able discover, courtesy of 
 
 Output: 
 
+::
+
     ['earnhrbonus',
     'earnhrbonusppp',
     'earnmthall',
@@ -121,7 +123,11 @@ One way we can approach this is to set a column-wise threshold fraction by which
 
 .. code-block:: python3
 
-    considered_missing_values = ['999', 9995, '9995', 9996, '9996' ,9997, "9997", 9998,'9998', 9999, '9999', '99999']
+    considered_missing_values = [
+    '999', 9995, '9995', 9996, 
+    '9996' ,9997, "9997", 9998,
+    '9998', 9999, '9999', '99999']
+
     df = df.replace(to_replace=considered_missing_values, value=np.nan)
 
 
@@ -148,8 +154,6 @@ Output:
     dtype: float64%
 
 As we can see from just from this pandas series of sorted missing value proportions - there are quite a large number of columns with missing values. What we can do is set a threshold of 60%, and any column that meets the threshold of having greater or equal to 60% of its values missing will be added to the list of features to be dropped.
-
-[Sentence about dropping those data columns]
 
 ..code-block:: python3
 
@@ -211,13 +215,33 @@ Output: ``(14566, 239)``
 Dropping Redundant Information
 ******************************
 
-At this point, we've whittled down the proportion of missing values by quite a bit. Some features we can identify algorithmically, or by some criterion, as elligible for dropping. Sometimes, this cannot be done without having the coding scheme or domain knowledge of how you retrieved your data. Luckily, if you've been provided a code book or have consulted your local, registered dataset provider, you will have even further insight as to what can or cannot be dropped for redundancy. One example of such redundancy can be seen in different versions of coding for the same information (e.g., the 2007 encoding for a value vs. the 2018 encoding scheme of a value). This case, we used our domain knowledge we received from other experts in our department, and will rule out which columns can be dropped from this dataset.
+At this point, we've whittled down the proportion of missing values by quite a bit. Some features we can identify algorithmically, or by some criterion, as elligible for dropping. Sometimes, this cannot be done without having the coding scheme or domain knowledge of how you retrieved your data. Luckily, if you've been provided a code book or have consulted your local, registered dataset provider, you will have even further insight as to what can or cannot be dropped for redundancy. One example of such redundancy can be seen in different versions of coding for the same information (e.g., the 2007 encoding for a value vs. the 2018 encoding scheme of a value). This case, we used our domain knowledge we received from other experts in our department, and will rule out which columns can be dropped from this dataset. In a way this step is similar to the feature selection step, but we will choose to include it in this section.
+
+Our strategy then is to simply hand pick the feature sets that represent the same information, select the one that has the most complete information and discard the remaining one.
+
+.. code-block:: python3 
+
+    redundant_features = ["readytolearn_wle_ca", "icthome_wle_ca", "ictwork_wle_ca", 
+                      "influence_wle_ca", "planning_wle_ca", "readhome_wle_ca", 
+                      "readwork_wle_ca", "taskdisc_wle_ca", "writhome_wle_ca", 
+                      "writwork_wle_ca", "ageg10lfs", "ageg10lfs_t", "edcat7", 
+                      "edcat8", "isco2c", "isic2c", "earnflag", "reg_tl2", "lng_bq", 
+                      "lng_ci", "edlevel3", "nfehrsnjr", "nfehrsjr", "fnfe12jr", 
+                      "fnfaet12jr", "faet12jr", "faet12njr", "fe12", "monthlyincpr",
+                      "earnhrdcl", "earnhrbonusdcl", "row", "uni", "cntryid_e"
+                     ]
+    df.drop(redundant_features, inplace=True, axis=1)
+    print(df.shape)
+
+Output: ``(14424, 206)``
+
+The naming convention of these variables also gives hiint as to what is encoded in the values of these variables such as different encoding schemes, a more granular measurement of information, or an ordinalized organization of a numeric variable. Each of these offer different levels of signal to our model, however, for simplicity sake, we remove the versions of the features that have the largest proportions of their data missing.
 
 
 Conclusion
 ----------
 
-To sum it up, what remains of the data after the initial preprocessing step of dropping some variables for feature selection and due to insufficient data is a dataframe of shape ``(df.shape)``. ... In the next post on  `data dropping <{filename}./sharpestminds-project-part-4.rst>`_, we will begin the next preprocessing step of our pipeline.
+In summation, what remains of the data after the initial preprocessing step of dropping some variables for due to insufficient data, redudant and highly correlated features is a dataframe of shape ``(14424, 206``. We covered a a few methods to identify such data as well as the dropping operation for row-wise and column-wise data from the Pandas library. In the `next post <{filename}./sharpestminds-project-part-4.rst>`_, we will begin the next preprocessing step of our pipeline, in which we prepare our data for further processing of by manipulating and encoding our data so that we can perform operations on the data later down the road. Until then...ciao!
 
 .. todo:
     things to do

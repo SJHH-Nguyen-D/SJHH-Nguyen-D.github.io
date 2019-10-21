@@ -151,7 +151,7 @@
 
 <span class="n">pandas_profiling</span><span class="o">.</span><span class="n">ProfileReport</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
-<p>A link to the generate report can generated report can be viewed at the generated html <a class="reference external" href="https//sjhh-nguyen-d.github.io/dataframe_profiling_report.html">link</a>.</p>
+<p>A link to the generate report can generated report can be viewed at the generated html <a class="reference external" href="https://sjhh-nguyen-d.github.io/dataframe_profiling_report.html">link</a>.</p>
 <p>The output is quite extensive and very detailed, given the depth and breadth of our dataset so I will not include the details within the body of this post, but more information on the module is located at its <a class="reference external" href="https://pypi.org/project/pandas-profiling/">PYPI page</a>. And that's it! With just two powerful lines of code, we can get very insightful hints about our dataset!</p>
 </div>
 <div class="section" id="quick-and-dirty-numeric-variables">
@@ -313,7 +313,7 @@ Medium                                                  <span class="m">130</spa
 <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <img alt="job performance outliers" class="align-center" src="/assets/data_visualizations/hist_dist_outliers.png" style="width: 402px; height: 264px;" />
-<p>Note that the outlier data are right skewed and not normally distributed, with a higher density towards the higher most values.</p>
+<p>The outlier data are left, negatively skewed in shape and not normally distributed, with a higher density towards the higher most values.</p>
 <p>Taking a look at <tt class="docutils literal">outliers.head()</tt> and <tt class="docutils literal">extremes.head()</tt> yields the same data points, meaning that, by definition, we have 4015 fringe values for the target variable 'job performance'. In some cases, we would like to further investigate this group of data points to for further insight into extreme variants in performance, but in this case, we will drop them during our preprocessing phase.</p>
 </div>
 <div class="section" id="plotting">
