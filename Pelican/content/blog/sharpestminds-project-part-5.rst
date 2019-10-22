@@ -1,5 +1,5 @@
 Ever wondered what your employee performance score would be? Part 5: Labelling and Encoding for Categorical Data
-###############################################################################################
+################################################################################################################
 
 :date: 20191021 18:00
 :tags: sharpestminds-project, data science, projects, employee performance, preprocessing, labeling, encoding, categorical, nominal, ordinal
@@ -31,6 +31,15 @@ Nominal categorical data is a type of categorical data in which we can either us
 * Onehot Encoding
 
 Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. Examples of this encoding scheme are the Saffir-Simpson hurricane wind scale, SNOMED CT classification of medicine, WHMIS symbology, or character encoding schemes (e.g., UTF-8, US-ASCII, etc.). These encoding schemes represent distinct individual groupings of phenomena using human-readable string and numeric character values. One important distinction between this type of encoding type and other types of encoding types is that there is a standardized, domain-specific representation that is understood by those anyone who has access to mapping.
+
+.. image:: /assets/saffir-simpson-windscale.jpeg
+    :width: 1140px
+    :height: 641px
+    :alt: saffir-simpson-hurricane-scale
+    :align: center
+
+*Saffir-Simpson Hurricane Wind Scale*
+
 
 In contrast, integer encoding is a type of numeric encoding scheme by which we typically assign a numeric value for k number of groupings, and each grouping value is represented by k+0-k (or k+1-k if you are starting from 1 instead) to k groupings. This type of numeric encoding scheme is reserved for ordinal type data as there are magnitudes of difference between each different integer encoding value, however this type of encoding scheme diminishes in precision unless there are clear linear distances between sequential values.
 
