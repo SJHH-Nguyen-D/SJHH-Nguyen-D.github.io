@@ -20,29 +20,24 @@ If you are new to this post and would like some context, I'd highly suggest you 
 
 Up until this point in the series, we covered loading, EDA and began the some of the tasks that are required of dealing with high dimensional, messy data by dropping these insufficient data points. In this post, we cover the necessary preprocessing steps required when dealing with categorical data - both nominal and ordinal types through methods such as integer encoding and onehot-encoding. Assuming we've been following along and have all the dependencies from the previous posts loaded (even if you don't you can get follow along with the full codebase at the accompanying `repo <https://github.com/SJHH-Nguyen-D/sharpestminds-project>`_), we can dive right into discussing all of the terms and processes necessary to work with these categorical type data.
 
-=================================
-Nominal Categorical Data Encoding
-=================================
+The types of categorical features we will cover in post will include:
+* Binary features
+* Nominal features
+* Ordinal features
 
-Nominal categorical data is a type of categorical data in which we can either use string or numeric values to indicate discrete and mutually exclusive groupings of a variable. In order for a machine learning model to "understand" a notion of differences and distances between different types of groupings, we would need to convert these string representations of these groupings into a numeric representations. There are a few approaches that we can take with this:
+===========================
+Binary Categorical Features
+===========================
 
-* Domain Specific Encoding
-* Integer Encoding
-* Onehot Encoding
+The first of our categorical feature types we will cover in this post are binary features. They are the simplest type of categorical variable as there are only 2 available values in a binary variable domain. Examples of possible values for a binary variable include "Yes" and "No", "Up" and "Down", and "Employed" and "Unemployed". Unfortunately for our machine learning predictive model at the end of this blog series, it doesn't understand the concept of distances between string-values. Fortunately with binary variables, we can map the value of the two possible string values to either an integer of ``1`` or ``0``, with the former indicating the positive case, and the latter representing the negative case.
 
-Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. Examples of this encoding scheme are the Saffir-Simpson hurricane wind scale, SNOMED CT classification of medicine, WHMIS symbology, or character encoding schemes (e.g., UTF-8, US-ASCII, etc.). These encoding schemes represent distinct individual groupings of phenomena using human-readable string and numeric character values. One important distinction between this type of encoding type and other types of encoding types is that there is a standardized, domain-specific representation that is understood by those anyone who has access to mapping.
-
-In contrast, integer encoding is a type of numeric encoding scheme by which we typically assign a numeric value for k number of groupings, and each grouping value is represented by k+0-k (or k+1-k if you are starting from 1 instead) to k groupings. This type of numeric encoding scheme is reserved for ordinal type data as there are magnitudes of difference between each different integer encoding value, however this type of encoding scheme diminishes in precision unless there are clear linear distances between sequential values.
-
-Onehot encoding is another type of numeric encoding scheme by which we can use binary switches to represent each group for each categorical variable. Onehot encoding schemes the choice of encoding scheme when we choose to encode nominal categorical variables with no notion of ordering or magnitude.
-
-Our plan of attack would be to separate out our numeric and categorical features and tackle the mapping of nominal and ordinal categorical variables separately. We will finally combine the numeric and categorical features into our final preprocessed dataset for the modeling step.
+Our plan of attack would be to separate out our numeric and categorical features and from which we will create different mapping and encoding schemes for our binar, nominal and ordinal categorical variables. We will finally combine the numeric and categorical features back into a single final preprocessed dataset at the end.
 
 .. code-block:: python3
 
     # separate out the numeric and categorical variables to see how much of each are missing
     def df_by_type_splitter(dataframe):
-    """ a larger dataframe into immediately identifiable numeric and other type dataframes"""
+    """a larger dataframe into immediately identifiable numeric and other type dataframes"""
     num_df = dataframe._get_numeric_data().copy()
     cat_df = dataframe.select_dtypes(exclude = [int, float]).copy()
 
@@ -60,22 +55,69 @@ Output:
 ::
 
     Number of Numeric Features: 31
-    Number of Categorical Features: 175
+    Number of Categorical Features: 168
 
 
+We can then identify and sort out the binary features with this block of code. From there we can hand-pick the features and determine the specific types of discrete numeric mappings each binary string-value is assigned. I wished it was as easy as plugging in these Pandas series into the ``scikit-learn`` API and have it do all the heavy lifting for me, in the real world, it isn't always as easy as that, unfortunately.
 
-.. image:: /assets/data_visualizations/countplot_occupation_sector.png
-    :width: 561px
-    :height: 281px
-    :alt: countplot of occupational sector
+.. code-block:: python3
+    
+    # note that I'm using 3 here, because the .unique() series method includes nan values as a unique value
+    ordinal_feature_names = [ feature for feature in categorical_df.columns if len(categorical_df[feature].unique()) <=3 ]
+    ordinal_categorical_df = categorical_df[ordinal_feature_names]
+
+    ordinal_df = ordinal_df.replace(to_replace={'Yes': 1, 'No': 0})
+    ordinal_df = ordinal_df.replace(to_replace={'Male': 1, 'Female': 0})
+    ordinal_df['faet12'] = ordinal_df['faet12'].map({'Did not participate in formal AET': 0, 'Participated in formal AET': 1})
+    ordinal_df['v46'] = ordinal_df['v46'].map({'One job or business': 0, 'More than one job or business': 1})
+    ordinal_df['v53'] = ordinal_df['v53'].map({'Employee': 0, 'Self-employed': 1})
+    ordinal_df['nfe12'] = ordinal_df['nfe12'].map({'Did not participate in NFE': 0, 'Participated in NFE': 1})
+    ordinal_df['nativelang'] = ordinal_df['nativelang'].map({'Test language not same as native language': 0, 'Test language same as native language': 1})
+    ordinal_df['nopaidworkever'] = ordinal_df['nopaidworkever'].replace({"Has not has paid work ever": 0, "Has had paid work": 1})
+    ordinal_df['paidwork5'] = ordinal_df['paidwork5'].replace({"Has not had paid work in past 5 years": 0, "Has had paid work in past 5 years": 1})
+    ordinal_df['paidwork12'] = ordinal_df['paidwork12'].replace({"Has not had paid work during the 12 months preceding the survey": 0, "Has had paid work during the 12 months preceding the survey": 1})
+    ordinal_df['aetpop'] = ordinal_df['aetpop'].replace({"Excluded from AET population": 0, "AET population": 1})
+    ordinal_df['edwork'] = ordinal_df["edwork"].replace({"In work only": 0, "In education and work": 1})
+    ordinal_df['fnfaet12'] = ordinal_df['fnfaet12 '].replace({"Did not participate in formal or non-formal AET": 0, "Participated in formal and/or non-formal AET": 1})
+
+
+=================================
+Nominal Categorical Data Encoding
+=================================
+
+Nominal categorical data is a type of categorical data in which we can either use string or numeric values to indicate discrete and mutually exclusive groupings of a variable. In order for a machine learning model to "understand" a notion of differences and distances between different types of groupings, we would need to convert these string representations of these groupings into a numeric representations. There are a few approaches that we can take with this:
+
+* Domain Specific Encoding
+* Integer Encoding
+* Onehot Encoding
+
+Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. Examples of this encoding scheme are the Saffir-Simpson hurricane wind scale, SNOMED CT classification of medicine, WHMIS symbology, or character encoding schemes (e.g., UTF-8, US-ASCII, etc.). These encoding schemes represent distinct individual groupings of phenomena using human-readable string and numeric character values. One important distinction between this type of encoding type and other types of encoding types is that there is a standardized, domain-specific representation that is understood by those anyone who has access to mapping.
+
+.. image:: /assets/saffir_simpson_wind_scale.jpeg
+    :width: 1140px
+    :height: 681px
+    :alt: The Saffir-Simpson hurricane wind scale
     :align: center 
+
+*Saffir-Simpson Hurricane Wind Scale*
+
+In contrast, integer encoding is a type of numeric encoding scheme by which we typically assign a numeric value for k number of groupings, and each grouping value is represented by k+0-k (or k+1-k if you are starting from 1 instead) to k groupings. This type of numeric encoding scheme is reserved for ordinal type data as there are magnitudes of difference between each different integer encoding value, however this type of encoding scheme diminishes in precision unless there are clear linear distances between sequential values.
+
+Onehot encoding is another type of numeric encoding scheme by which we can use binary switches to represent each *group within a single categorical variable* for each categorical variable. Onehot encoding schemes are the choice of scheme when we choose to encode nominal categorical variables with no notion of ordering or magnitude.
+
+The task of determining which categorical variables are either nominal or ordinal in nature is not obvious at a glance. This task becomes much more tedious and time consuming when working with a large number of categorical features with a variety of different grouping domains, in which case, we would have manually select out each of the categorical features and classify them as either nominal or ordinal. Furthermore, determining the ordering of ordinal variables may not be immediately apparent. This part will require consultation from a data dictionary or domain experts to complete. Fortunately in this case, a data dictionary with an explanation of each variable and its domain values was provided for us with this dataset. 
 
 
 =================================
 Ordinal Categorical Data Encoding
 =================================
 
-Ordinal categorical data is another type categorical data. Ordinal type data is like a cross between numeric data and nominal categorical data - they are often represented in terms of a string-value however, there is a magnitude or ordering to each group value is assigned. The distance between assigned values is often assumed to be linear, however, in reality, this is not always the case, and therefore, we must be cognizant of the body of knowledge that was used to encode these variables. 
+Ordinal categorical data is another type categorical data. Ordinal type data is like a cross between numeric data and nominal categorical data - they are often represented in terms of a string-value however, there is a magnitude or ordering to each group value is assigned. The distance between assigned values is often assumed to be linear, however, in reality, this is not always the case, and therefore, we must be cognizant of the method used to encode these variables and the assumptions thus made. 
+
+For ordinal data encoding, we determine what unique group names are within the allowed domains and then specify the order of magnitude (e.g., from lowest quality to highest quality) of each value for our mapping. We can then apply integer encoding scheme, using either 0 or 1 to indicate the lowest quality value to k representing the highest quality value.
+
+It is convenient to apply this type of encoding scheme when there are many ordinal categorical features that share the same domain of categorical groupings and ordering. However this task becomes more tedious and time consuming when working with a large number of categorical features (many of which could be nominal features), in which case, we would have manually select out each of the categorical features and 
+
 
 Conclusion
 **********

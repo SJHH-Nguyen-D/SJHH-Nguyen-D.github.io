@@ -228,12 +228,13 @@ Our strategy then is to simply hand pick the feature sets that represent the sam
                       "edcat8", "isco2c", "isic2c", "earnflag", "reg_tl2", "lng_bq", 
                       "lng_ci", "edlevel3", "nfehrsnjr", "nfehrsjr", "fnfe12jr", 
                       "fnfaet12jr", "faet12jr", "faet12njr", "fe12", "monthlyincpr",
-                      "earnhrdcl", "earnhrbonusdcl", "row", "uni", "cntryid_e", "v205", "v270"
+                      "earnhrdcl", "earnhrbonusdcl", "row", "uni", "cntryid_e", "v205", "v270",
+                      "v205", "neet", "v84", "nfe12njr", "fnfaet12njr"
                      ]
     df.drop(redundant_features, inplace=True, axis=1)
     print(df.shape)
 
-Output: ``(14424, 204)``
+Output: ``(14424, 199)``
 
 The naming convention of these variables also gives hiint as to what is encoded in the values of these variables such as different encoding schemes, a more granular measurement of information, or an ordinalized organization of a numeric variable. Each of these offer different levels of signal to our model, however, for simplicity sake, we remove the versions of the features that have the largest proportions of their data missing.
 
@@ -241,7 +242,7 @@ The naming convention of these variables also gives hiint as to what is encoded 
 Conclusion
 **********
 
-In summation, what remains of the data after the initial preprocessing step of dropping some variables for due to insufficient data, redudant and highly correlated features is a dataframe of shape ``(14424, 204)``. We covered a a few methods to identify such data as well as the dropping operation for row-wise and column-wise data from the Pandas library. In the `next post <{filename}./sharpestminds-project-part-5.rst>`_, we will begin the next preprocessing step of our pipeline, in which we prepare our data for further processing of by manipulating and encoding our data so that we can perform operations on the data later down the road. Until then...ciao!
+In summation, what remains of the data after the initial preprocessing step of dropping some variables for due to insufficient data, redudant and highly correlated features is a dataframe of shape ``(14424, 199)``. We covered a a few methods to identify such data as well as the dropping operation for row-wise and column-wise data from the Pandas library. In the `next post <{filename}./sharpestminds-project-part-5.rst>`_, we will begin the next preprocessing step of our pipeline, in which we prepare our data for further processing of by manipulating and encoding our data so that we can perform operations on the data later down the road. Until then...ciao!
 
 .. todo:
     things to do
