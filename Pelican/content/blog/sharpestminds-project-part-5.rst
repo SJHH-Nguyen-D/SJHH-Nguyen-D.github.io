@@ -2,10 +2,10 @@ Ever wondered what your employee performance score would be? Part 5: Labelling a
 ###############################################################################################
 
 :date: 20191021 18:00
-:tags: sharpestminds-project, data science, projects, employee performance, preprocessing, labeling, encoding
+:tags: sharpestminds-project, data science, projects, employee performance, preprocessing, labeling, encoding, categorical, nominal, ordinal
 :slug: sharpestminds-project-part-5
 :authors: Nguyen-Do, Dennis;
-:summary: This is the fifth post of the SharpestMinds project in which we cover processing of nominal categorical variables and nominal categorical variables. 
+:summary: This is the fifth post of the SharpestMinds project in which we cover methods for the processing of nominal categorical variables and nominal categorical variables. 
 
 *********************************************************************************
 SharpestMinds Project Series Part 5: Labelling and Encoding Categorical Variables
@@ -30,11 +30,13 @@ Nominal categorical data is a type of categorical data in which we can either us
 * Integer Encoding
 * Onehot Encoding
 
-Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. These encoding schemes are 
+Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. Examples of this encoding scheme are the Saffir-Simpson hurricane wind scale, SNOMED CT classification of medicine, WHMIS symbology, or character encoding schemes (e.g., UTF-8, US-ASCII, etc.). These encoding schemes represent distinct individual groupings of phenomena using human-readable string and numeric character values. One important distinction between this type of encoding type and other types of encoding types is that there is a standardized, domain-specific representation that is understood by those anyone who has access to mapping.
 
-... (go through all the types of categorical data to be able to get to the below code)
+In contrast, integer encoding is a type of numeric encoding scheme by which we typically assign a numeric value for k number of groupings, and each grouping value is represented by k+0-k (or k+1-k if you are starting from 1 instead) to k groupings. This type of numeric encoding scheme is reserved for ordinal type data as there are magnitudes of difference between each different integer encoding value, however this type of encoding scheme diminishes in precision unless there are clear linear distances between sequential values.
 
-Our plan of attack would be to separate out our numeric and categorical features and deal with each of these data at separate steps. We will ultimately combine the numeric and categorical features into our final preprocessed dataset for the modeling step.
+Onehot encoding is another type of numeric encoding scheme by which we can use binary switches to represent each group for each categorical variable. Onehot encoding schemes the choice of encoding scheme when we choose to encode nominal categorical variables with no notion of ordering or magnitude.
+
+Our plan of attack would be to separate out our numeric and categorical features and tackle the mapping of nominal and ordinal categorical variables separately. We will finally combine the numeric and categorical features into our final preprocessed dataset for the modeling step.
 
 .. code-block:: python3
 
@@ -73,10 +75,10 @@ Output:
 Ordinal Categorical Data Encoding
 =================================
 
-Ordinal categorical data is another type categorical data. Ordinal type data is like a cross between numeric data and nominal categorical data - they are often represented in terms of a string-value however, there is a magnitude or ordering to each group value.
+Ordinal categorical data is another type categorical data. Ordinal type data is like a cross between numeric data and nominal categorical data - they are often represented in terms of a string-value however, there is a magnitude or ordering to each group value is assigned. The distance between assigned values is often assumed to be linear, however, in reality, this is not always the case, and therefore, we must be cognizant of the body of knowledge that was used to encode these variables. 
 
 Conclusion
-----------
+**********
 
 
 .. todo:
