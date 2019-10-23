@@ -25,11 +25,8 @@ The types of categorical features we will cover in post will include:
 * Nominal features
 * Ordinal features
 
-<<<<<<< HEAD
-===========================
 Binary Categorical Features
 ===========================
-=======
 Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. Examples of this encoding scheme are the Saffir-Simpson hurricane wind scale, SNOMED CT classification of medicine, WHMIS symbology, or character encoding schemes (e.g., UTF-8, US-ASCII, etc.). These encoding schemes represent distinct individual groupings of phenomena using human-readable string and numeric character values. One important distinction between this type of encoding type and other types of encoding types is that there is a standardized, domain-specific representation that is understood by those anyone who has access to mapping.
 
 .. image:: /assets/saffir-simpson-windscale.jpeg
@@ -42,7 +39,6 @@ Often in the real world, there are already defined encoding schemes for a specif
 
 
 In contrast, integer encoding is a type of numeric encoding scheme by which we typically assign a numeric value for k number of groupings, and each grouping value is represented by k+0-k (or k+1-k if you are starting from 1 instead) to k groupings. This type of numeric encoding scheme is reserved for ordinal type data as there are magnitudes of difference between each different integer encoding value, however this type of encoding scheme diminishes in precision unless there are clear linear distances between sequential values.
->>>>>>> 4e4dd2124715c2dcd003630128cfd22559fd5c4c
 
 The first of our categorical feature types we will cover in this post are binary features. They are the simplest type of categorical variable as there are only 2 available values in a binary variable domain. Examples of possible values for a binary variable include "Yes" and "No", "Up" and "Down", and "Employed" and "Unemployed". Unfortunately for our machine learning predictive model at the end of this blog series, it doesn't understand the concept of distances between string-values. Fortunately with binary variables, we can map the value of the two possible string values to either an integer of ``1`` or ``0``, with the former indicating the positive case, and the latter representing the negative case.
 
@@ -73,27 +69,29 @@ Output:
     Number of Categorical Features: 168
 
 
-We can then identify and sort out the binary features with this block of code. From there we can hand-pick the features and determine the specific types of discrete numeric mappings each binary string-value is assigned. I wished it was as easy as plugging in these Pandas series into the ``scikit-learn`` API and have it do all the heavy lifting for me, in the real world, it isn't always as easy as that, unfortunately.
+We can then identify and sort out the binary features with this block of code. From there we can hand-pick the features and determine the specific types of discrete numeric mappings each binary string-value is assigned. I wished it was as easy as plugging in these Pandas series into the ``scikit-learn`` API and have it do all the heavy lifting for me, in the real world, it isn't always as easy as that, unfortunately. However, there were only a handful of features that we'd have to manually assign the mapping here for.
 
 .. code-block:: python3
     
     # note that I'm using 3 here, because the .unique() series method includes nan values as a unique value
-    ordinal_feature_names = [ feature for feature in categorical_df.columns if len(categorical_df[feature].unique()) <=3 ]
-    ordinal_categorical_df = categorical_df[ordinal_feature_names]
+    binary_feature_names = [ feature for feature in categorical_df.columns if len(categorical_df[feature].unique()) <=3 ]
+    binary_df = categorical_df[binary_feature_names]
 
-    ordinal_df = ordinal_df.replace(to_replace={'Yes': 1, 'No': 0})
-    ordinal_df = ordinal_df.replace(to_replace={'Male': 1, 'Female': 0})
-    ordinal_df['faet12'] = ordinal_df['faet12'].map({'Did not participate in formal AET': 0, 'Participated in formal AET': 1})
-    ordinal_df['v46'] = ordinal_df['v46'].map({'One job or business': 0, 'More than one job or business': 1})
-    ordinal_df['v53'] = ordinal_df['v53'].map({'Employee': 0, 'Self-employed': 1})
-    ordinal_df['nfe12'] = ordinal_df['nfe12'].map({'Did not participate in NFE': 0, 'Participated in NFE': 1})
-    ordinal_df['nativelang'] = ordinal_df['nativelang'].map({'Test language not same as native language': 0, 'Test language same as native language': 1})
-    ordinal_df['nopaidworkever'] = ordinal_df['nopaidworkever'].replace({"Has not has paid work ever": 0, "Has had paid work": 1})
-    ordinal_df['paidwork5'] = ordinal_df['paidwork5'].replace({"Has not had paid work in past 5 years": 0, "Has had paid work in past 5 years": 1})
-    ordinal_df['paidwork12'] = ordinal_df['paidwork12'].replace({"Has not had paid work during the 12 months preceding the survey": 0, "Has had paid work during the 12 months preceding the survey": 1})
-    ordinal_df['aetpop'] = ordinal_df['aetpop'].replace({"Excluded from AET population": 0, "AET population": 1})
-    ordinal_df['edwork'] = ordinal_df["edwork"].replace({"In work only": 0, "In education and work": 1})
-    ordinal_df['fnfaet12'] = ordinal_df['fnfaet12 '].replace({"Did not participate in formal or non-formal AET": 0, "Participated in formal and/or non-formal AET": 1})
+    binary_df = binary_df.replace(to_replace={'Yes': 1, 'No': 0})
+    binary_df = binary_df.replace(to_replace={'Male': 1, 'Female': 0})
+    binary_df['faet12'] = binary_df['faet12'].map({'Did not participate in formal AET': 0, 'Participated in formal AET': 1})
+    binary_df['v46'] = binary_df['v46'].map({'One job or business': 0, 'More than one job or business': 1})
+    binary_df['v53'] = binary_df['v53'].map({'Employee': 0, 'Self-employed': 1})
+    binary_df['nfe12'] = binary_df['nfe12'].map({'Did not participate in NFE': 0, 'Participated in NFE': 1})
+    binary_df['nativelang'] = binary_df['nativelang'].map({'Test language not same as native language': 0, 'Test language same as native language': 1})
+    binary_df['nopaidworkever'] = binary_df['nopaidworkever'].replace({"Has not has paid work ever": 0, "Has had paid work": 1})
+    binary_df['paidwork5'] = binary_df['paidwork5'].replace({"Has not had paid work in past 5 years": 0, "Has had paid work in past 5 years": 1})
+    binary_df['paidwork12'] = binary_df['paidwork12'].replace({"Has not had paid work during the 12 months preceding the survey": 0, "Has had paid work during the 12 months preceding the survey": 1})
+    binary_df['aetpop'] = binary_df['aetpop'].replace({"Excluded from AET population": 0, "AET population": 1})
+    binary_df['edwork'] = binary_df["edwork"].replace({"In work only": 0, "In education and work": 1})
+    binary_df[['v13', "v51", "v229"]] = binary_df[['v13', "v51", "v229"]].replace({"Rarely or never": 0, "Less than once a week": 1, "At least once a week": 2}
+    binary_df["v122"] = binary_df["v122"].replace({'Yes, unpaid work for family business': 0, 'Yes, paid work one job or business': 1, 'Yes, paid work more than one job or business or number of jobs/businesses missing': 2})
+    
 
 
 =================================
