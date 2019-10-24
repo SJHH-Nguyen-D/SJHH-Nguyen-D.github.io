@@ -27,18 +27,6 @@ The types of categorical features we will cover in post will include:
 
 Binary Categorical Features
 ===========================
-Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. Examples of this encoding scheme are the Saffir-Simpson hurricane wind scale, SNOMED CT classification of medicine, WHMIS symbology, or character encoding schemes (e.g., UTF-8, US-ASCII, etc.). These encoding schemes represent distinct individual groupings of phenomena using human-readable string and numeric character values. One important distinction between this type of encoding type and other types of encoding types is that there is a standardized, domain-specific representation that is understood by those anyone who has access to mapping.
-
-.. image:: /assets/saffir-simpson-windscale.jpeg
-    :width: 1140px
-    :height: 641px
-    :alt: saffir-simpson-hurricane-scale
-    :align: center
-
-*Saffir-Simpson Hurricane Wind Scale*
-
-
-In contrast, integer encoding is a type of numeric encoding scheme by which we typically assign a numeric value for k number of groupings, and each grouping value is represented by k+0-k (or k+1-k if you are starting from 1 instead) to k groupings. This type of numeric encoding scheme is reserved for ordinal type data as there are magnitudes of difference between each different integer encoding value, however this type of encoding scheme diminishes in precision unless there are clear linear distances between sequential values.
 
 The first of our categorical feature types we will cover in this post are binary features. They are the simplest type of categorical variable as there are only 2 available values in a binary variable domain. Examples of possible values for a binary variable include "Yes" and "No", "Up" and "Down", and "Employed" and "Unemployed". Unfortunately for our machine learning predictive model at the end of this blog series, it doesn't understand the concept of distances between string-values. Fortunately with binary variables, we can map the value of the two possible string values to either an integer of ``1`` or ``0``, with the former indicating the positive case, and the latter representing the negative case.
 
@@ -54,7 +42,6 @@ Our plan of attack would be to separate out our numeric and categorical features
 
     return num_df, cat_df
 
-
     numeric_df, categorical_df = df_by_type_splitter(df)
 
     print("Number of Numeric Features: {}".format(numeric_df.shape[1]))
@@ -68,43 +55,59 @@ Output:
     Number of Numeric Features: 31
     Number of Categorical Features: 168
 
-
 We can then identify and sort out the binary features with this block of code. From there we can hand-pick the features and determine the specific types of discrete numeric mappings each binary string-value is assigned. I wished it was as easy as plugging in these Pandas series into the ``scikit-learn`` API and have it do all the heavy lifting for me, in the real world, it isn't always as easy as that, unfortunately. However, there were only a handful of features that we'd have to manually assign the mapping here for.
 
 .. code-block:: python3
     
-    # note that I'm using 3 here, because the .unique() series method includes nan values as a unique value
-    binary_feature_names = [ feature for feature in categorical_df.columns if len(categorical_df[feature].unique()) <=3 ]
-    binary_df = categorical_df[binary_feature_names]
+    # nans are included in the .unique() method
+    binary_feature_names = [feature for feature in categorical_df.columns if len(categorical_df.unique()) <= 3]
 
-    binary_df = binary_df.replace(to_replace={'Yes': 1, 'No': 0})
-    binary_df = binary_df.replace(to_replace={'Male': 1, 'Female': 0})
-    binary_df['faet12'] = binary_df['faet12'].map({'Did not participate in formal AET': 0, 'Participated in formal AET': 1})
-    binary_df['v46'] = binary_df['v46'].map({'One job or business': 0, 'More than one job or business': 1})
-    binary_df['v53'] = binary_df['v53'].map({'Employee': 0, 'Self-employed': 1})
-    binary_df['nfe12'] = binary_df['nfe12'].map({'Did not participate in NFE': 0, 'Participated in NFE': 1})
-    binary_df['nativelang'] = binary_df['nativelang'].map({'Test language not same as native language': 0, 'Test language same as native language': 1})
-    binary_df['nopaidworkever'] = binary_df['nopaidworkever'].replace({"Has not has paid work ever": 0, "Has had paid work": 1})
-    binary_df['paidwork5'] = binary_df['paidwork5'].replace({"Has not had paid work in past 5 years": 0, "Has had paid work in past 5 years": 1})
-    binary_df['paidwork12'] = binary_df['paidwork12'].replace({"Has not had paid work during the 12 months preceding the survey": 0, "Has had paid work during the 12 months preceding the survey": 1})
-    binary_df['aetpop'] = binary_df['aetpop'].replace({"Excluded from AET population": 0, "AET population": 1})
-    binary_df['edwork'] = binary_df["edwork"].replace({"In work only": 0, "In education and work": 1})
-    binary_df[['v13', "v51", "v229"]] = binary_df[['v13', "v51", "v229"]].replace({"Rarely or never": 0, "Less than once a week": 1, "At least once a week": 2}
-    binary_df["v122"] = binary_df["v122"].replace({'Yes, unpaid work for family business': 0, 'Yes, paid work one job or business': 1, 'Yes, paid work more than one job or business or number of jobs/businesses missing': 2})
+    binary_feature_value_mapping = {
+        "faet12": {'Did not participate in formal AET': 0, 'Participated in formal AET': 1},
+        "v46" : {'One job or business': 0, 'More than one job or business': 1},
+        "v53" : {'Employee': 0, 'Self-employed': 1},
+        "nfe12" : {'Did not participate in NFE': 0, 'Participated in NFE': 1},
+        "nativelang" : {'Did not participate in NFE': 0, 'Participated in NFE': 1},
+        "nopaidworkever": {"Has not has paid work ever": 0, "Has had paid work": 1},
+        "paidwork5" : {"Has not had paid work in past 5 years": 0, "Has had paid work in past 5 years": 1},
+        "paidwork12" : {"Has not had paid work during the 12 months preceding the survey": 0, "Has had paid work during the 12 months preceding the survey": 1},
+        "aetpop" : {"Excluded from AET population": 0, "AET population": 1},
+        "edwork" : {"In work only": 0, "In education and work": 1},
+        "v122" : {'Yes, unpaid work for family business': 0, 'Yes, paid work one job or business': 1, 'Yes, paid work more than one job or business or number of jobs/businesses missing': 2}
+        }
+
+    def binary_variable_mapping(dataframe, mapping_dict):
+
+        # yes and no mappings
+        yes_no_mapping = {'Yes': 1, 'No': 0}
+        for feature in dataframe.columns:
+            if "Yes" in dataframe.columns.unique():
+                dataframe.feature = dataframe.feature.map(yes_no_mapping)
+
+        # loop through dictionary with binary feature column with appropriate mappings
+        for feature_name, mapping in mapping_dict.items():
+            # loose tri-choice ordinal categorical variables
+            if feature_name in ['v13', "v51", "v229"]:
+                dataframe[feature_name] = dataframe[feature_name].replace({"Rarely or never": 0, "Less than once a week": 1, "At least once a week": 2})
+            else:
+                dataframe[feature_name] = dataframe[feature_name].replace(mapping)
     
+    # we overwrite the values of the original categorical dataframe
+    binary_variable_mapping(binary_df, binary_feature_value_mapping)
 
+Using our defined function, we provide the binary mappings for our binary categorical variables inplace (meaning that we overwrite the original string representations for the values in our binary feature set.
 
 =================================
 Nominal Categorical Data Encoding
 =================================
 
-Nominal categorical data is a type of categorical data in which we can either use string or numeric values to indicate discrete and mutually exclusive groupings of a variable. In order for a machine learning model to "understand" a notion of differences and distances between different types of groupings, we would need to convert these string representations of these groupings into a numeric representations. There are a few approaches that we can take with this:
+Nominal type data is a type of categorical data in which we can either use string or numeric values to indicate discrete and mutually exclusive groupings of a variable. In order for a machine learning model to "understand" a notion of differences and distances between different types of groupings, we would need to convert these string representations of these groupings into a numeric representations. There are a few approaches that we can take with this:
 
 * Domain Specific Encoding
 * Integer Encoding
 * Onehot Encoding
 
-Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. Examples of this encoding scheme are the Saffir-Simpson hurricane wind scale, SNOMED CT classification of medicine, WHMIS symbology, or character encoding schemes (e.g., UTF-8, US-ASCII, etc.). These encoding schemes represent distinct individual groupings of phenomena using human-readable string and numeric character values. One important distinction between this type of encoding type and other types of encoding types is that there is a standardized, domain-specific representation that is understood by those anyone who has access to mapping.
+Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. Examples of this encoding scheme are the Saffir-Simpson hurricane wind scale, SNOMED CT classification of medicine, WHMIS symbology, or character encoding schemes (e.g., UTF-8, US-ASCII, etc.). These encoding schemes represent distinct individual groupings of phenomena using human-readable string and numeric character values. One important distinction between this type of encoding type and other types of encoding types is that there is a standardized, *domain-specific encoding* that is understood by those anyone who has access to mapping.
 
 .. image:: /assets/saffir_simpson_wind_scale.jpeg
     :width: 1140px
@@ -114,12 +117,44 @@ Often in the real world, there are already defined encoding schemes for a specif
 
 *Saffir-Simpson Hurricane Wind Scale*
 
-In contrast, integer encoding is a type of numeric encoding scheme by which we typically assign a numeric value for k number of groupings, and each grouping value is represented by k+0-k (or k+1-k if you are starting from 1 instead) to k groupings. This type of numeric encoding scheme is reserved for ordinal type data as there are magnitudes of difference between each different integer encoding value, however this type of encoding scheme diminishes in precision unless there are clear linear distances between sequential values.
+*Integer encoding* is a type of numeric encoding scheme by which we typically assign a numeric value for k number of groupings, and each grouping value is represented by k+0-k (or k+1-k if you are starting from 1 instead) to k groupings. This type of numeric encoding scheme is reserved for ordinal type data as there are magnitudes of difference between each different integer encoding value, however this type of encoding scheme diminishes in precision unless there are clear linear distances between sequential values.
 
-Onehot encoding is another type of numeric encoding scheme by which we can use binary switches to represent each *group within a single categorical variable* for each categorical variable. Onehot encoding schemes are the choice of scheme when we choose to encode nominal categorical variables with no notion of ordering or magnitude.
+*Onehot encoding* is another type of numeric encoding scheme by which we can use binary switches to represent each *group within a single categorical variable* for each categorical variable. Onehot encoding schemes are the choice of scheme when we choose to encode nominal categorical variables with no notion of ordering or magnitude.
 
 The task of determining which categorical variables are either nominal or ordinal in nature is not obvious at a glance. This task becomes much more tedious and time consuming when working with a large number of categorical features with a variety of different grouping domains, in which case, we would have manually select out each of the categorical features and classify them as either nominal or ordinal. Furthermore, determining the ordering of ordinal variables may not be immediately apparent. This part will require consultation from a data dictionary or domain experts to complete. Fortunately in this case, a data dictionary with an explanation of each variable and its domain values was provided for us with this dataset. 
 
+
+.. code-block:: python3
+
+    from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+
+    nominal_feature_names = ["v3", 'ctryrgn', 'v91', 'lng_home', 'cnt_brth', 'lng_ci', 'v31', 'v96', "isic1c", "v92", "v88", "v140", "v137"]
+    nominal_df = categorical_df[nominal_feature_names]
+
+    def onehot_encode_dataframe(dataframe):
+        """ onehot encoding of nominal features are done inplace """
+            nominal_categorical_encoding_manifest = {}
+
+            #Using LabelEncoding to Encode
+            # temporarily fill nan values with an encoding, and then after labelencoding, 
+            # inverse transform, set nans back to np.nan and then impute for missing values
+            dataframe.fillna('Null', inplace=True)
+
+            for col in dataframe.columns:
+                le = LabelEncoder()
+                le.fit(dataframe[col].values.ravel())
+                dataframe[col] = le.transform(dataframe[col].values.ravel())
+                null_index = list(le.classes_).index('Null')
+                nominal_categorical_encoding_manifest[col] = list(le.classes_)
+
+                # transform back the null encoded values to np.nan
+                dataframe[col].replace(to_replace=list(le.classes_).index('Null'), value=np.nan, inplace=True)
+
+                le = None
+
+    onehot_encode_dataframe(nominal_df)
+
+With our custom function loop, we perform the one hot encoding procedure inplace to overwrite the previous string representations of the group values.
 
 =================================
 Ordinal Categorical Data Encoding
