@@ -136,8 +136,8 @@
         <article class="post">
         <div class="inner">
             <section class="post-content">
-                <div class="section" id="sharpestminds-project-series-part-5-labelling-and-encoding-categorical-variables">
-<h2>SharpestMinds Project Series Part 5: Labelling and Encoding Categorical Variables</h2>
+                <div class="section" id="sharpestminds-project-series-part-6-imputation-of-missing-data">
+<h2>SharpestMinds Project Series Part 6: Imputation of Missing Data</h2>
 <p>If you are new to this post and would like some context, I'd highly suggest you read through the previous posts of this project series, as this is the sixth post of this series:</p>
 <ul class="simple">
 <li><a class="reference external" href="/2019/09/sharpestminds-project-part-1.html">Part 1 - Introduction</a></li>
@@ -149,13 +149,53 @@
 <p>In the previous post, we completed the necessary preprocessing methods that were required of dealing a variety of categorical data types (nominal, binary, and ordinal) and developed an encompassing transformation at the end to encode the mappings for our data points that remained after the initial preprocessing steps. During the previous post, we separated the numeric data from our categorical data to first work with the categorical features. This is the sixth post of my SharpestMinds project series talk about missing data values and how to come up with a smarter way to go about dealing with them. If you want to follow along with the full codebase, you can do so at the <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds-project">link to the repo</a>). This is going to be a brief but insightful one, so let's get into it.</p>
 <div class="section" id="imputation-of-missing-values">
 <h3>Imputation of Missing Values</h3>
-<p>You have missing values in your dataset. Now what?</p>
-<div class="highlight"><pre><span></span><span class="n">code</span> <span class="n">code</span> <span class="n">code</span>
+<p>If you've been following allow since the last post, you will know that a large part of our numeric feature values still contain NaN values. Typically in blogs and tutorials which detail handling missings values, use a measure of centrality such as mean, median or mode to fill in for missing numeric values. We'd like to take this one step further in our problem and use a powerful API called <tt class="docutils literal">missingpy</tt> to used 'informed imputation', which you can read the documentation for <a class="reference external" href="https://pypi.org/project/missingpy/">here</a>).</p>
+<p>First let's get our data in order:</p>
+<div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">numeric_df</span><span class="p">,</span> <span class="n">categorical_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+<p>Before you can use the <tt class="docutils literal">missingpy</tt> imputation package, you have to install it with: <tt class="docutils literal">pip install missingpy</tt> in terminal.</p>
+<pre class="literal-block">
+$ pip install missingpy
+</pre>
+<img alt="connect the dots" class="align-center" src="/assets/connect_the_dots.jpg" style="width: 600px; height: 380px;" />
+<p><em>Can you connect the dots to find out what the missing values are?</em></p>
+<p>Now we can simply call the <tt class="docutils literal">.fit_transform()</tt> method, just like any ol' machine learning model in the <tt class="docutils literal"><span class="pre">scikit-learn</span></tt> library to generate the imputed missing data points. There are different approaches available in the <tt class="docutils literal">missingpy</tt> library for which we can use to to impute values. For our pipeline, I chose to use the K-Nearest Neighbors (KNN) imputer object to predict what the missing values for both the numeric and categorical values are. There is some caution to be had about using this type of imputation method for categorical variables, as they will be using numeric encoding schemes to represent the real-world string values - i.e., those values that are predicted my contain point-values for discrete valued categorical numeric encodings and thus have to be rounded to the nearest integer. There is a fallacy in using imputation of values as such is that discrete real world categories can somehow be adjusted to be another through numeric rounding, which isn't the case. This is something we ought of be aware of when using such a method.</p>
+<p>As opposed to using the arithmetic mean (sensitive to outlier values) or mode to impute for missing values,  our basis of imputation uses a notion of 'distance' or 'similarity' between samples using the nearest neighbours algorithm. With a fairly large dataset and many features to impute for, it is oft the case that running this on a single CPU will take a considerable amount of time (though definitely less than 1 day, with todays modern CPUs). We won't go through hyperparameter optimization of the imputer in this example, as this will take an obscene amount of time that I am not willing to wait for with my hardware, however this is something someone with the right resources could attempt to do. We will just be running the KNN Imputer object using 5 nearest neighbours and uniform weighting for our sample neighbour weights.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">missingpy</span> <span class="k">import</span> <span class="n">KNNImputer</span>
+
+<span class="n">knn</span> <span class="o">=</span> <span class="n">KNNImputer</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+                <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;masked_euclidean&quot;</span><span class="p">,</span> <span class="n">row_max_missing</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                <span class="n">col_max_missing</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">knn_missing_imputation</span> <span class="o">=</span> <span class="n">knn</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c1"># combine the series containing the newly imputed values back in with the target attribute</span>
+<span class="n">imputed_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">knn_missing_imputation</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="s1">&#39;job_performance&#39;</span><span class="p">])</span>
+<span class="n">imputed_df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+<p>As a check, we can examine number of remaining missing values in each of the features as such:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">missing_values_checker</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot; prints a statement if the dataframe contains any missing values &quot;&quot;&quot;</span>
+    <span class="n">contains_missing_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">contains_missing_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">contains_missing_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There were no missing values remaining after imputation&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There were still NaN values remaining in the dataframe&quot;</span><span class="p">)</span>
+
+<span class="n">missing_values_checker</span><span class="p">(</span><span class="n">imputed_df</span><span class="p">)</span>
 </pre></div>
 <p>Output:</p>
 <pre class="literal-block">
-output output output
+There were no missing values remaining after imputation
 </pre>
+<p>We can also take a look at the values that were imputed by our KNN object for a particular attribute:</p>
+<div class="highlight"><pre><span></span><span class="n">code</span> <span class="n">code</span> <span class="n">code</span>
+</pre></div>
 <div class="section" id="conclusion">
 <h4>Conclusion</h4>
 <p>In this post, we covered the ... Until then, ciao!</p>
