@@ -211,9 +211,9 @@ Based on these two count plots, one might think it reasonable to assume that edu
     5              neyman  -2.000      NaN  4.0           NaN       NaN    NaN)
 
 
-With an alpha of 0.05, and the plot of the 
+With an alpha of 0.05 for the chi-squared statistical test of independence, and the plot of the count plots exhibiting the count distribution of values, we can say that we fail to reject the null-hypothesis and conclude that the relationship we see between education level and occupation sector are not statistically significant.
 
-That being said, we can probably conclude that these features should be tentatively kept in the dataset until the preprocessing step, where we will decide what to do with this further.
+That being said, we can probably conclude that these features should tentatively remain in the dataset until the preprocessing step, where we will decide what to do with this further.
 
 
 Outliers and Extremes

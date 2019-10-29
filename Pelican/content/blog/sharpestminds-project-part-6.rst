@@ -91,7 +91,7 @@ As a check, we can examine number of remaining missing values in each of the fea
 
 Output:
 
-::
+.. code-block:: python3
 
     There were no missing values remaining after imputation
 

@@ -111,8 +111,8 @@ The nominal type data is a type of categorical data in which we can either use s
 Often in the real world, there are already defined encoding schemes for a specific representations of a grouping. Examples of this encoding scheme are the Saffir-Simpson hurricane wind scale, SNOMED CT classification of medicine, WHMIS symbology, or character encoding schemes (e.g., UTF-8, US-ASCII, etc.). These encoding schemes represent distinct individual groupings of phenomena using human-readable string and numeric character values. One important distinction between this type of encoding type and other types of encoding types is that there is a standardized, *domain-specific encoding* that is understood by those anyone who has access to mapping.
 
 .. image:: /assets/saffir-simpson-windscale.jpeg
-    :width: 1140px
-    :height: 681px
+    :width: 684px
+    :height: 408px
     :alt: The Saffir-Simpson hurricane wind scale
     :align: center 
 
