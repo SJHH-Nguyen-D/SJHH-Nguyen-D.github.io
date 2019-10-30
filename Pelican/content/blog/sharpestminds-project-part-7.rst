@@ -26,10 +26,10 @@ In the previous post, we completed the necessary preprocessing methods that were
 Feature Selection
 =================
 
-.. image:: /assets/cocos_bizarred_adventure.jpg
-    :width: 600px
-    :height: 380px
-    :alt: placeholder image for page
+.. image:: /assets/cocos_bizarre_adventure.jpg
+    :width: 518px
+    :height: 691px
+    :alt: CoCo the cat
     :align: center
 
 

@@ -191,7 +191,7 @@ In any case, in this post, we covered the preparation for imputation and the act
 
 Bonus picture of my cat!
 
-.. image:: assets/cocos_bizarre_adventure.jpg
+.. image:: /assets/cocos_bizarre_adventure.jpg
     :width: 518px
     :height: 691px
     :alt: CoCo the cat
