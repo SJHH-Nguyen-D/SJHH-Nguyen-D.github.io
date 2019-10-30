@@ -376,7 +376,10 @@ Medium                                                  <span class="m">130</spa
 <img alt="histogram job performance by all regions" class="align-center" src="/assets/data_visualizations/hist_jps_region_ALL.png" style="width: 402px; height: 264px;" />
 <p>Here we can see the distribution of the East Asia and Pacific regions typically have higher mean job performance scores. We can also see that there is more variability in the job performance scores of those in the Latin and Carribean region (a bimodal distribution), than the rest of the other regions, which approximately exemplify a normal distribution.</p>
 <p>I've presented only a handful of plots of job performance score distributions against regions, however, this gives us a general understanding of how these scores vary between regions. To see whether these performance scores are truly statistically different between regions, we would have perform a statistical analyses, either the Kruskal-Wallis H-test or ANOVA. The ANOVA test makes some assumptions and is sensitive to the effects of homoscedasticity (same variance among groups). Therefore, we test the assumptions first before we pick a statistical method to select.</p>
-<p>We test homoscedasticity (pip install the pingouin statistical library in python if you haven't already):</p>
+<p>We test homoscedasticity (pip install the pingouin statistical library in your terminal for python, if you haven't already):</p>
+<pre class="literal-block">
+$ pip install pingouin
+</pre>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pingouin</span> <span class="k">import</span> <span class="n">homoscedasticity</span>
 
 <span class="n">levene_test</span> <span class="o">=</span> <span class="n">homoscedasticity</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="s1">&#39;job_performance&#39;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s1">&#39;ctryrgn&#39;</span><span class="p">)</span>

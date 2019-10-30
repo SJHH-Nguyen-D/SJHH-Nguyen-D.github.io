@@ -55,7 +55,7 @@ Before you can use the ``missingpy`` imputation package, you have to install it 
 
 Now we can simply call the ``.fit_transform()`` method, just like any ol' machine learning model in the ``scikit-learn`` library to generate the imputed missing data points. There are different approaches available in the ``missingpy`` library for which we can use to to impute values. For our pipeline, I chose to use the K-Nearest Neighbors (KNN) imputer object to predict what the missing values for both the numeric and categorical values are. There is some caution to be had about using this type of imputation method for categorical variables, as they will be using numeric encoding schemes to represent the real-world string values - i.e., those values that are predicted my contain point-values for discrete valued categorical numeric encodings and thus have to be rounded to the nearest integer. There is a fallacy in using imputation of values as such is that discrete real world categories can somehow be adjusted to be another through numeric rounding, which isn't the case. This is something we ought of be aware of when using such a method. 
 
-As opposed to using the arithmetic mean (sensitive to outlier values) or mode to impute for missing values,  our basis of imputation uses a notion of 'distance' or 'similarity' between samples using the nearest neighbours algorithm. With a fairly large dataset and many features to impute for, it is oft the case that running this on a single CPU will take a considerable amount of time (though definitely less than 1 day, with todays modern CPUs). We won't go through hyperparameter optimization of the imputer in this example, as this will take an obscene amount of time that I am not willing to wait for with my hardware, however this is something someone with the right resources could attempt to do. We will just be running the KNN Imputer object using 5 nearest neighbours and uniform weighting for our sample neighbour weights.
+As opposed to using the arithmetic mean (sensitive to outlier values) or mode to impute for missing values,  our basis of imputation uses a notion of 'distance' or 'similarity' between samples using the nearest neighbours algorithm. With a fairly large dataset and many features to impute for, it is oft the case that running this on a single CPU will take a considerable amount of time (though definitely less than 1 day, with todays modern CPUs). We won't go through hyperparameter optimization of the imputer in this example, as this will take an obscene amount of time that I am not willing to wait for with my hardware, however this is something someone with the right resources could attempt to do. We will just be running the KNN Imputer object using 5 nearest neighbours and uniform weighting for our sample neighbor weights.
 
 .. code-block:: python3
 
@@ -95,11 +95,29 @@ Output:
 
     There were no missing values remaining after imputation
 
-We can also take a look at the values that were imputed by our KNN object for a particular attribute:
+We can also take a look at some of the attributes that had their missing values imputed for. We can also have a look at median and mean values for each attribute and compare them to some of the ones that were generated.
 
 .. code-block:: python3
 
-    code code code
+    print(f"writhome attribute has: {df.writhome.isnull().sum()} missing values")
+    print(df.writhome.agg(['count', 'min', 'max', 'median', 'mean', 'var', 'std', 'kurt', 'skew']))
+    print(imputed_df.writhome.head())
+
+Output:
+
+.. code-block:: bash
+
+    writhome attribute has: 486 missing values
+    count     13938.000000
+    min          -0.296028
+    max           6.104219
+    median        2.446716
+    mean          2.339455
+    var           0.834437
+    std           0.913475
+    kurt          2.382859
+    skew         -0.352368
+    Name: writhome, dtype: float64
 
 
 

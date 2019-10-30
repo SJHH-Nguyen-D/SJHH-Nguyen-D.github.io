@@ -406,7 +406,13 @@ Here we can see the distribution of the East Asia and Pacific regions typically 
 
 I've presented only a handful of plots of job performance score distributions against regions, however, this gives us a general understanding of how these scores vary between regions. To see whether these performance scores are truly statistically different between regions, we would have perform a statistical analyses, either the Kruskal-Wallis H-test or ANOVA. The ANOVA test makes some assumptions and is sensitive to the effects of homoscedasticity (same variance among groups). Therefore, we test the assumptions first before we pick a statistical method to select.
 
-We test homoscedasticity (pip install the pingouin statistical library in python if you haven't already):
+We test homoscedasticity (pip install the pingouin statistical library in your terminal for python, if you haven't already):
+
+::
+
+    $ pip install pingouin
+
+
 
 .. code-block:: python3
 
