@@ -146,34 +146,44 @@
 <li><a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">Part 4 - Dropping Data</a></li>
 <li><a class="reference external" href="/2019/10/sharpestminds-project-part-5.html">Part 5 - Categorical Data Encoding</a></li>
 </ul>
-<p>In the previous post, we completed the necessary preprocessing methods that were required of dealing a variety of categorical data types (nominal, binary, and ordinal) and developed an encompassing transformation at the end to encode the mappings for our data points that remained after the initial preprocessing steps. During the previous post, we separated the numeric data from our categorical data to first work with the categorical features. This is the sixth post of my SharpestMinds project series talk about missing data values and how to come up with a smarter way to go about dealing with them. If you want to follow along with the full codebase, you can do so at the <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds-project">link to the repo</a>). This is going to be a brief but insightful one, so let's get into it.</p>
+<p>In the previous post, we completed the necessary preprocessing methods that were required of dealing a variety of categorical data types (nominal, binary, and ordinal) and developed an encompassing transformation at the end to encode the mappings for our data points that remained after the initial preprocessing steps. During the previous post, we separated the numeric data from our categorical data to first work with the categorical features. This is the sixth post of my SharpestMinds project series talk about missing data values and how to come up with a smarter way to go about dealing with them. If you want to follow along with the full codebase in the Jupyter IPython Notebook, you can do so at the <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds-project">link to the repo</a>). This is going to be a brief but insightful one, so let's get into it.</p>
 <div class="section" id="imputation-of-missing-values">
 <h3>Imputation of Missing Values</h3>
 <p>If you've been following allow since the last post, you will know that a large part of our numeric feature values still contain NaN values. Typically in blogs and tutorials which detail handling missings values, use a measure of centrality such as mean, median or mode to fill in for missing numeric values. We'd like to take this one step further in our problem and use a powerful API called <tt class="docutils literal">missingpy</tt> to used 'informed imputation', which you can read the documentation for <a class="reference external" href="https://pypi.org/project/missingpy/">here</a>).</p>
 <p>First let's get our data in order:</p>
 <div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">numeric_df</span><span class="p">,</span> <span class="n">categorical_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 </pre></div>
 <p>Before you can use the <tt class="docutils literal">missingpy</tt> imputation package, you have to install it with: <tt class="docutils literal">pip install missingpy</tt> in terminal.</p>
 <pre class="literal-block">
 $ pip install missingpy
 </pre>
 <img alt="connect the dots" class="align-center" src="/assets/connect_the_dots.jpg" style="width: 600px; height: 380px;" />
-<p><em>Can you connect the dots to find out what the missing values are?</em></p>
+<p><em>Imputing data: You might as well draw something up that makes sense.</em></p>
 <p>Now we can simply call the <tt class="docutils literal">.fit_transform()</tt> method, just like any ol' machine learning model in the <tt class="docutils literal"><span class="pre">scikit-learn</span></tt> library to generate the imputed missing data points. There are different approaches available in the <tt class="docutils literal">missingpy</tt> library for which we can use to to impute values. For our pipeline, I chose to use the K-Nearest Neighbors (KNN) imputer object to predict what the missing values for both the numeric and categorical values are. There is some caution to be had about using this type of imputation method for categorical variables, as they will be using numeric encoding schemes to represent the real-world string values - i.e., those values that are predicted my contain point-values for discrete valued categorical numeric encodings and thus have to be rounded to the nearest integer. There is a fallacy in using imputation of values as such is that discrete real world categories can somehow be adjusted to be another through numeric rounding, which isn't the case. This is something we ought of be aware of when using such a method.</p>
 <p>As opposed to using the arithmetic mean (sensitive to outlier values) or mode to impute for missing values,  our basis of imputation uses a notion of 'distance' or 'similarity' between samples using the nearest neighbours algorithm. With a fairly large dataset and many features to impute for, it is oft the case that running this on a single CPU will take a considerable amount of time (though definitely less than 1 day, with todays modern CPUs). We won't go through hyperparameter optimization of the imputer in this example, as this will take an obscene amount of time that I am not willing to wait for with my hardware, however this is something someone with the right resources could attempt to do. We will just be running the KNN Imputer object using 5 nearest neighbours and uniform weighting for our sample neighbor weights.</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">missingpy</span> <span class="k">import</span> <span class="n">KNNImputer</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">impute_missing_for_dataframe</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s1">&#39;job_performance&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The imputer function should be used on a dataframe that has already been numerically encoded &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">missingpy</span> <span class="k">import</span> <span class="n">KNNImputer</span> <span class="c1">#, MissForest</span>
 
-<span class="n">knn</span> <span class="o">=</span> <span class="n">KNNImputer</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
-                <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;masked_euclidean&quot;</span><span class="p">,</span> <span class="n">row_max_missing</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
-                <span class="n">col_max_missing</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
-<span class="n">knn_missing_imputation</span> <span class="o">=</span> <span class="n">knn</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="c1"># imputer object</span>
+    <span class="n">knn</span> <span class="o">=</span> <span class="n">KNNImputer</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+                    <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;masked_euclidean&quot;</span><span class="p">,</span>
+                    <span class="n">row_max_missing</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                    <span class="n">col_max_missing</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                    <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="c1"># combine the series containing the newly imputed values back in with the target attribute</span>
-<span class="n">imputed_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">knn_missing_imputation</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="s1">&#39;job_performance&#39;</span><span class="p">])</span>
-<span class="n">imputed_df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">knn_missing_imputation</span> <span class="o">=</span> <span class="n">knn</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">imputed_dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">knn_missing_imputation</span><span class="p">,</span>
+                                     <span class="n">columns</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span> <span class="o">!=</span> <span class="n">target</span><span class="p">])</span>
+    <span class="n">imputed_dataframe</span><span class="p">[</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">imputed_dataframe</span>
+
+<span class="n">imputed_df</span> <span class="o">=</span> <span class="n">impute_missing_for_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;job_performance&quot;</span><span class="p">)</span>
 </pre></div>
 <p>As a check, we can examine number of remaining missing values in each of the features as such:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">missing_values_checker</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
@@ -194,25 +204,64 @@ $ pip install missingpy
 </pre></div>
 <p>We can also take a look at some of the attributes that had their missing values imputed for. We can also have a look at median and mean values for each attribute and compare them to some of the ones that were generated.</p>
 <div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;writhome attribute has: {df.writhome.isnull().sum()} missing values&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">writhome</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;var&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;kurt&#39;</span><span class="p">,</span> <span class="s1">&#39;skew&#39;</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">imputed_df</span><span class="o">.</span><span class="n">writhome</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">writhome</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="s1">&#39;var&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;kurt&#39;</span><span class="p">,</span> <span class="s1">&#39;skew&#39;</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">writhome</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+<span class="n">missing_writhome</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">numeric_df</span><span class="p">[</span><span class="n">numeric_df</span><span class="o">.</span><span class="n">writhome</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The top 5 generated values for writhome&quot;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">missing_writhome</span><span class="p">,</span> <span class="s2">&quot;writhome&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 <p>Output:</p>
-<div class="highlight"><pre><span></span>writhome attribute has: <span class="m">486</span> missing values
-count     <span class="m">13938</span>.000000
-min          -0.296028
-max           <span class="m">6</span>.104219
-median        <span class="m">2</span>.446716
-mean          <span class="m">2</span>.339455
-var           <span class="m">0</span>.834437
-std           <span class="m">0</span>.913475
-kurt          <span class="m">2</span>.382859
-skew         -0.352368
+<div class="highlight"><pre><span></span>writhome attribute has: <span class="m">0</span> missing values
+median    <span class="m">2</span>.446716
+var       <span class="m">0</span>.811755
+std       <span class="m">0</span>.900975
+kurt      <span class="m">2</span>.503343
+skew     -0.358559
+Name: writhome, dtype: float64
+count    <span class="m">14424</span>.000000
+mean         <span class="m">2</span>.340815
+std          <span class="m">0</span>.900975
+min         -0.296028
+<span class="m">25</span>%          <span class="m">1</span>.766668
+<span class="m">50</span>%          <span class="m">2</span>.446716
+<span class="m">75</span>%          <span class="m">2</span>.823340
+max          <span class="m">6</span>.104219
+Name: writhome, dtype: float64
+
+The top <span class="m">5</span> generated values <span class="k">for</span> writhome
+<span class="m">9</span>      <span class="m">2</span>.438870
+<span class="m">55</span>     <span class="m">2</span>.438870
+<span class="m">148</span>    <span class="m">2</span>.787867
+<span class="m">173</span>    <span class="m">2</span>.918247
+<span class="m">187</span>    <span class="m">2</span>.787867
 Name: writhome, dtype: float64
 </pre></div>
+<p>As you can see, the missing values for the writhome attribute were realistic enough with the ones at indices [9, 55] falling around the median and [148, 173, 187] falling around the 75% percentile.</p>
+<p>Let's take examine another feature such as v8, which is an ordinal variable. Notice how point values were imputed for these supposedly discrete ordinal numeric mappings.</p>
+<div class="highlight"><pre><span></span><span class="n">imputed_df</span><span class="o">.</span><span class="n">v8</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
+<p>Ouput:</p>
+<div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">,</span> <span class="mf">2.</span> <span class="p">,</span> <span class="mf">0.</span> <span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+</pre></div>
+<p>We can correct for this issue with the rounding function below:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">round_selected_attributes_imputed</span><span class="p">(</span><span class="n">dataframe_to_round</span><span class="p">,</span> <span class="n">dataframe_not_round</span><span class="p">):</span>
+    <span class="n">rounded_dataframe</span> <span class="o">=</span> <span class="n">dataframe_to_round</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">round</span><span class="p">())</span>
+    <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">rounded_dataframe</span><span class="p">,</span> <span class="n">dataframe_not_round</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dataframe</span>
+
+<span class="n">imputed_df</span> <span class="o">=</span> <span class="n">round_selected_attributes_imputed</span><span class="p">(</span><span class="n">imputed_df</span><span class="p">[</span><span class="n">categorical_df</span><span class="o">.</span><span class="n">columns</span><span class="p">],</span>
+    <span class="n">imputed_df</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">imputed_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="n">categorical_df</span><span class="o">.</span><span class="n">columns</span><span class="p">))]</span>
+    <span class="p">)</span>
+</pre></div>
+<p>Using the <tt class="docutils literal">.head()</tt> method on our dataframe yields a beautifully, cleaned and imputed dataframe with no NaN values and the values are valid.</p>
+<img alt="dataframe head after imputation with imputer" class="align-center" src="/assets/data_visualizations/dataframe_head_after_imputation.jpg" style="width: 881px; height: 174px;" />
 <div class="section" id="conclusion">
 <h4>Conclusion</h4>
-<p>In this post, we covered the ... Until then, ciao!</p>
+<p>Although it was brief, the amount of work and effort that went into sorting out the kinks in my code could not be understated but that goes without saying. What can I say. It was a learning experience and the best way to learn is through failure and trial.</p>
+<p>In any case, in this post, we covered the preparation for imputation and the actual imputation of missing values for our dataset with the missingpy.KNNImputer doing the heavy lifting for us. In the <a class="reference external" href="/2019/10/sharpestminds-project-part-7.html">next post</a>, we will cover the feature selection step, which will also be a relatively brief post. Stay tuned! Until next time!</p>
+<p>Bonus picture of my cat!</p>
+<img alt="CoCo the cat" class="align-center" src="assets/cocos_bizarre_adventure.jpg" style="width: 518px; height: 691px;" />
 </div>
 </div>
 </div>

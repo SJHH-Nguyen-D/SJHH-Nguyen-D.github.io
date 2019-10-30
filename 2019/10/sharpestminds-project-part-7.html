@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+
+  <title>Ever wondered what your employee performance score would be? Part 7: Feature Selection</title>
+
+  <meta name="description" content="My name is Dennis Nguyen-Do. This is my personal blog." />
+
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="origin" />
+  <meta name="generator" content="Pelican" />
+  <link href="" rel="canonical" />
+
+  <!-- Feed -->
+
+  <link href="/theme/css/style.css" type="text/css" rel="stylesheet" />
+
+  <!-- Code highlight color scheme -->
+      <link href="/theme/css/code_blocks/github.css" rel="stylesheet">
+
+
+  <!-- Custom fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Montserrat:400,300' rel='stylesheet' type='text/css' />
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css" />
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+    <link href="/2019/10/sharpestminds-project-part-7.html" rel="canonical" />
+
+        <meta name="description" content="In this brief seventh post of the SharpestMinds project series we will go through the feature selection for our dataset and figure out...">
+
+        <meta name="author" content="Nguyen-Do, Dennis">
+
+        <meta name="tags" content="sharpestminds-project">
+        <meta name="tags" content="data science">
+        <meta name="tags" content="projects">
+        <meta name="tags" content="employee performance">
+        <meta name="tags" content="preprocessing">
+        <meta name="tags" content="feature selection">
+        <meta name="tags" content="feature engineering">
+
+        <meta property="og:locale" content="" />
+    <meta property="og:site_name" content="Denny-4/7 Data Science Blog" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Denny-4/7 Data Science Blog" />
+    <meta property="og:description" content="View the blog." />
+    <meta property="og:url" content="" />
+      <meta property="og:image" content="//assets/head_cover_general.jpg" />
+
+  <meta property="og:type" content="article">
+            <meta property="article:author" content="/author/nguyen-do-dennis">
+  <meta property="og:url" content="/2019/10/sharpestminds-project-part-7.html">
+  <meta property="og:title" content="Ever wondered what your employee performance score would be? Part 7: Feature Selection">
+  <meta property="article:published_time" content="2019-10-30 18:26:00-05:00">
+            <meta property="og:description" content="In this brief seventh post of the SharpestMinds project series we will go through the feature selection for our dataset and figure out...">
+
+            <meta property="og:image" content="//assets/head_cover_general.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@Dennis00481552">
+        <meta name="twitter:title" content="Ever wondered what your employee performance score would be? Part 7: Feature Selection">
+        <meta name="twitter:url" content="/2019/10/sharpestminds-project-part-7.html">
+
+            <meta name="twitter:image:src" content="//assets/head_cover_general.jpg">
+
+            <meta name="twitter:description" content="In this brief seventh post of the SharpestMinds project series we will go through the feature selection for our dataset and figure out...">
+</head>
+<!-- TODO : Body class -->
+<body class="home-template">
+
+<nav id="menu">
+  <a class="close-button">Close</a>
+  <div class="nav-wrapper">
+    <p class="nav-label">Menu</p>
+    <ul>
+
+          <ul>
+              <li role="presentation"><a href="/pages/about.html">About</a></li>
+          <ul>
+              <li role="presentation"><a href="/pages/contact.html">Contact</a></li>
+              <li class="nav-archives active" role="presentation"><a href="/archives.html">Archives</a></li>
+          </ul>
+
+    </ul>
+  </div>
+</nav>
+    <!-- Progressbar -->
+    <div class="progress-container">
+        <span class="progress-bar"></span>
+    </div>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header id="post-header" class="has-cover">
+      <div class="inner">
+        <nav id="navigation">
+            <span id="home-button" class="nav-button">
+                <!-- <a class="home-button" href="" title="Home"><i class="ic ic-arrow-left"></i> Home</a> -->
+                <a class="home-button" href="/index.html" title="Home"><i class="ic ic-arrow-left"></i> Home</a>
+            </span>
+          <span id="menu-button" class="nav-button">
+            <a class="menu-button"><i class="ic ic-menu"></i> Menu</a>
+          </span>
+        </nav>
+        <h1 class="post-title">Ever wondered what your employee performance score would be? Part 7: Feature Selection</h1>
+        <!-- TODO : Proper class for headline -->
+        <span class="post-meta">
+                <a href="/author/nguyen-do-dennis">Nguyen-do, dennis</a>
+            | <time datetime="Wed 30 October 2019">Wed 30 October 2019</time>
+        </span>
+        <!-- TODO : Modified check -->
+        
+            <div class="post-cover cover" style="background-image: url('/assets/head_cover_articles.jpg')">            
+        
+      </div>    
+    </header>    
+
+  <section id="wrapper">
+    <a class="hidden-close"></a>
+
+    <!-- Post content -->
+    <main class="content" role="main">
+        <article class="post">
+        <div class="inner">
+            <section class="post-content">
+                <div class="section" id="sharpestminds-project-series-part-7-feature-selection">
+<h2>SharpestMinds Project Series Part 7: Feature Selection</h2>
+<p>If you are new to this post and would like some context, I'd highly suggest you read through the previous posts of this project series, as this is the seventh post of this series:</p>
+<ul class="simple">
+<li><a class="reference external" href="/2019/09/sharpestminds-project-part-1.html">Part 1 - Introduction</a></li>
+<li><a class="reference external" href="/2019/10/sharpestminds-project-part-2.html">Part 2 - Background, Loading, EDA</a></li>
+<li><a class="reference external" href="/2019/10/sharpestminds-project-part-3.html">Part 3 - More Exploratory Data Analysis</a></li>
+<li><a class="reference external" href="/2019/10/sharpestminds-project-part-4.html">Part 4 - Dropping Data</a></li>
+<li><a class="reference external" href="/2019/10/sharpestminds-project-part-5.html">Part 5 - Categorical Data Encoding</a></li>
+<li><a class="reference external" href="/2019/10/sharpestminds-project-part-6.html">Part 6 - Imputing Missing Values</a></li>
+</ul>
+<p>In the previous post, we completed the necessary preprocessing methods that were required of dealing a variety of categorical data types (nominal, binary, and ordinal) and developed an encompassing transformation at the end to encode the mappings for our data points that remained after the initial preprocessing steps. During the previous post, we separated the numeric data from our categorical data to first work with the categorical features. This is the sixth post of my SharpestMinds project series talk about missing data values and how to come up with a smarter way to go about dealing with them. If you want to follow along with the full codebase in the Jupyter IPython Notebook, you can do so at the <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds-project">link to the repo</a>). This is going to be a brief but insightful one, so let's get into it.</p>
+<div class="section" id="feature-selection">
+<h3>Feature Selection</h3>
+<img alt="placeholder image for page" class="align-center" src="/assets/cocos_bizarred_adventure.jpg" style="width: 600px; height: 380px;" />
+<div class="section" id="conclusion">
+<h4>Conclusion</h4>
+<p>This is some words about the conclusion. There! Conclusion!</p>
+</div>
+</div>
+</div>
+
+            </section>
+
+            <section class="post-info">
+                <div class="post-share">
+                    <a class="twitter" href="https://twitter.com/share?text=Ever wondered what your employee performance score would be? Part 7: Feature Selection&amp;url=/2019/10/sharpestminds-project-part-7.html" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="ic ic-twitter"></i><span class="hidden">Twitter</span>
+                    </a>
+                    <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=/2019/10/sharpestminds-project-part-7.html" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="ic ic-facebook"></i><span class="hidden">Facebook</span>
+                    </a>
+                    <a class="googleplus" href="https://plus.google.com/share?url=/2019/10/sharpestminds-project-part-7.html" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="ic ic-googleplus"></i><span class="hidden">Google+</span>
+                    </a>
+                    <div class="clear"></div>
+                </div>
+
+                <aside class="post-tags">
+<a href="/tag/sharpestminds-project">sharpestminds-project</a><a href="/tag/data-science">data science</a><a href="/tag/projects">projects</a><a href="/tag/employee-performance">employee performance</a><a href="/tag/preprocessing">preprocessing</a><a href="/tag/feature-selection">feature selection</a><a href="/tag/feature-engineering">feature engineering</a>                </aside>
+
+                <div class="clear"></div>
+
+ 
+
+                </section>
+
+
+                <aside class="post-nav">
+                    <div class="clear"></div>
+                </aside>
+
+            </div>
+        </article>
+    </main>
+      <!-- TODO : Body class -->
+    <div id="body-class" style="display: none;" class=""></div>
+  
+    <footer id="footer">
+      <div class="inner">
+        <section class="credits">
+          <span class="credits-theme">Theme <a href="https://github.com/arulrajnet/attila" rel="nofollow">Attila</a></span>
+          <span class="credits-software">Published with <a href="https://github.com/getpelican/pelican" rel="nofollow">Pelican</a></span>
+        </section>
+      </div>
+    </footer>
+  </section>
+
+  <script type="text/javascript" src="/theme/js/script.js"></script>
+  
+</body>
+</html>
