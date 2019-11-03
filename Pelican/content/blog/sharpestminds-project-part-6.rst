@@ -58,26 +58,24 @@ As opposed to using the arithmetic mean (sensitive to outlier values) or mode to
 .. code-block:: python3
 
     def impute_missing_for_dataframe(dataframe, target='job_performance'):
-        """ The imputer function should be used on a dataframe that has already been numerically encoded """
-        from missingpy import KNNImputer #, MissForest
-        
-        X = dataframe.loc[:, dataframe.columns != target].values
-        y = dataframe[target].values
+    """ The imputer function should be used on a dataframe that has already been numerically encoded """
+    from missingpy import KNNImputer #, MissForest
+    
+    X = dataframe.loc[:, dataframe.columns != target].values
+    y = dataframe[target].values
 
-        # imputer object
-        knn = KNNImputer(n_neighbors=5, 
-                        weights="uniform",
-                        metric="masked_euclidean",
-                        row_max_missing=0.8,
-                        col_max_missing=0.8, 
-                        copy=True)
-        
-        knn_missing_imputation = knn.fit_transform(X)
-        imputed_dataframe = pd.DataFrame(knn_missing_imputation, 
-                                         columns = dataframe.columns[dataframe.columns != target])
-        imputed_dataframe[target] = pd.Series(y)
-
-        return imputed_dataframe
+    # imputer object
+    knn = KNNImputer(n_neighbors=5, 
+                    weights="uniform",
+                    metric="masked_euclidean",
+                    row_max_missing=0.8,
+                    col_max_missing=0.8, 
+                    copy=True)
+    knn_missing_imputation = knn.fit_transform(X)
+    imputed_dataframe = pd.DataFrame(knn_missing_imputation, 
+                                     columns = dataframe.columns[dataframe.columns != target])
+    imputed_dataframe[target] = pd.Series(y)
+    return imputed_dataframe
 
     imputed_df = impute_missing_for_dataframe(df, target="job_performance")
 
@@ -164,16 +162,13 @@ We can correct for this issue with the rounding function below:
 
     def round_selected_attributes_imputed(dataframe_to_round, dataframe_not_round):
         rounded_dataframe = dataframe_to_round.apply(lambda x: x.round())
-        dataframe = pd.concat([rounded_dataframe, dataframe_not_round], axis=1)
-        dataframe.drop("index", axis=1, inplace=True)
+        dataframe = pd.concat([rounded_dataframe, dataframe_not_round], axis=1).reset_index()
+        # dataframe.drop("index", axis=1, inplace=True)
         return dataframe
 
-    imputed_df = round_selected_attributes_imputed(imputed_df[categorical_df.columns], 
-        imputed_df[list(set(imputed_df.columns)-set(categorical_df.columns))]
-        )
+    df = round_selected_attributes_imputed(imputed_df[categorical_df.columns], imputed_df[[col for col in imputed_df.columns if col not in categorical_df.columns)
 
-
-Using the ``.head()`` method on our dataframe yields a beautifully, cleaned and imputed dataframe with no NaN values and the values are valid.
+Using the ``.head()`` method on our dataframe yields a beautifully, cleaned and complete-looking dataframe with no NaN values and the values are valid.
 
 .. image:: /assets/data_visualizations/dataframe_head_after_imputation.jpg
     :width: 881px
@@ -189,7 +184,7 @@ Although it was brief, the amount of work and effort that went into sorting out 
 
 In any case, in this post, we covered the preparation for imputation and the actual imputation of missing values for our dataset with the missingpy.KNNImputer doing the heavy lifting for us. In the `next post <{filename}./sharpestminds-project-part-7.rst>`_, we will cover the feature selection step, which will also be a relatively brief post. Stay tuned! Until next time!
 
-Bonus picture of my cat!
+A bonus picture of my cat for these trying times.
 
 .. image:: /assets/cocos_bizarre_adventure.jpg
     :width: 518px
