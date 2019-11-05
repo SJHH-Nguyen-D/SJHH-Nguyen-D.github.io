@@ -46,8 +46,8 @@ The Data        `Some more EDA <{filename}./sharpestminds-project-part-3.rst>`_
 Preprocessing   `Dropping Insufficient Data <{filename}./sharpestminds-project-part-4.rst>`_
 Preprocessing   `Encoding, Labeling Categorical Variables <{filename}./sharpestminds-project-part-5.rst>`_
 Preprocessing   `Imputation of Missing Values <{filename}./sharpestminds-project-part-6.rst>`_
-Selection       Feature Selection
-Modeling        Training, Testing, Validation
+Selection       `Feature Selection <{filename}./sharpestminds-project-part-7.rst>`_
+Modeling        `Training, Testing, Validation <{filename}./sharpestminds-project-part-8.rst>`_
 Deployment      Web Application Endpoint
 Write-Up        Blog about it - which is what this is all about!
 =============  ===========================================================================================

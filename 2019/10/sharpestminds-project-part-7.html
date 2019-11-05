@@ -148,41 +148,126 @@
 <p>In the previous post, we approached the problem of missing values with the use of very useful package in the PYPI library called <tt class="docutils literal">missingpy</tt> and used its <tt class="docutils literal">KNNImputer</tt> class to help better impute for the missings values in our dataset. After the imputation of missing values, which were preivously encoded with numeric values, we had to perform rounding for the categorical discrete values of our dataset to make sure that . This is the seventh post of my SharpestMinds project series go into process of selecting the features to be included to be used for the modeling step of our pipeline. We make use some computationally intensive, but powerful tooling provided for us through the <tt class="docutils literal">mlxtend</tt> python library from PYPI as well as the <tt class="docutils literal">sklearn.feature_selection</tt> submodule. If you want to follow along with the full codebase in the Jupyter IPython Notebook, you can do so at the <a class="reference external" href="https://github.com/SJHH-Nguyen-D/sharpestminds-project">link to the repo</a>) at the <tt class="docutils literal">sharpestminds_project.ipynb</tt> file or the <tt class="docutils literal">main.py</tt> file. Let's get into it!</p>
 <div class="section" id="feature-selection">
 <h3>Feature Selection</h3>
-<p>In the data science pipeline, the process of 'feature selection' refers to selecting a subset of the features or attributes of our dataset to include in the final modeling process. This step could be one of the most intensive steps alongside feature engineering, and is a means to produce the most signal to our model during the training and prediction step. The reason we perform feature selection is to remove to the chaff from the wheat - that is, to remove the useless features from the truly useful ones, which would not only improve the predictive ability of our model but also improve the training times for the training of our model. This process often requires in-depth technical domain knowledge (which can be very resource expensive) or an algorithmic search strategy by which we can approach feature selection. We will go over this latter part with the <tt class="docutils literal"><span class="pre">scikit-learn</span></tt> library's <tt class="docutils literal">feature_selection</tt> classes, which include meta-transformative estimators. In addition, we will go over the powerful and mighty 'automatic' approach to feature selection with the <tt class="docutils literal">mlxtend</tt> library. Each one of these approaches has their specific nuances for use and we will go over high level as to how they work.</p>
+<p>In the data science pipeline, the process of 'feature selection' refers to selecting a subset of the features or attributes of our dataset to include in the final modeling process. This step could be one of the most intensive steps alongside feature engineering, and is a means to produce the most signal to our model during the training and prediction step. The reason we perform feature selection is to remove to the chaff from the wheat - that is, to remove the useless features from the truly useful ones, which would not only improve the predictive ability of our model but also improve the training times for the training of our model. This process often requires in-depth technical domain knowledge (which can be very resource expensive) or an algorithmic search strategy by which we can approach feature selection. We will go over this latter part with the <tt class="docutils literal"><span class="pre">scikit-learn</span></tt> library's <tt class="docutils literal">feature_selection</tt> classes, which include meta-transformative estimators. In addition, we will go over the powerful and mighty 'automatic' approach to feature selection with the <tt class="docutils literal">mlxtend</tt> library. Each one of these approaches has their specific nuances for use and we will go over high level as to how they work as well as which one I ultimately chose to employ.</p>
 <div class="section" id="univariate-feature-elimination">
 <h4>Univariate Feature Elimination</h4>
-<p>Using the univariate feature elimination strategy, we use univariate statistics (e.g., chi-squared test of independence for categorical data, f-test for regression, mutual information for regression) and specify a number of features to be included in the final dataset that have quantified a specified level of statistical significance (typically alpha=0.05 or alpha=0.01). The <tt class="docutils literal">sklearn</tt> library also provides the convenience of selecting the top user-specified percentile of features to be included.</p>
+<p>Using the univariate feature elimination strategy, we use univariate statistics (e.g., chi-squared test of independence for categorical data, f-test for regression, mutual information for regression) and specify a number of features to be included in the final dataset that have quantified a specified level of statistical significance (typically alpha=0.05 or alpha=0.01). The <tt class="docutils literal">sklearn</tt> library also provides the convenience of selecting the top user-specified percentile of features to be included. This algorithmic approach to feature selection is among the simplest, and the one I will employ for my project as it doesn't take long run.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">univariate_feature_selection_with_GUS</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; uses univariate statistics such as mutual information regression to select the k best features</span>
+<span class="sd">    for a regression problem &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="k">import</span> <span class="n">GenericUnivariateSelect</span><span class="p">,</span> <span class="n">mutual_info_regression</span>
+
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xy_split</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+    <span class="n">select_features_gus</span> <span class="o">=</span> <span class="n">GenericUnivariateSelect</span><span class="p">(</span><span class="n">score_func</span><span class="o">=</span><span class="n">mutual_info_regression</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;k_best&quot;</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="nb">round</span><span class="p">((</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed Time for feature selection: </span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">GenericUnivariateSelect</span><span class="o">.</span><span class="n">scores_</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">select_features_gus</span>
+
+<span class="n">selected_features</span> <span class="o">=</span> <span class="n">univariate_feature_selection_with_GUS</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">selected_features</span><span class="p">)</span>
+<span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;job_performance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+</pre></div>
+<p>Running a simple RandomForestRegressor out of the box gives us positive results, however, as a sidenote, there is very clearly heavy biases in these predictions.</p>
+<div class="highlight"><pre><span></span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">selected_features</span><span class="p">)</span>
+<span class="n">dataframe</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="mi">62</span><span class="p">:</span><span class="s2">&quot;job_performance&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">split_dataframe</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestRegressor</span>
+<span class="n">rfr</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+<span class="n">rfr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">rfr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;coefficient of determination R^2 of our estimator out of the box: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rfr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)))</span>
+<span class="n">end</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total training time: </span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="n">coefficient</span> <span class="n">of</span> <span class="n">determination</span> <span class="n">R</span><span class="o">^</span><span class="mi">2</span> <span class="n">of</span> <span class="n">our</span> <span class="n">estimator</span> <span class="n">out</span> <span class="n">of</span> <span class="n">the</span> <span class="n">box</span><span class="p">:</span> <span class="mf">0.9469250788745618</span>
+<span class="n">Total</span> <span class="n">training</span> <span class="n">time</span><span class="p">:</span> <span class="mf">2.3305274920003285</span><span class="n">s</span>
+</pre></div>
 </div>
 <div class="section" id="removing-features-with-low-variance">
 <h4>Removing Features with Low Variance</h4>
-<p>Numeric features that contain little to no variance do no provide more noise to signal ratio by being included in the modeling processes. Setting a cut-off value to this variance (i.e., the square of the standard deviation), allows us to eliminate noisy variables below this cut-off. By default, a variable containing only one value would be eliminated using this approach (cutoff=0.0).</p>
+<p>Numeric features that contain little to no variance do no provide more noise to signal ratio by being included in the modeling processes. Setting a cut-off value to this variance (i.e., the square of the standard deviation), allows us to eliminate noisy variables below this cut-off. By default, a variable containing only one value would be eliminated using this approach (cutoff=0.0). This is among the simplest feature selection algorithms and one of the least computationally expensive to employ.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">select_features_var_threshold</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Features with a training-set variance lower than this threshold will be removed.  &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="k">import</span> <span class="n">VarianceThreshold</span>
+
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span>  <span class="o">=</span> <span class="n">xy_split</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+    <span class="n">var_threshold</span> <span class="o">=</span> <span class="n">VarianceThreshold</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span>
+    <span class="n">var_threshold</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">X_new</span> <span class="o">=</span> <span class="n">var_threshold</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed Time for feature selection: </span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">X_new</span>
+
+<span class="n">new_selected_features</span> <span class="o">=</span> <span class="n">select_features_var_threshold</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">new_selected_features</span><span class="p">)</span>
+<span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;job_performance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+</pre></div>
 </div>
 <div class="section" id="selecting-features-using-a-meta-model">
 <h4>Selecting Features Using a Meta-Model</h4>
-<p>The task of selecting a subset of features for final inclusion in a predictive model can also be tasked to another model (e.g., tree-based, regression or other). Similar to the low-variance feature removal procedure, a cutoff value is set and using the <tt class="docutils literal">coef_</tt> and <tt class="docutils literal">feature_importances_</tt> attributes, any feature that does not score above this set parameter is eliminated from the contest. Additionally, there are meta-heuristic that can be specified in order to find the optimal threshold for elimination. There details are available through the documentation for the <tt class="docutils literal">sklearn.feature_selection.SelectFromModel</tt> module.</p>
+<p>The task of selecting a subset of features for final inclusion in a predictive model can also be tasked to another model (e.g., tree-based, regression or other). Similar to the low-variance feature removal procedure, a cutoff value is set and any feature that does not score above this set parameter is eliminated from the contest. Additionally, there are meta-heuristic that can be specified in order to find the optimal threshold for elimination.  By examining the the estimator's <tt class="docutils literal">coef_</tt> and <tt class="docutils literal">feature_importances_</tt> attributes, we can examine which features were selected as a result. There details are available through the documentation for the <tt class="docutils literal">sklearn.feature_selection.SelectFromModel</tt> module.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">metatransformer_fs_with_SFM</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; uses univariate statistics such as mutual information regression to select the k best features</span>
+<span class="sd">    for a regression problem &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="k">import</span> <span class="n">SelectFromModel</span>
+    <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">GradientBoostingRegressor</span>
+
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xy_split</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">GradientBoostingRegressor</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">sfm</span> <span class="o">=</span> <span class="n">SelectFromModel</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span> <span class="c1"># threshold=0.0001</span>
+    <span class="n">sfm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">selected_features</span> <span class="o">=</span> <span class="n">sfm</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+    <span class="n">n_features</span> <span class="o">=</span> <span class="n">sfm</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed Time for feature selection: </span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of features: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_features</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">selected_features</span>
+
+<span class="n">new_feature_array</span> <span class="o">=</span> <span class="n">metatransformer_fs_with_SFM</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">new_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">new_df</span><span class="p">)</span>
+<span class="n">new_df</span><span class="p">[</span><span class="s1">&#39;job_performance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+</pre></div>
 <img alt="thresher" class="align-center" src="/assets/wheat-317021_640.jpg" style="width: 640px; height: 406px;" />
 <p><a class="reference external" href="https://pixabay.com/users/Kaz-19203/?utm_source=link-attribution&amp;amp;utm_medium=referral&amp;amp;utm_campaign=image&amp;amp;utm_content=317021">Image by Karen Arnold</a></p>
 </div>
 <div class="section" id="recursive-feature-elimination">
 <h4>Recursive Feature Elimination</h4>
 <p>The RFE approach employs a user-specified estimator to assign <em>weights</em> for the importance of features (their contribution in a subset of features) and recursively removes a number of features which fail the weight contribution requirement until a user-specified limit of inclusive features is met. Initially starting with the entire dataset, features are assigned a numeric coefficient of their importance in predicting the response variable. The features can be viewed using the <tt class="docutils literal">coef_</tt> or <tt class="docutils literal">feature_importances</tt> attribute. This method also offers the option of performing RFE with cross-validation.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fs_with_RFE</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; recursive feature elimination best features for a regression problem &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="k">import</span> <span class="n">RFE</span>
+    <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestRegressor</span>
+
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xy_split</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+    <span class="n">rfr</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
+    <span class="n">selected_features_with_RFE</span> <span class="o">=</span> <span class="n">RFE</span><span class="p">(</span><span class="n">rfr</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">default_timer</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed Time for feature selection: </span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">))</span>
+    <span class="c1"># print(&quot;The support of each feature: {}&quot;.format(selected_features))</span>
+    <span class="c1"># print(&quot;The ranking of each feature: {}&quot;.format(selected_feature_ranking))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">selected_features_with_RFE</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">selected_features_with_RFE</span>
+
+<span class="n">selected_features_with_RFE</span>  <span class="o">=</span> <span class="n">fs_with_RFE</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">new_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">selected_features_with_RFE</span><span class="p">)</span>
+</pre></div>
 </div>
 <div class="section" id="sequential-forward-feature-selection">
 <h4>Sequential Forward Feature Selection</h4>
-<p><em>Sequential forward feature selection</em>  (SFFS) is a strategy to feature selection which starts the predictive modeling process with a single feature at a time, and <em>sequentially</em> combining combinations of features together to select the 'best' subset of features to provide the most predictive value to your model (which you also select before hand). This SFFS process is typically also performed alongside a predictive model with k-fold cross-validation and therefore can be quite time-consuming running on a single CPU.</p>
-</div>
-<div class="section" id="sequential-backward-feature-selection">
-<h4>Sequential Backward Feature Selection</h4>
-<p><em>Sequential Backward Feature Selection</em> (SBFS), in contrast with SFFS, does the reverse in that it starts off with performing the predictive modeling task on the entire dataset first, and then removing a feature(s) each time, and selecting the best subset of features that gives the best predictive scores (either training set score or validation test scores), with cross-fold validation. Again, a fairly computationally intensive and time-consuming approach on a single CPU.</p>
-</div>
-<div class="section" id="exhaustive-feature-selection">
-<h4>Exhaustive Feature Selection</h4>
-<p><em>Exhaustive Feature Selection</em> (EFS)</p>
-</div>
-<div class="section" id="the-code">
-<h4>The code</h4>
-<p>Now, having gone through that, we are going to opt to use the SFS approach alongside a tree-based random forest regressor algorithm</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">select_n_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<p><em>Sequential forward feature selection</em>  (SFFS) is a strategy to feature selection, avaiablle in the <tt class="docutils literal">mlxtend</tt> library,  which starts the predictive modeling process with a single feature at a time, and <em>sequentially</em> combining combinations of features together to select the 'best' subset of features to provide the most predictive value to your model (which you also select before hand). This SFFS also uses a meta-model to maximize the gain from any number of subsets of features in a dataset, often requiring cross-validation, and therefore can be quite time-consuming running on a single CPU.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fs_with_SFFS</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
 <span class="sd">&quot;&quot;&quot; uses the mlxtend module to select a number of features to keep in the dataframe &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">mlxtend.feature_selection</span> <span class="k">import</span> <span class="n">SequentialFeatureSelector</span> <span class="k">as</span> <span class="n">SFS</span>
     <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestRegressor</span>
@@ -206,14 +291,83 @@
     <span class="k">return</span> <span class="n">feature_indices</span><span class="p">,</span> <span class="n">feature_names</span>
 
 <span class="c1"># We select only about a third of the features arbitrarily</span>
-<span class="n">selected_feature_indices</span><span class="p">,</span> <span class="n">selected_feature_names</span> <span class="o">=</span> <span class="n">select_n_features</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="mf">0.33</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">selected_feature_indices</span><span class="p">,</span> <span class="n">selected_feature_names</span> <span class="o">=</span> <span class="n">fs_with_SFFS</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="mf">0.33</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">imputed_df</span><span class="p">[</span><span class="n">feature_names</span><span class="p">]</span>
 </pre></div>
-<img alt="CoCo the cat" class="align-center" src="/assets/cocos_bizarre_adventure.jpg" style="width: 518px; height: 691px;" />
+</div>
+<div class="section" id="sequential-backward-feature-selection">
+<h4>Sequential Backward Feature Selection</h4>
+<p><em>Sequential Backward Feature Selection</em> (SBFS), in contrast with SFFS, does the reverse in that it starts off with performing the predictive modeling task on the entire dataset first, and then removing a feature(s) each time, and selecting the best subset of features that gives the best predictive scores (either training set score or validation test scores), with cross-fold validation. Again, a fairly computationally intensive and time-consuming approach on a single CPU.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fs_with_SFFS</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot; uses the mlxtend module to select a number of features to keep in the dataframe &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">mlxtend.feature_selection</span> <span class="k">import</span> <span class="n">SequentialFeatureSelector</span> <span class="k">as</span> <span class="n">SFS</span>
+    <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestRegressor</span>
+
+    <span class="c1"># # Build RF regressor to use in feature selection</span>
+    <span class="n">rfr</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">sfs</span> <span class="o">=</span> <span class="n">SFS</span><span class="p">(</span><span class="n">rfr</span><span class="p">,</span>
+            <span class="n">k_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
+            <span class="n">forward</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">floating</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;r2&#39;</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">cv</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">sfs</span> <span class="o">=</span> <span class="n">sfs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+
+    <span class="n">feature_indices</span> <span class="o">=</span> <span class="n">sfs</span><span class="o">.</span><span class="n">k_feature_idx_</span>
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="n">sfs</span><span class="o">.</span><span class="n">k_feature_names_</span>
+
+    <span class="k">return</span> <span class="n">feature_indices</span><span class="p">,</span> <span class="n">feature_names</span>
+
+<span class="c1"># We select only about a third of the features arbitrarily</span>
+<span class="n">selected_feature_indices</span><span class="p">,</span> <span class="n">selected_feature_names</span> <span class="o">=</span> <span class="n">fs_with_SFFS</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="mf">0.33</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">imputed_df</span><span class="p">[</span><span class="n">feature_names</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="exhaustive-feature-selection">
+<h4>Exhaustive Feature Selection</h4>
+<p><em>Exhaustive Feature Selection</em> (EFS), as it's name suggests, algorithmically looks at every single subset combination of features</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fs_with_EFS</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; ExhaustiveFeatureSelector &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">mlxtend.feature_selection</span> <span class="k">import</span> <span class="n">ExhaustiveFeatureSelector</span> <span class="k">as</span> <span class="n">EFS</span>
+    <span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">RandomForestRegressor</span>
+
+    <span class="n">rfr</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
+
+    <span class="n">efs1</span> <span class="o">=</span> <span class="n">EFS</span><span class="p">(</span><span class="n">rfr</span><span class="p">,</span>
+            <span class="n">min_features</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">max_features</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span>
+            <span class="n">print_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">cv</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">efs1</span> <span class="o">=</span> <span class="n">efs1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Best accuracy score: </span><span class="si">%.2f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">efs1</span><span class="o">.</span><span class="n">best_score_</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Best subset (indices):&#39;</span><span class="p">,</span> <span class="n">efs1</span><span class="o">.</span><span class="n">best_idx_</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Best subset (corresponding names):&#39;</span><span class="p">,</span> <span class="n">efs1</span><span class="o">.</span><span class="n">best_feature_names_</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">efs1</span><span class="o">.</span><span class="n">best_idx_</span><span class="p">,</span> <span class="n">efs1</span><span class="o">.</span><span class="n">best_feature_names_</span>
+
+<span class="n">best_feature_indices_EFS</span><span class="p">,</span> <span class="n">best_feature_names_EFS</span> <span class="o">=</span> <span class="n">fs_with_EFS</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">best_features_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">best_feature_indices_EFS</span><span class="p">,</span> <span class="p">:]</span>
+</pre></div>
 </div>
 <div class="section" id="conclusion">
 <h4>Conclusion</h4>
-<p>This is some words about the conclusion. There! Conclusion!</p>
+<p>The algorithmic approaches to feature selection/dimensionality reduction detailed in this post are by no means a complete list of what you can find out there. A brief rundown of the approaches in this post include:</p>
+<ul class="simple">
+<li>Exhaustive Feature Selection</li>
+<li>Sequential Forward/Backward Feature Selection</li>
+<li>Univariate Feature Elimination</li>
+<li>Low Variance Thresholding</li>
+<li>Recursive Feature Elimination</li>
+<li>Feature selection with the use of meta-transformers/meta-models</li>
+</ul>
+<p>I encourage you to play around with any of the approaches to feature selection and go out there and discover more on your own. Be sure to also check the documentation of each one to get a better idea of the parameters, limitations and rationale for that particular approach.</p>
+<p>In the <a class="reference external" href="/2019/11/sharpestminds-project-part-8.html">next post</a>, we will get into the core component of any data science project, and that is the modeling (training, testing, validating) and model selection portion. This is typically the 20% that data scientists talk about when they talk about the 80/20 split in their work. In anycase, I'll see you in the next post!</p>
 </div>
 </div>
 </div>
