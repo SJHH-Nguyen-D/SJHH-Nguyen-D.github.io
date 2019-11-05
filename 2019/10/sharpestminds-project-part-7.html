@@ -328,7 +328,7 @@
 </div>
 <div class="section" id="exhaustive-feature-selection">
 <h4>Exhaustive Feature Selection</h4>
-<p><em>Exhaustive Feature Selection</em> (EFS), as it's name suggests, algorithmically looks at every single subset combination of features</p>
+<p><em>Exhaustive Feature Selection</em> (EFS), as it's name suggests, algorithmically looks at every single subset combination of features and is by far the most computationally expensive approach detailed in this post.</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fs_with_EFS</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; ExhaustiveFeatureSelector &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">mlxtend.feature_selection</span> <span class="k">import</span> <span class="n">ExhaustiveFeatureSelector</span> <span class="k">as</span> <span class="n">EFS</span>

@@ -248,7 +248,7 @@ Sequential Backward Feature Selection
 Exhaustive Feature Selection
 ****************************
 
-*Exhaustive Feature Selection* (EFS), as it's name suggests, algorithmically looks at every single subset combination of features
+*Exhaustive Feature Selection* (EFS), as it's name suggests, algorithmically looks at every single subset combination of features and is by far the most computationally expensive approach detailed in this post.
 
 .. code-block:: python3
 
